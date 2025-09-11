@@ -1,0 +1,300 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* === Brand Tokens === */
+:root {
+ --brand-bg: #f8fafc;           /* light gray canvas */
+ --brand-surface: #ffffff;      /* card surface */
+ --brand-text: #004D59;         /* deep teal text */
+ --brand-muted: #64748b;        /* neutral gray for secondary text */
+ --brand-border: rgba(0,0,0,.06);
+
+ --brand-accent: #008EFA;       /* azure blue (primary) */
+ --brand-accent-alt: #5AD0DD;   /* aqua (secondary) */
+ --brand-accent-2: #98C345;     /* lime green (optional, sparing) */
+ --brand-warm: #FFE500;         /* yellow (small hits only) */
+
+ --brand-radius: 14px;
+ --shadow-sm: 0 1px 2px rgba(0,0,0,.06);
+ --shadow-md: 0 8px 24px rgba(0,0,0,.10);
+}
+
+/* Dark mode brand tokens */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-bg: #111827;          /* dark gray canvas */
+    --brand-surface: #1f2937;     /* dark card surface */
+    --brand-text: #e5e7eb;        /* light gray text */
+    --brand-muted: #9ca3af;       /* muted gray for secondary text */
+    --brand-border: rgba(255,255,255,.1);
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+    --shadow-md: 0 8px 24px rgba(0,0,0,.4);
+  }
+}
+
+body {
+ background: var(--brand-bg);
+ color: var(--brand-text);
+ font-family: "Inter", system-ui, sans-serif;
+}
+
+/* Cards (calendar days & timeline items) */
+#grid > button,
+#timeline button {
+ border-radius: var(--brand-radius);
+ border: 1px solid var(--brand-border);
+ background: var(--brand-surface);
+ transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+#grid > button:hover,
+#timeline button:hover {
+ transform: translateY(-2px);
+ box-shadow: var(--shadow-md);
+}
+
+/* Date numbers */
+#grid > button > div,
+#timeline .text-2xl {
+ color: var(--brand-text);
+ font-weight: 700;
+}
+
+/* Event dots / chips */
+#grid .w-2\.5.h-2\.5.rounded-full{ background: var(--brand-accent); }
+#timeline .bg-indigo-500{ background: var(--brand-accent) !important; } /* rail dots */
+#timeline .px-2{
+ background: var(--brand-accent);
+ color: #fff !important;
+}
+
+/* Today indicators */
+#grid > button .w-6.h-6.rounded-full{ border-color: var(--brand-accent-alt); }
+#timeline button.ring-1{ --tw-ring-color: var(--brand-accent-alt); }
+
+/* Optional: enforce brand body colors if you keep Tailwind bg utilities */
+body{
+ background: var(--brand-bg) !important;
+ color: var(--brand-text) !important;
+}
+
+/* Headers */
+header h1 {
+ color: var(--brand-accent);
+ font-weight: 800;
+ letter-spacing: -0.01em;
+}
+
+/* Brand Button */
+.brand-button {
+  background: var(--brand-accent);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: var(--brand-radius);
+  border: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.brand-button:hover {
+  background: var(--brand-accent-alt);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.brand-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 142, 250, 0.3);
+}
+
+@media (prefers-color-scheme: dark) {
+  .brand-button:focus {
+    box-shadow: 0 0 0 3px rgba(90, 208, 221, 0.3);
+  }
+}
+
+/* Subtle shape motif on hover (optional) */
+/* Cards (calendar days & timeline items) – make relative for ::after */
+#grid > button,
+#timeline button{
+ position: relative; /* <— important */
+ border-radius: var(--brand-radius);
+ border: 1px solid var(--brand-border);
+ background: var(--brand-surface);
+ transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+#grid > button:hover,
+#timeline button:hover{
+ transform: translateY(-2px);
+ box-shadow: var(--shadow-md);
+}
+  /* Motion (kept understated, respects reduced-motion) */
+  @media (prefers-reduced-motion: no-preference) {
+    .fade-in { animation: fade-in 220ms ease-out both; }
+    .slide-in-left { animation: slide-in-left 260ms cubic-bezier(.22,1,.36,1) both; }
+    .slide-in-right { animation: slide-in-right 260ms cubic-bezier(.22,1,.36,1) both; }
+  }
+  @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes slide-in-left { from { opacity: 0; transform: translateX(-14px) } to { opacity: 1; transform: translateX(0) } }
+  @keyframes slide-in-right { from { opacity: 0; transform: translateX(14px) } to { opacity: 1; transform: translateX(0) } }
+
+  /* Focus ring */
+  .focus-ring:focus-visible{
+    outline: 2px solid transparent;
+    box-shadow:
+      0 0 0 2px #ffffff,
+      0 0 0 4px #008EFA; /* brand accent */
+  }
+  @media (prefers-color-scheme: dark){
+    .focus-ring:focus-visible{
+      box-shadow:
+        0 0 0 2px #171717,
+        0 0 0 4px #5AD0DD; /* aqua */
+    }
+  }
+
+  /* --- Pattern Stripe (right edge) -------------------------------------- */
+:root { --stripe-w: 160px; }
+
+/* Only activate when you add .with-stripe to <body> */
+body.with-stripe::after {
+background-color: #f8fafc; /* pale gray instead of tan */
+background-image: url('data:image/svg+xml;utf8,\
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">\
+<defs>\
+  <pattern id="diag" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">\
+    <rect width="12" height="12" fill="none"/>\
+    <rect x="0" y="0" width="6" height="12" fill="#5AD0DD" opacity="0.18"/>\
+  </pattern>\
+</defs>\
+<rect width="120" height="120" fill="#f8fafc"/>\
+<path d="M120 0 L120 60 L60 0 Z" fill="#004D59" opacity="0.9"/>\
+<path d="M0 120 L60 120 L0 60 Z" fill="#008EFA" opacity="0.9"/>\
+<circle cx="88" cy="84" r="22" fill="#5AD0DD"/>\
+<circle cx="34" cy="36" r="18" fill="none" stroke="#008EFA" stroke-width="6"/>\
+<rect x="40" y="40" width="70" height="70" fill="url(#diag)"/>\
+</svg>');
+background-size: 120px 120px;
+}
+
+/* Nudge content so the stripe doesn't overlap */
+.with-stripe .mx-auto{ position:relative; z-index:1; }
+@media (min-width: 1024px){
+.with-stripe .mx-auto{ padding-right: calc(var(--stripe-w) + 2rem); }
+}
+/* Hide stripe on small screens (keep UI clean) */
+@media (max-width: 1023px){
+body.with-stripe::after{ display:none; }
+}
+
+/* Optional: dark mode variant (keeps it quiet) */
+@media (prefers-color-scheme: dark){
+body.with-stripe::after{
+  background-color:#121214;
+  background-image: none; /* or keep the same SVG; removing = cleaner */
+  box-shadow: inset 1px 0 0 rgba(255,255,255,.08);
+}
+}
+
+/* Calendar Content Status Colors */
+.calendar-status-needs-review {
+  background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+  border-color: #d97706 !important;
+}
+
+.calendar-status-needs-review:hover {
+  background: linear-gradient(135deg, #fde68a, #fcd34d) !important;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3) !important;
+}
+
+.calendar-status-approved {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0) !important;
+  border-color: #059669 !important;
+}
+
+.calendar-status-approved:hover {
+  background: linear-gradient(135deg, #a7f3d0, #86efac) !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3) !important;
+}
+
+.calendar-status-mixed {
+  background: linear-gradient(135deg, #ddd6fe, #c4b5fd) !important;
+  border-color: #7c3aed !important;
+}
+
+.calendar-status-mixed:hover {
+  background: linear-gradient(135deg, #c4b5fd, #a78bfa) !important;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3) !important;
+}
+
+.calendar-no-content {
+  cursor: default !important;
+  opacity: 0.7;
+}
+
+.calendar-no-content:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Dark mode versions - subtle but visible colors */
+@media (prefers-color-scheme: dark) {
+  .calendar-status-needs-review {
+    background: rgba(217, 119, 6, 0.3) !important;
+    border-color: rgba(245, 158, 11, 0.6) !important;
+  }
+
+  .calendar-status-needs-review:hover {
+    background: rgba(217, 119, 6, 0.4) !important;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3) !important;
+  }
+
+  .calendar-status-approved {
+    background: rgba(5, 150, 105, 0.3) !important;
+    border-color: rgba(16, 185, 129, 0.6) !important;
+  }
+
+  .calendar-status-approved:hover {
+    background: rgba(5, 150, 105, 0.4) !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+  }
+}
+
+@layer components {
+  /* Status border for content icons */
+  .content-icon-needs-review {
+    border: 3px solid #d97706 !important;
+    box-shadow: 0 0 6px rgba(217, 119, 6, 0.6) !important;
+  }
+
+  .content-icon-approved {
+    border: 3px solid #059669 !important;
+    box-shadow: 0 0 6px rgba(5, 150, 105, 0.6) !important;
+  }
+
+  /* Dark mode icon borders */
+  @media (prefers-color-scheme: dark) {
+    .content-icon-needs-review {
+      border-color: #f59e0b !important;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.8) !important;
+    }
+
+    .content-icon-approved {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.8) !important;
+    }
+  }
+}

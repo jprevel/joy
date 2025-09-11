@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Debug</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Gentle motion with reduced-motion respect */
+        @media (prefers-reduced-motion: no-preference) {
+            .fade-in { animation: fade-in 220ms ease-out both; }
+            .slide-in-left { animation: slide-in-left 260ms cubic-bezier(.22,1,.36,1) both; }
+            .slide-in-right { animation: slide-in-right 260ms cubic-bezier(.22,1,.36,1) both; }
+            .press { transform: translateY(1px) scale(.99); }
+        }
+        @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+        @keyframes slide-in-left { from { opacity: 0; transform: translateX(-14px) } to { opacity: 1; transform: translateX(0) } }
+        @keyframes slide-in-right { from { opacity: 0; transform: translateX(14px) } to { opacity: 1; transform: translateX(0) } }
+
+        /* Focus ring helper for day cells */
+        .focus-ring:focus-visible {
+            outline: 2px solid transparent;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #6366f1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 p-6">
+    <h1 class="text-2xl font-bold mb-4">Calendar Debug Test</h1>
+    
+    <!-- Debug Info -->
+    <div id="debug-info" class="bg-white p-4 rounded mb-6 border">
+        <h2 class="font-semibold mb-2">Debug Information:</h2>
+        <div id="debug-output"></div>
+    </div>
+
+    <!-- Calendar Header -->
+    <div class="mb-4">
+        <h2 id="monthLabel" class="text-xl font-semibold">Loading...</h2>
+        <div class="mt-2">
+            <button id="prevBtn" class="bg-blue-500 text-white px-3 py-1 rounded mr-2">Prev</button>
+            <button id="todayBtn" class="bg-green-500 text-white px-3 py-1 rounded mr-2">Today</button>
+            <button id="nextBtn" class="bg-blue-500 text-white px-3 py-1 rounded">Next</button>
+        </div>
+    </div>
+
+    <!-- Weekday Headers -->
+    <div class="grid grid-cols-7 gap-1 mb-2">
+        <div class="text-center text-sm text-gray-500 py-2">Sun</div>
+        <div class="text-center text-sm text-gray-500 py-2">Mon</div>
+        <div class="text-center text-sm text-gray-500 py-2">Tue</div>
+        <div class="text-center text-sm text-gray-500 py-2">Wed</div>
+        <div class="text-center text-sm text-gray-500 py-2">Thu</div>
+        <div class="text-center text-sm text-gray-500 py-2">Fri</div>
+        <div class="text-center text-sm text-gray-500 py-2">Sat</div>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div id="grid" class="grid grid-cols-7 gap-1 auto-rows-[minmax(96px,1fr)]">
+        <!-- days injected here by JavaScript -->
+    </div>
+
+    <script>
+        // Debug logging
+        function debug(message, data = null) {
+            console.log('[CALENDAR DEBUG]', message, data);
+            const debugOutput = document.getElementById('debug-output');
+            const div = document.createElement('div');
+            div.className = 'text-sm mb-1';
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong>: ${message}` + (data ? ` ${JSON.stringify(data)}` : '');
+            debugOutput.appendChild(div);
+        }
+
+        debug('Script started');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            debug('DOM loaded');
+
+            // Check if required elements exist
+            const grid = document.getElementById('grid');
+            const label = document.getElementById('monthLabel');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const todayBtn = document.getElementById('todayBtn');
+
+            debug('Elements found', {
+                grid: !!grid,
+                label: !!label,
+                prevBtn: !!prevBtn,
+                nextBtn: !!nextBtn,
+                todayBtn: !!todayBtn
+            });
+
+            if (!grid || !label) {
+                debug('ERROR: Required elements not found!');
+                return;
+            }
+
+            // --- Utilities ---
+            const pad = n => String(n).padStart(2, '0');
+            const fmtKey = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+            const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
+            const startOfGrid = (d) => {
+                const first = startOfMonth(d);
+                const day = first.getDay(); // 0=Sun
+                const gridStart = new Date(first);
+                gridStart.setDate(first.getDate() - day);
+                return gridStart;
+            };
+            const addDays = (d, n) => {
+                const copy = new Date(d);
+                copy.setDate(copy.getDate() + n);
+                return copy;
+            };
+
+            debug('Utility functions defined');
+
+            // Mock events data
+            const events = {
+                '2025-09-10': [{title: 'Weekly Blog Content', platform: 'blog', status: 'Scheduled'}],
+                '2025-09-12': [
+                    {title: 'Q4 Product Launch Campaign', platform: 'facebook', status: 'Draft'},
+                    {title: 'Q4 Product Launch Campaign', platform: 'instagram', status: 'Draft'}
+                ],
+                '2025-09-13': [{title: 'Q4 Product Launch Campaign', platform: 'linkedin', status: 'In Review'}]
+            };
+
+            debug('Events data loaded', Object.keys(events));
+
+            // Platform colors
+            const platformColors = {
+                'facebook': '#1877F2',
+                'instagram': '#E4405F',
+                'linkedin': '#0077B5',
+                'blog': '#374151'
+            };
+
+            // --- State ---
+            const today = new Date();
+            let view = new Date(today.getFullYear(), today.getMonth(), 1);
+            let lastDir = 'none';
+
+            debug('State initialized', { today: today.toDateString(), view: view.toDateString() });
+
+            // --- Render ---
+            function render() {
+                debug('Render function called');
+                
+                try {
+                    // Header
+                    const locale = navigator.language || 'en-US';
+                    const mo = view.toLocaleString(locale, { month: 'long' });
+                    label.textContent = `${mo} ${view.getFullYear()}`;
+
+                    debug('Header updated', label.textContent);
+
+                    // Build 6x7 grid (always 42 cells)
+                    const frag = document.createDocumentFragment();
+                    grid.innerHTML = '';
+
+                    const gridStart = startOfGrid(view);
+                    debug('Grid start date', gridStart.toDateString());
+
+                    for (let i = 0; i < 42; i++) {
+                        const d = addDays(gridStart, i);
+                        const inMonth = d.getMonth() === view.getMonth();
+                        const isToday = fmtKey(d) === fmtKey(today);
+
+                        const cell = document.createElement('button');
+                        cell.type = 'button';
+                        cell.setAttribute('tabindex', '0');
+                        cell.setAttribute('aria-label', d.toDateString());
+                        cell.className = [
+                            "group relative flex flex-col items-start justify-start p-2 text-left focus-ring",
+                            "border border-gray-200 rounded",
+                            inMonth ? "bg-white" : "bg-gray-50 text-gray-400",
+                            "hover:bg-gray-100",
+                            "transition min-h-[80px]"
+                        ].join(' ');
+
+                        // day number
+                        const num = document.createElement('div');
+                        num.className = "font-semibold text-lg";
+                        num.textContent = d.getDate();
+
+                        // today indicator
+                        if (isToday) {
+                            const ring = document.createElement('div');
+                            ring.className = "absolute top-1 right-1 w-4 h-4 rounded-full bg-green-500";
+                            cell.appendChild(ring);
+                        }
+
+                        // events dots
+                        const list = events[fmtKey(d)] || [];
+                        if (list.length) {
+                            const dots = document.createElement('div');
+                            dots.className = "mt-auto flex gap-1 flex-wrap";
+                            list.slice(0,4).forEach(ev => {
+                                const dot = document.createElement('span');
+                                const color = platformColors[ev.platform] || '#6B7280';
+                                dot.className = "w-2 h-2 rounded-full";
+                                dot.style.backgroundColor = color;
+                                dot.title = `${ev.title} (${ev.platform}) - ${ev.status}`;
+                                dots.appendChild(dot);
+                            });
+                            if (list.length > 4) {
+                                const more = document.createElement('span');
+                                more.className = "text-xs text-gray-500";
+                                more.textContent = `+${list.length-4}`;
+                                dots.appendChild(more);
+                            }
+                            cell.appendChild(dots);
+                        }
+
+                        cell.appendChild(num);
+
+                        // click handler
+                        cell.addEventListener('click', () => {
+                            const dateEvents = events[fmtKey(d)] || [];
+                            debug('Day clicked', { date: fmtKey(d), events: dateEvents });
+                            if (dateEvents.length > 0) {
+                                alert(`Events for ${fmtKey(d)}: ${dateEvents.map(e => e.title).join(', ')}`);
+                            }
+                        });
+
+                        frag.appendChild(cell);
+                    }
+
+                    grid.appendChild(frag);
+                    debug('Grid rendered successfully', `${grid.children.length} cells`);
+
+                } catch (error) {
+                    debug('ERROR in render function', error.message);
+                    console.error('Render error:', error);
+                }
+            }
+
+            // --- Navigation ---
+            function go(deltaMonths) {
+                const currentMonth = view.getMonth();
+                view = new Date(view.getFullYear(), currentMonth + deltaMonths, 1);
+                lastDir = deltaMonths > 0 ? 'right' : 'left';
+                debug('Navigation', { direction: lastDir, newView: view.toDateString() });
+                render();
+            }
+            function goToday() {
+                view = new Date(today.getFullYear(), today.getMonth(), 1);
+                lastDir = 'none';
+                debug('Go to today', view.toDateString());
+                render();
+            }
+
+            if (prevBtn) prevBtn.addEventListener('click', () => go(-1));
+            if (nextBtn) nextBtn.addEventListener('click', () => go(1));
+            if (todayBtn) todayBtn.addEventListener('click', goToday);
+
+            debug('Event listeners attached');
+
+            // Initial render
+            debug('Starting initial render');
+            render();
+            debug('Initial render completed');
+        });
+
+        debug('Script finished loading');
+    </script>
+</body>
+</html>

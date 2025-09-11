@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en" class="h-full antialiased">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Debug Calendar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media (prefers-reduced-motion: no-preference) {
+      .fade-in { animation: fade-in 220ms ease-out both; }
+      .slide-in-left { animation: slide-in-left 260ms cubic-bezier(.22,1,.36,1) both; }
+      .slide-in-right { animation: slide-in-right 260ms cubic-bezier(.22,1,.36,1) both; }
+      .press { transform: translateY(1px) scale(.99); }
+    }
+    @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+    @keyframes slide-in-left { from { opacity: 0; transform: translateX(-14px) } to { opacity: 1; transform: translateX(0) } }
+    @keyframes slide-in-right { from { opacity: 0; transform: translateX(14px) } to { opacity: 1; transform: translateX(0) } }
+
+    .focus-ring:focus-visible {
+      outline: 2px solid transparent;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #6366f1;
+    }
+  </style>
+</head>
+<body class="h-full bg-gray-50 text-gray-900">
+  <div class="min-h-full py-10 px-4 md:px-8">
+    <div class="mx-auto max-w-5xl space-y-4">
+      
+      <h1 class="text-2xl font-bold">Debug Calendar Test</h1>
+      
+      <!-- Header / Controls -->
+      <header class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <h1 id="monthLabel" class="text-2xl font-semibold tracking-tight text-gray-900"></h1>
+          <span id="todayBadge" class="hidden text-xs rounded-full px-2 py-0.5 bg-emerald-100 text-emerald-800">Today</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="todayBtn"
+                  class="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium hover:bg-gray-100 transition">
+            Today
+          </button>
+          <div class="inline-flex rounded-md border border-gray-300 overflow-hidden">
+            <button id="prevBtn"
+                    class="px-3 py-2 hover:bg-gray-100 transition">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button id="nextBtn"
+                    class="px-3 py-2 hover:bg-gray-100 transition">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Weekday headings -->
+      <div class="grid grid-cols-7 rounded-lg bg-white ring-1 ring-black/5">
+        <div class="col-span-7 grid grid-cols-7 text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+          <div class="px-2 py-2 text-center">Sun</div>
+          <div class="px-2 py-2 text-center">Mon</div>
+          <div class="px-2 py-2 text-center">Tue</div>
+          <div class="px-2 py-2 text-center">Wed</div>
+          <div class="px-2 py-2 text-center">Thu</div>
+          <div class="px-2 py-2 text-center">Fri</div>
+          <div class="px-2 py-2 text-center">Sat</div>
+        </div>
+
+        <!-- Calendar grid -->
+        <div id="grid"
+             class="col-span-7 grid grid-cols-7 auto-rows-[minmax(96px,1fr)] md:auto-rows-[minmax(120px,1fr)]">
+          <!-- days injected here -->
+        </div>
+      </div>
+      
+      <!-- Debug Info -->
+      <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <h3 class="font-semibold mb-2">Debug Information:</h3>
+        <div id="debugInfo"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    console.log('Debug calendar script starting...');
+    
+    // Debug function
+    function debugLog(message) {
+      console.log(message);
+      const debugDiv = document.getElementById('debugInfo');
+      if (debugDiv) {
+        debugDiv.innerHTML += '<div>' + message + '</div>';
+      }
+    }
+    
+    debugLog('Script loaded successfully');
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      debugLog('DOM Content Loaded');
+      
+      // --- Utilities ---
+      const pad = n => String(n).padStart(2, '0');
+      const fmtKey = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+      const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
+      const startOfGrid = (d) => {
+        const first = startOfMonth(d);
+        const day = first.getDay();
+        const gridStart = new Date(first);
+        gridStart.setDate(first.getDate() - day);
+        return gridStart;
+      };
+      const addDays = (d, n) => {
+        const copy = new Date(d);
+        copy.setDate(copy.getDate() + n);
+        return copy;
+      };
+
+      // Sample events for testing
+      const events = {
+        '2025-09-12': [{title:'Test Event 1', platform: 'facebook', status: 'Draft'}],
+        '2025-09-15': [{title:'Test Event 2', platform: 'instagram', status: 'Approved'}],
+      };
+
+      const platformColors = {
+        'facebook': '#1877F2',
+        'instagram': '#E4405F',
+        'linkedin': '#0077B5',
+        'blog': '#374151'
+      };
+
+      // --- State ---
+      const today = new Date();
+      let view = new Date(today.getFullYear(), today.getMonth(), 1);
+      let lastDir = 'none';
+
+      // --- DOM refs ---
+      const grid = document.getElementById('grid');
+      const label = document.getElementById('monthLabel');
+      const todayBadge = document.getElementById('todayBadge');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const todayBtn = document.getElementById('todayBtn');
+      
+      debugLog('Grid element: ' + (grid ? 'Found' : 'NOT FOUND'));
+      debugLog('Label element: ' + (label ? 'Found' : 'NOT FOUND'));
+
+      // --- Render ---
+      function render() {
+        debugLog('Render function called');
+        
+        if (!grid) {
+          debugLog('ERROR: Grid element not found!');
+          return;
+        }
+        
+        // Header
+        const locale = navigator.language || 'en-US';
+        const mo = view.toLocaleString(locale, { month: 'long' });
+        if (label) label.textContent = `${mo} ${view.getFullYear()}`;
+        
+        debugLog('Setting month label to: ' + mo + ' ' + view.getFullYear());
+
+        // Today badge
+        if (view.getFullYear() === today.getFullYear() && view.getMonth() === today.getMonth()) {
+          if (todayBadge) todayBadge.classList.remove('hidden');
+        } else {
+          if (todayBadge) todayBadge.classList.add('hidden');
+        }
+
+        // Build grid
+        const frag = document.createDocumentFragment();
+        grid.innerHTML = '';
+        
+        debugLog('Cleared grid, building calendar...');
+
+        const gridStart = startOfGrid(view);
+        let cellCount = 0;
+
+        for (let i = 0; i < 42; i++) {
+          const d = addDays(gridStart, i);
+          const inMonth = d.getMonth() === view.getMonth();
+          const isToday = fmtKey(d) === fmtKey(today);
+
+          const cell = document.createElement('button');
+          cell.type = 'button';
+          cell.className = [
+            "group relative flex flex-col items-start justify-start p-2 text-left focus-ring",
+            "border border-transparent",
+            inMonth ? "bg-white" : "bg-gray-50 text-gray-400",
+            "hover:bg-gray-50",
+            "transition"
+          ].join(' ');
+
+          // day number
+          const num = document.createElement('div');
+          num.className = "absolute top-1 left-1 text-lg font-semibold";
+          num.textContent = d.getDate();
+
+          // today ring
+          if (isToday) {
+            const ring = document.createElement('div');
+            ring.className = "absolute top-1 right-1 w-6 h-6 rounded-full border-2 border-emerald-500";
+            cell.appendChild(ring);
+          }
+
+          // events dots
+          const list = events[fmtKey(d)] || [];
+          if (list.length) {
+            const dots = document.createElement('div');
+            dots.className = "mt-auto flex gap-1 flex-wrap";
+            list.forEach(ev => {
+              const dot = document.createElement('span');
+              const color = platformColors[ev.platform] || '#6B7280';
+              dot.className = "w-2.5 h-2.5 rounded-full group-hover:scale-110 transition";
+              dot.style.backgroundColor = color;
+              dot.title = `${ev.title} (${ev.platform}) - ${ev.status}`;
+              dots.appendChild(dot);
+            });
+            cell.appendChild(dots);
+          }
+
+          cell.appendChild(num);
+          frag.appendChild(cell);
+          cellCount++;
+        }
+
+        grid.appendChild(frag);
+        debugLog('Added ' + cellCount + ' cells to grid');
+        debugLog('Grid children count: ' + grid.children.length);
+      }
+
+      // --- Navigation ---
+      function go(deltaMonths) {
+        const currentMonth = view.getMonth();
+        view = new Date(view.getFullYear(), currentMonth + deltaMonths, 1);
+        lastDir = deltaMonths > 0 ? 'right' : 'left';
+        render();
+      }
+      
+      function goToday() {
+        view = new Date(today.getFullYear(), today.getMonth(), 1);
+        lastDir = 'none';
+        render();
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', () => go(-1));
+      if (nextBtn) nextBtn.addEventListener('click', () => go(1));
+      if (todayBtn) todayBtn.addEventListener('click', goToday);
+
+      // Initial render
+      debugLog('Starting initial render...');
+      render();
+      debugLog('Initial render complete');
+    });
+  </script>
+</body>
+</html>

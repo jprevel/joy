@@ -17,6 +17,9 @@
                         <a href="{{ route('admin.trello.index') }}" class="text-gray-600 hover:text-gray-900">
                             ← Back to Integrations
                         </a>
+                        <a href="/calendar/admin" class="text-blue-600 hover:text-blue-800">
+                            ← Back to Calendar
+                        </a>
                         <h1 class="text-2xl font-bold text-gray-900">Add Trello Integration</h1>
                     </div>
                 </div>

@@ -17,6 +17,9 @@
                         <a href="/admin" class="text-gray-600 hover:text-gray-900">
                             ← Back to Admin
                         </a>
+                        <a href="/calendar/admin" class="text-blue-600 hover:text-blue-800">
+                            ← Back to Calendar
+                        </a>
                         <h1 class="text-2xl font-bold text-gray-900">Trello Integrations</h1>
                     </div>
                     <a href="{{ route('admin.trello.create') }}" class="brand-button">

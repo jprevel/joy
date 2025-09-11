@@ -122,24 +122,24 @@ class TrelloService
     public function syncCommentToTrello(Comment $comment): bool
     {
         try {
-            $variant = $comment->variant;
+            $contentItem = $comment->contentItem;
             
-            if (!$variant->trello_card_id) {
+            if (!$contentItem->trello_card_id) {
                 // Create card if it doesn't exist
-                $card = $this->createCard($variant);
+                $card = $this->createCard($contentItem);
                 if (!$card) {
                     return false;
                 }
             }
 
-            $response = Http::post("{$this->baseUrl}/cards/{$variant->trello_card_id}/actions/comments", [
+            $response = Http::post("{$this->baseUrl}/cards/{$contentItem->trello_card_id}/actions/comments", [
                 'key' => $this->integration->api_key,
                 'token' => $this->integration->api_token,
                 'text' => $this->formatCommentForTrello($comment),
             ]);
 
             if ($response->successful()) {
-                Log::info("Comment {$comment->id} synced to Trello card {$variant->trello_card_id}");
+                Log::info("Comment {$comment->id} synced to Trello card {$contentItem->trello_card_id}");
                 return true;
             } else {
                 Log::error("Failed to sync comment to Trello: " . $response->body());
@@ -151,17 +151,17 @@ class TrelloService
         }
     }
 
-    public function updateCardStatus(Variant $variant): bool
+    public function updateCardStatus(ContentItem $contentItem): bool
     {
         try {
-            if (!$variant->trello_card_id) {
+            if (!$contentItem->trello_card_id) {
                 return false;
             }
 
-            $listId = $this->getStatusListId($variant->status);
+            $listId = $this->getStatusListId($contentItem->status->name ?? 'draft');
             
             if ($listId) {
-                $response = Http::put("{$this->baseUrl}/cards/{$variant->trello_card_id}", [
+                $response = Http::put("{$this->baseUrl}/cards/{$contentItem->trello_card_id}", [
                     'key' => $this->integration->api_key,
                     'token' => $this->integration->api_token,
                     'idList' => $listId,
@@ -188,18 +188,18 @@ class TrelloService
         return null;
     }
 
-    private function formatCardDescription(Variant $variant): string
+    private function formatCardDescription(ContentItem $contentItem): string
     {
-        $description = "**Content for {$variant->platform}**\n\n";
-        $description .= "**Copy:**\n{$variant->copy}\n\n";
+        $description = "**Content for {$contentItem->platform}**\n\n";
+        $description .= "**Copy:**\n{$contentItem->copy}\n\n";
         
-        if ($variant->media_url) {
-            $description .= "**Media:** {$variant->media_url}\n\n";
+        if ($contentItem->image_path) {
+            $description .= "**Media:** {$contentItem->image_path}\n\n";
         }
         
-        $description .= "**Scheduled:** " . $variant->scheduled_at?->format('M j, Y @ g:i A') . "\n";
-        $description .= "**Status:** {$variant->status}\n\n";
-        $description .= "**Notes:**\n{$variant->notes}";
+        $description .= "**Scheduled:** " . $contentItem->scheduled_at?->format('M j, Y @ g:i A') . "\n";
+        $description .= "**Status:** " . ($contentItem->status->name ?? 'draft') . "\n\n";
+        $description .= "**Notes:**\n{$contentItem->notes}";
 
         return $description;
     }
@@ -267,23 +267,23 @@ class TrelloService
         ];
 
         try {
-            $variants = $this->integration->client->contentItems;
+            $contentItems = $this->integration->client->contentItems;
 
-            foreach ($variants as $variant) {
-                if (!$variant->trello_card_id) {
-                    if ($this->createCard($variant)) {
+            foreach ($contentItems as $contentItem) {
+                if (!$contentItem->trello_card_id) {
+                    if ($this->createCard($contentItem)) {
                         $results['cards_created']++;
                     } else {
-                        $results['errors'][] = "Failed to create card for variant {$variant->id}";
+                        $results['errors'][] = "Failed to create card for content item {$contentItem->id}";
                     }
                 } else {
-                    if ($this->updateCardStatus($variant)) {
+                    if ($this->updateCardStatus($contentItem)) {
                         $results['cards_updated']++;
                     }
                 }
 
                 // Sync any unsynced comments
-                foreach ($variant->comments as $comment) {
+                foreach ($contentItem->comments as $comment) {
                     if ($this->syncCommentToTrello($comment)) {
                         $results['comments_synced']++;
                     } else {

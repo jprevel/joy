@@ -70,7 +70,7 @@
                                     <!-- Header -->
                                     <div class="flex items-center justify-between mb-4">
                                         <h3 class="text-lg font-medium text-gray-900">
-                                            {{ $integration->workspace->name }}
+                                            {{ $integration->client->name }}
                                         </h3>
                                         <div class="flex items-center space-x-2">
                                             @if($integration->is_active)
@@ -177,7 +177,7 @@
         }
 
         async function syncIntegration(integrationId) {
-            if (!confirm('This will sync all workspace content to Trello. Continue?')) {
+            if (!confirm('This will sync all client content to Trello. Continue?')) {
                 return;
             }
 

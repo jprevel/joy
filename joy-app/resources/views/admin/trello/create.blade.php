@@ -42,21 +42,21 @@
                             </ol>
                         </div>
 
-                        <!-- Workspace Selection -->
+                        <!-- Client Selection -->
                         <div>
-                            <label for="workspace_id" class="block text-sm font-medium text-gray-700 mb-1">
-                                Client Workspace *
+                            <label for="client_id" class="block text-sm font-medium text-gray-700 mb-1">
+                                Client *
                             </label>
-                            <select name="workspace_id" id="workspace_id" required
+                            <select name="client_id" id="client_id" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Select a workspace...</option>
-                                @foreach($workspaces as $workspace)
-                                    <option value="{{ $workspace->id }}" {{ old('workspace_id') == $workspace->id ? 'selected' : '' }}>
-                                        {{ $workspace->name }}
+                                <option value="">Select a client...</option>
+                                @foreach($clients as $client)
+                                    <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                                        {{ $client->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            @error('workspace_id')
+                            @error('client_id')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TrelloIntegration;
-use App\Models\ClientWorkspace;
+use App\Models\Client;
 use App\Services\TrelloService;
 use App\Http\Requests\StoreTrelloIntegrationRequest;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class TrelloIntegrationController extends Controller
 {
     public function index()
     {
-        $integrations = TrelloIntegration::with('workspace')
+        $integrations = TrelloIntegration::with('client')
             ->latest()
             ->get();
 
@@ -23,9 +23,9 @@ class TrelloIntegrationController extends Controller
 
     public function create()
     {
-        $workspaces = ClientWorkspace::orderBy('name')->get();
+        $clients = Client::orderBy('name')->get();
         
-        return view('admin.trello.create', compact('workspaces'));
+        return view('admin.trello.create', compact('clients'));
     }
 
     public function store(StoreTrelloIntegrationRequest $request)
@@ -39,16 +39,16 @@ class TrelloIntegrationController extends Controller
 
     public function show(TrelloIntegration $integration)
     {
-        $integration->load('workspace');
+        $integration->load('client');
         
         return view('admin.trello.show', compact('integration'));
     }
 
     public function edit(TrelloIntegration $integration)
     {
-        $workspaces = ClientWorkspace::orderBy('name')->get();
+        $clients = Client::orderBy('name')->get();
         
-        return view('admin.trello.edit', compact('integration', 'workspaces'));
+        return view('admin.trello.edit', compact('integration', 'clients'));
     }
 
     public function update(StoreTrelloIntegrationRequest $request, TrelloIntegration $integration)

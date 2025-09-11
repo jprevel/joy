@@ -15,11 +15,11 @@ class StoreTrelloIntegrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'workspace_id' => [
+            'client_id' => [
                 'required',
                 'integer',
-                'exists:client_workspaces,id',
-                Rule::unique('trello_integrations', 'workspace_id')
+                'exists:clients,id',
+                Rule::unique('trello_integrations', 'client_id')
                     ->ignore($this->route('integration')?->id)
             ],
             'api_key' => [
@@ -56,7 +56,7 @@ class StoreTrelloIntegrationRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'workspace_id.unique' => 'This workspace already has a Trello integration configured.',
+            'client_id.unique' => 'This client already has a Trello integration configured.',
             'api_key.size' => 'The API key must be exactly 32 characters long.',
             'api_key.regex' => 'The API key must be a valid hexadecimal string.',
             'api_token.size' => 'The API token must be exactly 64 characters long.',
@@ -71,7 +71,7 @@ class StoreTrelloIntegrationRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'workspace_id' => 'workspace',
+            'client_id' => 'client',
             'api_key' => 'Trello API key',
             'api_token' => 'Trello API token',
             'board_id' => 'board ID',

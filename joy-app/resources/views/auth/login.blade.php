@@ -109,6 +109,29 @@
     /* Error messages */
     .error { color: #f87171; font-size: 14px; margin-top: 6px; }
 
+    /* Logo lockup */
+    .logo-lockup {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    .logo-lockup img {
+      width: 200px;
+      height: 149px;
+      display: block;
+    }
+    .logo-lockup h1 {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      font-weight: 800;
+      color: #ffffff;
+      font-size: 120px;
+      line-height: 120px;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
     /* Reduced motion */
     @media (prefers-reduced-motion: reduce) {
       .bg-gradient, .bg-hue, .title span, .glow, .twinkle i { animation: none !important; }
@@ -176,11 +199,14 @@
         </svg>
       </div>
 
-      <!-- Title -->
-      <h1 class="title" x-init="$nextTick(() => splitTitle())">
-        <span class="glow" x-text="appName"></span>
-      </h1>
-      <p class="subtitle">Welcome back to your content calendar</p>
+      <!-- Logo and Branding -->
+      <div style="text-align: center; margin-bottom: 32px;">
+        <div class="logo-lockup">
+          <img src="{{ asset('MM_logo_200px.png') }}" alt="MajorMajor">
+          <h1>Joy</h1>
+        </div>
+        <p class="subtitle">Welcome back to your content calendar</p>
+      </div>
 
       <!-- Login card -->
       <div class="card" role="region" aria-label="Sign in">

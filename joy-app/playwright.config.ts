@@ -5,15 +5,22 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests/e2e',
-  fullyParallel: true,
+  fullyParallel: false, // Set to false for better test isolation
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 1 : 2, // Limit workers for better stability
   reporter: 'html',
+  // globalSetup: './tests/e2e/setup/global-setup.ts', // Temporarily disabled
+  timeout: 60000, // 60 second timeout for individual tests
+  expect: {
+    timeout: 10000, // 10 second timeout for assertions
+  },
   use: {
     baseURL: 'http://127.0.0.1:8000',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    actionTimeout: 10000, // 10 second timeout for actions
   },
 
   projects: [

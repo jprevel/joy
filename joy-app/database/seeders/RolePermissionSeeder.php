@@ -57,29 +57,43 @@ class RolePermissionSeeder extends Seeder
         // Admin permissions (all permissions)
         $adminRole->givePermissionTo($permissions);
 
-        // Create a demo user for each role if they don't exist
+        // Create users for each role
+        
+        // Admin user
+        $adminUser = User::firstOrCreate([
+            'email' => 'admin@example.com'
+        ], [
+            'name' => 'Admin User',
+            'password' => bcrypt('password')
+        ]);
+        $adminUser->assignRole('admin');
+
+        // Client user
         $clientUser = User::firstOrCreate([
             'email' => 'client@example.com'
         ], [
-            'name' => 'Demo Client',
+            'name' => 'Client User',
             'password' => bcrypt('password')
         ]);
         $clientUser->assignRole('client');
 
-        $agencyUser = User::firstOrCreate([
-            'email' => 'agency@example.com'
+        // Agency users
+        // Shaira Hernandez (Bukonuts team)
+        $shairaUser = User::firstOrCreate([
+            'email' => 'shaira@majormajor.marketing'
         ], [
-            'name' => 'Demo Agency User',
+            'name' => 'Shaira Hernandez',
             'password' => bcrypt('password')
         ]);
-        $agencyUser->assignRole('agency');
+        $shairaUser->assignRole('agency');
 
-        $adminUser = User::firstOrCreate([
-            'email' => 'admin@example.com'
+        // Ariane Salvador (Kalamansi team)
+        $arianeUser = User::firstOrCreate([
+            'email' => 'ariane@majormajor.marketing'
         ], [
-            'name' => 'Demo Admin',
+            'name' => 'Ariane Salvador',
             'password' => bcrypt('password')
         ]);
-        $adminUser->assignRole('admin');
+        $arianeUser->assignRole('agency');
     }
 }

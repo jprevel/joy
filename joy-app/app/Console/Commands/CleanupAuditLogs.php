@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\AuditService;
+use App\DTOs\AuditLogRequest;
 use Illuminate\Console\Command;
 
 class CleanupAuditLogs extends Command
@@ -29,14 +30,14 @@ class CleanupAuditLogs extends Command
             
             // Log the cleanup action
             AuditService::log(
-                action: 'audit_cleanup',
-                newValues: [
-                    'days_kept' => $days,
-                    'records_deleted' => $deletedCount,
-                    'triggered_by' => 'artisan_command',
-                ],
-                severity: 'info',
-                tags: ['system_cleanup', 'automated']
+                AuditLogRequest::create('audit_cleanup')
+                    ->withNewValues([
+                        'days_kept' => $days,
+                        'records_deleted' => $deletedCount,
+                        'triggered_by' => 'artisan_command',
+                    ])
+                    ->withSeverity('info')
+                    ->withTags(['system_cleanup', 'automated'])
             );
         } else {
             $this->info('No old audit logs found to delete.');

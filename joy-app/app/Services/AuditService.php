@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Constants\AuditConstants;
 use App\DTOs\AuditLogData;
+use App\DTOs\AuditLogRequest;
 use App\Models\AuditLog;
 use App\Models\MagicLink;
 use App\Services\Audit\AuditLogger;
@@ -19,19 +20,24 @@ class AuditService
     private static ?AuditSecurityTracker $securityTracker = null;
     private static ?AuditCleanupService $cleanupService = null;
     
-    public static function log(
-        string $action,
-        ?Model $auditable = null,
-        array $oldValues = [],
-        array $newValues = [],
-        ?int $workspaceId = null,
-        ?int $userId = null,
-        ?string $userType = null,
-        string $severity = AuditConstants::SEVERITY_INFO,
-        array $tags = [],
-        ?array $requestData = null,
-        ?array $responseData = null
-    ): AuditLog {
+    public static function log(AuditLogRequest|string $request, ...$legacyArgs): AuditLog {
+        // Handle new parameter object approach
+        if ($request instanceof AuditLogRequest) {
+            return self::getLogger()->log($request->toAuditLogData());
+        }
+        
+        // Legacy support - convert old parameters to AuditLogRequest
+        $action = $request; // $request is string in legacy mode
+        $auditable = $legacyArgs[0] ?? null;
+        $oldValues = $legacyArgs[1] ?? [];
+        $newValues = $legacyArgs[2] ?? [];
+        $workspaceId = $legacyArgs[3] ?? null;
+        $userId = $legacyArgs[4] ?? null;
+        $userType = $legacyArgs[5] ?? null;
+        $severity = $legacyArgs[6] ?? AuditConstants::SEVERITY_INFO;
+        $tags = $legacyArgs[7] ?? [];
+        $requestData = $legacyArgs[8] ?? null;
+        $responseData = $legacyArgs[9] ?? null;
         $data = new AuditLogData(
             action: $action,
             auditable: $auditable,

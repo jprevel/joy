@@ -60,13 +60,80 @@
     </div>
   </div>
   
-  <div class="min-h-full py-10 px-4 md:px-8">
-    <div class="mx-auto max-w-5xl space-y-6">
-      <!-- Page Header -->
-      <div class="border-b border-neutral-200 dark:border-neutral-800 pb-4">
-        <div class="flex items-center gap-4">
-          <img src="/MM_logo.png" alt="MajorMajor Logo" class="h-16 w-auto">
-          <div>
+  <!-- Sidebar -->
+  <div x-data="{ sidebarOpen: true }" class="flex h-screen bg-neutral-50 dark:bg-neutral-900">
+    <!-- Sidebar -->
+    <div :class="sidebarOpen ? 'w-64' : 'w-16'" class="bg-white dark:bg-neutral-800 border-r border-neutral-200 dark:border-neutral-700 transition-all duration-300 flex flex-col">
+      <!-- Sidebar Header -->
+      <div class="p-4 border-b border-neutral-200 dark:border-neutral-700">
+        <div class="flex items-center justify-between">
+          <div x-show="sidebarOpen" x-transition class="flex items-center gap-3">
+            <img src="/MM_logo.png" alt="MajorMajor Logo" class="h-8 w-auto">
+            <span class="font-semibold text-neutral-900 dark:text-neutral-100">Joy</span>
+          </div>
+          <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 p-4 space-y-2">
+        <!-- Add Content -->
+        @if($this->hasPermission('edit content'))
+          <a href="{{ route('content.add', $currentRole) }}" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition group">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            <span x-show="sidebarOpen" x-transition class="font-medium">Add Content</span>
+          </a>
+        @endif
+
+        <!-- Admin Panel -->
+        @if($currentRole === 'admin')
+          <a href="/admin/trello" class="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition group">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span x-show="sidebarOpen" x-transition class="font-medium">Admin Panel</span>
+          </a>
+        @endif
+      </nav>
+
+      <!-- User Info & Logout -->
+      @php $currentUser = $this->getCurrentUserRole(); @endphp
+      @if($currentUser && ($currentRole === 'agency' || $currentRole === 'admin'))
+        <div class="p-4 border-t border-neutral-200 dark:border-neutral-700 space-y-3">
+          <div x-show="sidebarOpen" x-transition class="text-sm">
+            <div class="font-medium text-neutral-900 dark:text-neutral-100">{{ $currentUser->name }}</div>
+            @if($currentUser->teams->count() > 0)
+              <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ $currentUser->teams->pluck('name')->join(', ') }}</div>
+            @endif
+          </div>
+          
+          <!-- Logout -->
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition group w-full">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              <span x-show="sidebarOpen" x-transition class="font-medium text-left">Logout</span>
+            </button>
+          </form>
+        </div>
+      @endif
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-hidden">
+      <div class="h-full overflow-y-auto py-6 px-4 md:px-8">
+        <div class="max-w-6xl space-y-6">
+          <!-- Page Header -->
+          <div class="border-b border-neutral-200 dark:border-neutral-800 pb-4">
             <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100">
               {{ $client ? $client->name : 'Client' }} Content Calendar
               <span class="text-sm font-normal text-neutral-500 dark:text-neutral-400">
@@ -77,8 +144,6 @@
               <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{{ $client->description }}</p>
             @endif
           </div>
-        </div>
-      </div>
       
       <!-- Calendar Controls -->
       <header class="flex items-center justify-between gap-2">
@@ -87,25 +152,6 @@
           <span id="todayBadge" class="hidden text-xs rounded-full px-2 py-0.5 bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200">Today</span>
         </div>
         <div class="flex items-center gap-2">
-          @if($this->hasPermission('edit content'))
-            <a href="{{ route('content.add', $currentRole) }}" 
-               class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-              </svg>
-              Add Content
-            </a>
-          @endif
-          @if($currentRole === 'admin')
-            <a href="/admin/trello" 
-               class="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-md transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
-              Admin Panel
-            </a>
-          @endif
           <!-- View Toggle -->
           <div id="viewToggle" class="inline-flex rounded-md border border-neutral-300 dark:border-neutral-700 overflow-hidden">
             <button id="calendarBtn"
@@ -143,6 +189,7 @@
               </svg>
             </button>
           </div>
+          </div>
         </div>
       </header>
 
@@ -163,7 +210,7 @@
 
           <!-- Calendar grid -->
           <div id="grid"
-               class="col-span-7 grid grid-cols-7 auto-rows-[minmax(96px,1fr)] md:auto-rows-[minmax(120px,1fr)]">
+               class="col-span-7 grid grid-cols-7 auto-rows-[minmax(86px,1fr)] md:auto-rows-[minmax(108px,1fr)]">
             <!-- days injected here -->
           </div>
         </div>
@@ -302,13 +349,22 @@
 
     // --- Render Calendar -----------------------------------------------------
     function renderCalendar() {
-      // Build 6x7 grid (always 42 cells)
+      // Build dynamic grid (4-6 weeks based on month needs)
       const frag = document.createDocumentFragment();
       grid.innerHTML = '';
 
       const gridStart = startOfGrid(view);
+      
+      // Calculate how many weeks we actually need
+      const firstOfMonth = startOfMonth(view);
+      const lastOfMonth = endOfMonth(view);
+      const lastWeekStart = new Date(lastOfMonth);
+      lastWeekStart.setDate(lastOfMonth.getDate() - lastOfMonth.getDay());
+      
+      const weeksDiff = Math.ceil((lastWeekStart - gridStart) / (7 * 24 * 60 * 60 * 1000)) + 1;
+      const totalCells = weeksDiff * 7;
 
-      for (let i = 0; i < 42; i++) {
+      for (let i = 0; i < totalCells; i++) {
         const d = addDays(gridStart, i);
         const inMonth = d.getMonth() === view.getMonth();
         const isToday = fmtKey(d) === fmtKey(today);
@@ -804,6 +860,10 @@
     // Initial render
     render();
   </script>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
-</div>

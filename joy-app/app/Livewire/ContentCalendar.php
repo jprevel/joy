@@ -4,12 +4,15 @@ namespace App\Livewire;
 
 use App\Models\ContentItem;
 use App\Models\Client;
+use App\Traits\HasRoleManagement;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class ContentCalendar extends Component
 {
+    use HasRoleManagement;
+    
     public string $currentView = 'calendar';
     public Carbon $currentMonth;
     public Collection $contentItems;
@@ -22,37 +25,17 @@ class ContentCalendar extends Component
         $this->currentMonth = Carbon::now()->startOfMonth();
         $this->currentRole = $role;
         
-        // For demo purposes, get the first client
-        // In production, this would be determined by magic link token
-        $this->client = Client::first();
+        // For demo purposes, get the first accessible client
+        // In production, this would be determined by magic link token or authentication
+        if ($role === 'agency' || $role === 'admin') {
+            $currentUser = $this->getCurrentUserRole();
+            $this->client = $currentUser ? $currentUser->accessibleClients()->first() : Client::first();
+        } else {
+            $this->client = Client::first();
+        }
         
         $this->loadContentItems();
         $this->buildCalendarData();
-    }
-    
-    public function getCurrentUserRole()
-    {
-        // In demo mode, we simulate different user roles
-        // This could be expanded to check actual authenticated user roles
-        $demoUsers = [
-            'client' => \App\Models\User::whereHas('roles', function($q) { 
-                $q->where('name', 'client'); 
-            })->first(),
-            'agency' => \App\Models\User::whereHas('roles', function($q) { 
-                $q->where('name', 'agency'); 
-            })->first(),
-            'admin' => \App\Models\User::whereHas('roles', function($q) { 
-                $q->where('name', 'admin'); 
-            })->first(),
-        ];
-        
-        return $demoUsers[$this->currentRole] ?? null;
-    }
-    
-    public function hasPermission($permission)
-    {
-        $user = $this->getCurrentUserRole();
-        return $user ? $user->can($permission) : false;
     }
 
     public function loadContentItems()

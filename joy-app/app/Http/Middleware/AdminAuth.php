@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Constants\AuditConstants;
 use App\Services\AuditService;
+use App\DTOs\AuditLogRequest;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,14 +77,14 @@ class AdminAuth
     private function logAuthorizedAccess(Request $request): void
     {
         AuditService::log(
-            action: 'admin_access',
-            newValues: [
-                'ip_address' => $request->ip(),
-                'route' => $request->route()?->getName(),
-                'url' => $request->fullUrl(),
-            ],
-            severity: AuditConstants::SEVERITY_INFO,
-            tags: ['admin', 'access']
+            AuditLogRequest::create('admin_access')
+                ->withNewValues([
+                    'ip_address' => $request->ip(),
+                    'route' => $request->route()?->getName(),
+                    'url' => $request->fullUrl(),
+                ])
+                ->withSeverity(AuditConstants::SEVERITY_INFO)
+                ->withTags(['admin', 'access'])
         );
     }
     

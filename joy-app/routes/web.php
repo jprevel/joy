@@ -5,15 +5,37 @@ use App\Livewire\ContentCalendar;
 use App\Livewire\ContentReview;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Admin\TrelloIntegrationController;
+use App\Http\Controllers\Auth\LoginController;
 
+// Authentication routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+});
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Root redirect to login if not authenticated, otherwise to calendar
 Route::get('/', function () {
-    return redirect('/calendar');
+    if (auth()->check()) {
+        $user = auth()->user();
+        if ($user->hasRole('admin')) {
+            return redirect('/calendar/admin');
+        } elseif ($user->hasRole('agency')) {
+            return redirect('/calendar/agency');
+        } else {
+            return redirect('/calendar/client');
+        }
+    }
+    return redirect('/login');
 });
 
-Route::get('/calendar', ContentCalendar::class)->name('calendar');
-Route::get('/calendar/{role}', ContentCalendar::class)->name('calendar.role')->where('role', 'client|agency|admin');
-Route::get('/calendar/review/{date}', ContentReview::class)->name('calendar.review');
-Route::get('/content/add/{role}', \App\Livewire\AddContent::class)->name('content.add')->where('role', 'client|agency|admin');
+// Protected routes - require authentication
+Route::middleware('auth')->group(function () {
+    Route::get('/calendar', ContentCalendar::class)->name('calendar');
+    Route::get('/calendar/{role}', ContentCalendar::class)->name('calendar.role')->where('role', 'client|agency|admin');
+    Route::get('/calendar/review/{date}', ContentReview::class)->name('calendar.review');
+    Route::get('/content/add/{role}', \App\Livewire\AddContent::class)->name('content.add')->where('role', 'client|agency|admin');
+});
 
 Route::get('/debug', function () {
     return response()->file(public_path('../calendar-debug.html'));
@@ -42,6 +64,7 @@ Route::middleware('admin.auth')->group(function () {
         Route::post('/{integration}/sync', [TrelloIntegrationController::class, 'sync'])->name('sync');
         Route::post('/{integration}/toggle', [TrelloIntegrationController::class, 'toggle'])->name('toggle');
     });
+
 
     // Admin routes for audit log management
     Route::prefix('admin/audit')->name('admin.audit.')->group(function () {

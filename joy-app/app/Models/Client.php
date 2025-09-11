@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Client extends Model
 {
     protected $fillable = [
         'name',
         'description',
+        'team_id',
     ];
 
     public function contentItems(): HasMany
@@ -30,5 +32,10 @@ class Client extends Model
     public function auditLogs(): HasMany
     {
         return $this->hasMany(AuditLog::class, 'client_id');
+    }
+
+    public function team(): BelongsTo
+    {
+        return $this->belongsTo(Team::class);
     }
 }

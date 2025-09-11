@@ -41,7 +41,7 @@ class ContentItemSeeder extends Seeder
             'Behind the Scenes Content'
         ];
 
-        $platforms = ['facebook', 'instagram', 'linkedin', 'blog'];
+        $platforms = ['Facebook', 'Instagram', 'LinkedIn', 'Blog'];
         $statuses = ['Draft', 'In Review', 'Approved', 'Scheduled'];
         
         $campaign = $campaigns[array_rand($campaigns)];
@@ -65,10 +65,10 @@ class ContentItemSeeder extends Seeder
     private function getNotesForPlatform($platform, $clientName)
     {
         $notes = [
-            'facebook' => "Engagement-focused post for Facebook audience. Use brand colors and include call-to-action button.",
-            'instagram' => "Visual-first content with hashtags. Ensure image is optimized for mobile viewing.",
-            'linkedin' => "Professional tone for B2B audience. Focus on industry insights and thought leadership.",
-            'blog' => "Long-form content for SEO. Include relevant keywords and internal links."
+            'Facebook' => "Engagement-focused post for Facebook audience. Use brand colors and include call-to-action button.",
+            'Instagram' => "Visual-first content with hashtags. Ensure image is optimized for mobile viewing.",
+            'LinkedIn' => "Professional tone for B2B audience. Focus on industry insights and thought leadership.",
+            'Blog' => "Long-form content for SEO. Include relevant keywords and internal links."
         ];
 
         return $notes[$platform] . " Target audience: {$clientName} customers and prospects.";
@@ -77,10 +77,10 @@ class ContentItemSeeder extends Seeder
     private function getCopyForPlatform($platform, $clientName, $campaign)
     {
         $copies = [
-            'facebook' => "🚀 Exciting news from {$clientName}! Our {$campaign} is here and we can't wait to share what we've been working on. Click the link in our bio to learn more! #Innovation #Excellence",
-            'instagram' => "✨ Behind the scenes of our {$campaign} ✨\n\nSwipe to see the journey → \n\n#{$clientName} #BehindTheScenes #ComingSoon",
-            'linkedin' => "We're thrilled to announce our {$campaign} at {$clientName}. This initiative represents our commitment to delivering exceptional value to our clients and partners. Read more about our approach and what this means for the industry.",
-            'blog' => "# {$campaign}: A Deep Dive into {$clientName}'s Latest Initiative\n\nIn today's rapidly evolving marketplace, innovation isn't just an advantage—it's a necessity. Our {$campaign} represents months of research, development, and strategic planning..."
+            'Facebook' => "🚀 Exciting news from {$clientName}! Our {$campaign} is here and we can't wait to share what we've been working on. Click the link in our bio to learn more! #Innovation #Excellence",
+            'Instagram' => "✨ Behind the scenes of our {$campaign} ✨\n\nSwipe to see the journey → \n\n#{$clientName} #BehindTheScenes #ComingSoon",
+            'LinkedIn' => "We're thrilled to announce our {$campaign} at {$clientName}. This initiative represents our commitment to delivering exceptional value to our clients and partners. Read more about our approach and what this means for the industry.",
+            'Blog' => "# {$campaign}: A Deep Dive into {$clientName}'s Latest Initiative\n\nIn today's rapidly evolving marketplace, innovation isn't just an advantage—it's a necessity. Our {$campaign} represents months of research, development, and strategic planning..."
         ];
 
         return $copies[$platform];
@@ -89,10 +89,10 @@ class ContentItemSeeder extends Seeder
     private function getMediaUrl($platform)
     {
         $images = [
-            'facebook' => 'https://picsum.photos/1200/630?random=' . rand(1, 100),
-            'instagram' => 'https://picsum.photos/1080/1080?random=' . rand(1, 100),
-            'linkedin' => 'https://picsum.photos/1200/627?random=' . rand(1, 100),
-            'blog' => 'https://picsum.photos/800/400?random=' . rand(1, 100),
+            'Facebook' => 'https://picsum.photos/1200/630?random=' . rand(1, 100),
+            'Instagram' => 'https://picsum.photos/1080/1080?random=' . rand(1, 100),
+            'LinkedIn' => 'https://picsum.photos/1200/627?random=' . rand(1, 100),
+            'Blog' => 'https://picsum.photos/800/400?random=' . rand(1, 100),
         ];
 
         return $images[$platform];

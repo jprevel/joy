@@ -259,50 +259,77 @@ class TrelloService
 
     public function syncWorkspaceToTrello(): array
     {
-        $results = [
+        $results = $this->initializeSyncResults();
+
+        try {
+            $contentItems = $this->integration->client->contentItems;
+            
+            $this->syncContentItems($contentItems, $results);
+            $this->markSyncCompleted($results);
+
+        } catch (Exception $e) {
+            $this->handleSyncError($e, $results);
+        }
+
+        return $results;
+    }
+
+    private function initializeSyncResults(): array
+    {
+        return [
             'cards_created' => 0,
             'cards_updated' => 0,
             'comments_synced' => 0,
             'errors' => [],
         ];
+    }
 
-        try {
-            $contentItems = $this->integration->client->contentItems;
-
-            foreach ($contentItems as $contentItem) {
-                if (!$contentItem->trello_card_id) {
-                    if ($this->createCard($contentItem)) {
-                        $results['cards_created']++;
-                    } else {
-                        $results['errors'][] = "Failed to create card for content item {$contentItem->id}";
-                    }
-                } else {
-                    if ($this->updateCardStatus($contentItem)) {
-                        $results['cards_updated']++;
-                    }
-                }
-
-                // Sync any unsynced comments
-                foreach ($contentItem->comments as $comment) {
-                    if ($this->syncCommentToTrello($comment)) {
-                        $results['comments_synced']++;
-                    } else {
-                        $results['errors'][] = "Failed to sync comment {$comment->id}";
-                    }
-                }
-            }
-
-            $this->integration->markSyncCompleted([
-                'status' => 'completed',
-                'results' => $results,
-                'timestamp' => now()->toISOString(),
-            ]);
-
-        } catch (Exception $e) {
-            $this->integration->markSyncFailed($e->getMessage());
-            $results['errors'][] = $e->getMessage();
+    private function syncContentItems($contentItems, array &$results): void
+    {
+        foreach ($contentItems as $contentItem) {
+            $this->syncContentItem($contentItem, $results);
+            $this->syncContentItemComments($contentItem, $results);
         }
+    }
 
-        return $results;
+    private function syncContentItem($contentItem, array &$results): void
+    {
+        if (!$contentItem->trello_card_id) {
+            if ($this->createCard($contentItem)) {
+                $results['cards_created']++;
+            } else {
+                $results['errors'][] = "Failed to create card for content item {$contentItem->id}";
+            }
+        } else {
+            if ($this->updateCardStatus($contentItem)) {
+                $results['cards_updated']++;
+            }
+        }
+    }
+
+    private function syncContentItemComments($contentItem, array &$results): void
+    {
+        foreach ($contentItem->comments as $comment) {
+            if ($this->syncCommentToTrello($comment)) {
+                $results['comments_synced']++;
+            } else {
+                $results['errors'][] = "Failed to sync comment {$comment->id}";
+            }
+        }
+    }
+
+    private function markSyncCompleted(array $results): void
+    {
+        $this->integration->markSyncCompleted([
+            'status' => 'completed',
+            'results' => $results,
+            'timestamp' => now()->toISOString(),
+        ]);
+    }
+
+    private function handleSyncError(Exception $e, array &$results): void
+    {
+        $this->integration->markSyncFailed($e->getMessage());
+        $results['errors'][] = $e->getMessage();
     }
 }

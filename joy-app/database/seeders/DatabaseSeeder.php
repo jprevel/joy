@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
 
         // Seed the core data
         $this->call([
+            TeamSeeder::class,
             AgencyUserSeeder::class,
             ClientSeeder::class,
             ContentItemSeeder::class,

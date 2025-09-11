@@ -8,6 +8,7 @@ use App\Models\AuditLog;
 use App\Models\ClientWorkspace;
 use App\Services\Audit\AuditExportService;
 use App\Services\AuditService;
+use App\DTOs\AuditLogRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -123,13 +124,13 @@ class AuditLogController extends Controller
         
         // Log the cleanup action
         AuditService::log(
-            action: 'audit_cleanup',
-            newValues: [
-                'days_kept' => $daysToKeep,
-                'records_deleted' => $deletedCount,
-            ],
-            severity: 'info',
-            tags: ['admin_action', 'cleanup']
+            AuditLogRequest::create('audit_cleanup')
+                ->withNewValues([
+                    'days_kept' => $daysToKeep,
+                    'records_deleted' => $deletedCount,
+                ])
+                ->withSeverity('info')
+                ->withTags(['admin_action', 'cleanup'])
         );
 
         return response()->json([

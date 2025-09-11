@@ -13,22 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user if it doesn't exist
-        User::firstOrCreate(
-            ['email' => 'admin@majormajoragency.com'],
-            [
-                'name' => 'Admin User',
-                'password' => bcrypt('admin123'),
-                'email_verified_at' => now(),
-            ]
-        );
-
-        // Seed the core data
+        // Seed data in the correct order to ensure proper relationships
         $this->call([
-            TeamSeeder::class,
-            AgencyUserSeeder::class,
-            ClientSeeder::class,
-            ContentItemSeeder::class,
+            RolePermissionSeeder::class,  // Create roles, permissions, and users first
+            TeamSeeder::class,            // Create teams and assign users to teams
+            AgencyUserSeeder::class,      // Create legacy agency users (if still needed)
+            ClientSeeder::class,          // Create clients and assign them to teams
+            ContentItemSeeder::class,     // Create content items with proper owner/client relationships
         ]);
     }
 }

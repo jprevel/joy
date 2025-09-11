@@ -91,6 +91,29 @@
           </a>
         @endif
 
+        <!-- Client Navigation -->
+        @if(($currentRole === 'agency' || $currentRole === 'admin') && $accessibleClients->count() > 1)
+          <div class="pt-4">
+            <div x-show="sidebarOpen" x-transition class="px-3 py-2">
+              <h3 class="text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">Clients</h3>
+            </div>
+            <div class="space-y-1">
+              @foreach($accessibleClients as $clientOption)
+                <a href="{{ route('calendar.client', ['role' => $currentRole, 'clientId' => $clientOption->id]) }}" 
+                   class="flex items-center gap-3 px-3 py-2 rounded-lg transition group {{ $clientOption->id === $selectedClientId ? 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700' }}">
+                  <div class="w-5 h-5 rounded-full {{ $clientOption->id === $selectedClientId ? 'bg-indigo-600' : 'bg-neutral-300 dark:bg-neutral-600' }} flex-shrink-0"></div>
+                  <span x-show="sidebarOpen" x-transition class="font-medium">{{ $clientOption->name }}</span>
+                  @if($clientOption->id === $selectedClientId && false)
+                    <svg x-show="sidebarOpen" x-transition class="w-4 h-4 ml-auto text-indigo-600 dark:text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                  @endif
+                </a>
+              @endforeach
+            </div>
+          </div>
+        @endif
+
         <!-- Admin Panel -->
         @if($currentRole === 'admin')
           <a href="/admin/trello" class="flex items-center gap-3 px-3 py-2 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition group">
@@ -103,29 +126,31 @@
         @endif
       </nav>
 
-      <!-- User Info & Logout -->
+      <!-- User Info (for agency/admin) -->
       @php $currentUser = $this->getCurrentUserRole(); @endphp
       @if($currentUser && ($currentRole === 'agency' || $currentRole === 'admin'))
-        <div class="p-4 border-t border-neutral-200 dark:border-neutral-700 space-y-3">
+        <div class="px-4 py-2 border-t border-neutral-200 dark:border-neutral-700">
           <div x-show="sidebarOpen" x-transition class="text-sm">
             <div class="font-medium text-neutral-900 dark:text-neutral-100">{{ $currentUser->name }}</div>
             @if($currentUser->teams->count() > 0)
               <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ $currentUser->teams->pluck('name')->join(', ') }}</div>
             @endif
           </div>
-          
-          <!-- Logout -->
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition group w-full">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-              </svg>
-              <span x-show="sidebarOpen" x-transition class="font-medium text-left">Logout</span>
-            </button>
-          </form>
         </div>
       @endif
+
+      <!-- Logout Button (anchored to bottom) -->
+      <div class="mt-auto p-4 border-t border-neutral-200 dark:border-neutral-700">
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit" class="flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition group w-full">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+            </svg>
+            <span x-show="sidebarOpen" x-transition class="font-medium text-left">Logout</span>
+          </button>
+        </form>
+      </div>
     </div>
 
     <!-- Main Content -->

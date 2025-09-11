@@ -14,32 +14,39 @@ class TeamSeeder extends Seeder
      */
     public function run(): void
     {
-        $bukonutsTeam = Team::create([
-            'name' => 'Bukonuts',
+        // Create teams only if they don't already exist
+        $bukonutsTeam = Team::firstOrCreate([
+            'name' => 'Bukonuts'
+        ], [
             'description' => 'The Bukonuts team handles creative campaigns and brand strategy.',
         ]);
 
-        $kalamansiTeam = Team::create([
-            'name' => 'Kalamansi',
+        $kalamansiTeam = Team::firstOrCreate([
+            'name' => 'Kalamansi'
+        ], [
             'description' => 'The Kalamansi team focuses on digital marketing and social media management.',
         ]);
+
+        // Clear any existing team assignments to prevent duplicates
+        $bukonutsTeam->users()->detach();
+        $kalamansiTeam->users()->detach();
 
         // Assign Shaira to Bukonuts team
         $shairaUser = User::where('email', 'shaira@majormajor.marketing')->first();
         if ($shairaUser) {
-            $shairaUser->teams()->attach([$bukonutsTeam->id]);
+            $shairaUser->teams()->syncWithoutDetaching([$bukonutsTeam->id]);
         }
 
         // Assign Ariane to Kalamansi team
         $arianeUser = User::where('email', 'ariane@majormajor.marketing')->first();
         if ($arianeUser) {
-            $arianeUser->teams()->attach([$kalamansiTeam->id]);
+            $arianeUser->teams()->syncWithoutDetaching([$kalamansiTeam->id]);
         }
 
         // Assign admin user to both teams (admins can see all teams)
         $adminUser = User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->first();
         if ($adminUser) {
-            $adminUser->teams()->attach([$bukonutsTeam->id, $kalamansiTeam->id]);
+            $adminUser->teams()->syncWithoutDetaching([$bukonutsTeam->id, $kalamansiTeam->id]);
         }
     }
 }

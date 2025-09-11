@@ -33,6 +33,7 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/calendar', ContentCalendar::class)->name('calendar');
     Route::get('/calendar/{role}', ContentCalendar::class)->name('calendar.role')->where('role', 'client|agency|admin');
+    Route::get('/calendar/{role}/client/{clientId}', ContentCalendar::class)->name('calendar.client')->where(['role' => 'client|agency|admin', 'clientId' => '[0-9]+']);
     Route::get('/calendar/review/{date}', ContentReview::class)->name('calendar.review');
     Route::get('/content/add/{role}', \App\Livewire\AddContent::class)->name('content.add')->where('role', 'client|agency|admin');
 });

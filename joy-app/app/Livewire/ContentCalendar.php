@@ -19,19 +19,32 @@ class ContentCalendar extends Component
     public array $calendarData = [];
     public ?Client $client = null;
     public string $currentRole = 'client'; // For testing: client, agency, admin
+    public Collection $accessibleClients;
+    public ?int $selectedClientId = null;
 
-    public function mount($role = 'client')
+    public function mount($role = 'client', $clientId = null)
     {
         $this->currentMonth = Carbon::now()->startOfMonth();
         $this->currentRole = $role;
         
-        // For demo purposes, get the first accessible client
-        // In production, this would be determined by magic link token or authentication
+        // Load accessible clients based on role
         if ($role === 'agency' || $role === 'admin') {
             $currentUser = $this->getCurrentUserRole();
-            $this->client = $currentUser ? $currentUser->accessibleClients()->first() : Client::first();
+            $this->accessibleClients = $currentUser ? $currentUser->accessibleClients()->get() : collect();
+            
+            // If a specific client ID is provided, use that; otherwise use the first client
+            if ($clientId) {
+                $this->client = $this->accessibleClients->firstWhere('id', $clientId);
+                $this->selectedClientId = $clientId;
+            } else {
+                $this->client = $this->accessibleClients->first();
+                $this->selectedClientId = $this->client?->id;
+            }
         } else {
+            // For client role, show only their own workspace
+            $this->accessibleClients = collect([Client::first()]);
             $this->client = Client::first();
+            $this->selectedClientId = $this->client?->id;
         }
         
         $this->loadContentItems();

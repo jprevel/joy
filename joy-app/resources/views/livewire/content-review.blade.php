@@ -1,31 +1,5 @@
 
 <div>
-<!-- Role Testing Bar -->
-<div class="bg-yellow-100 dark:bg-yellow-900/30 border-b border-yellow-200 dark:border-yellow-800 px-4 py-2">
-  <div class="mx-auto max-w-4xl flex items-center justify-between">
-    <div class="flex items-center gap-2 text-sm">
-      <span class="font-medium text-yellow-800 dark:text-yellow-200">Testing Mode:</span>
-      <span class="px-2 py-1 bg-yellow-200 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 rounded text-xs font-bold uppercase">
-        {{ $currentRole }}
-      </span>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="text-xs text-yellow-700 dark:text-yellow-300">Switch Role:</span>
-      <button wire:click="switchRole('client')" 
-              class="px-2 py-1 text-xs rounded transition {{ $currentRole === 'client' ? 'bg-yellow-300 dark:bg-yellow-700 font-bold' : 'bg-yellow-200 dark:bg-yellow-800 hover:bg-yellow-300 dark:hover:bg-yellow-700' }} text-yellow-900 dark:text-yellow-100">
-        Client
-      </button>
-      <button wire:click="switchRole('agency')" 
-              class="px-2 py-1 text-xs rounded transition {{ $currentRole === 'agency' ? 'bg-yellow-300 dark:bg-yellow-700 font-bold' : 'bg-yellow-200 dark:bg-yellow-800 hover:bg-yellow-300 dark:hover:bg-yellow-700' }} text-yellow-900 dark:text-yellow-100">
-        Agency
-      </button>
-      <button wire:click="switchRole('admin')" 
-              class="px-2 py-1 text-xs rounded transition {{ $currentRole === 'admin' ? 'bg-yellow-300 dark:bg-yellow-700 font-bold' : 'bg-yellow-200 dark:bg-yellow-800 hover:bg-yellow-300 dark:hover:bg-yellow-700' }} text-yellow-900 dark:text-yellow-100">
-        Admin
-      </button>
-    </div>
-  </div>
-</div>
 
 <div class="min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100">
   <style>

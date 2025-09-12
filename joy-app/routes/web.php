@@ -41,6 +41,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/statusfaction', \App\Livewire\Statusfaction::class)
         ->name('statusfaction')
         ->middleware('can:access statusfaction');
+    Route::get('/statusfaction/{role}', \App\Livewire\Statusfaction::class)
+        ->name('statusfaction.role')
+        ->where('role', 'client|agency|admin')
+        ->middleware('can:access statusfaction');
 });
 
 Route::get('/debug', function () {

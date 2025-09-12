@@ -11,6 +11,7 @@ class Statusfaction extends Component
 {
     public $selectedClient = null;
     public $showForm = false;
+    public $currentRole = 'admin';
     
     #[Rule('required|string')]
     public $status_notes = '';
@@ -20,6 +21,22 @@ class Statusfaction extends Component
     
     #[Rule('required|integer|min:1|max:10')]
     public $team_health = 5;
+
+    public function mount($role = null)
+    {
+        // Default to appropriate role based on user's permissions
+        if (!$role) {
+            if (auth()->user()->hasRole('admin')) {
+                $role = 'admin';
+            } elseif (auth()->user()->hasRole('Account Manager')) {
+                $role = 'agency';
+            } else {
+                $role = 'admin'; // fallback
+            }
+        }
+        
+        $this->currentRole = $role;
+    }
 
     public function selectClient($clientId)
     {

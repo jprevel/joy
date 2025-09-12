@@ -7,6 +7,7 @@
   <title>Statusfaction - Joy</title>
   <script src="https://cdn.tailwindcss.com"></script>
   @vite(['resources/css/app.css', 'resources/js/app.js'])
+  @livewireStyles
   
   <style>
     .slider {
@@ -74,7 +75,7 @@
           </div>
           <div class="flex items-center gap-4">
             <span class="text-sm text-neutral-600 dark:text-neutral-400">{{ auth()->user()->name }}</span>
-            <a href="/calendar" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+            <a href="{{ route('calendar.role', $currentRole) }}" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
               ← Back to Calendar
             </a>
           </div>
@@ -257,6 +258,8 @@
       @endif
     </main>
   </div>
+  
+  @livewireScripts
 </body>
 </html>
 </div>

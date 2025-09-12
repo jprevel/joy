@@ -21,14 +21,18 @@ class RoleForm
                     ->disabled(fn ($record) => $record && $record->name === 'admin'),
                 Hidden::make('guard_name')
                     ->default('web'),
-                CheckboxList::make('permissions')
-                    ->relationship('permissions', 'name')
+                CheckboxList::make('permission_ids')
+                    ->label('Permissions')
+                    ->options(\Spatie\Permission\Models\Permission::pluck('name', 'id'))
                     ->columns(2)
                     ->searchable()
                     ->bulkToggleable()
                     ->gridDirection('row')
                     ->columnSpanFull()
-                    ->disabled(fn ($record) => $record && $record->name === 'admin'),
+                    ->disabled(fn ($record) => $record && $record->name === 'admin')
+                    ->default(function ($record) {
+                        return $record ? $record->permissions->pluck('id')->toArray() : [];
+                    }),
             ]);
     }
 }

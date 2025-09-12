@@ -36,6 +36,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/calendar/{role}/client/{clientId}', ContentCalendar::class)->name('calendar.client')->where(['role' => 'client|agency|admin', 'clientId' => '[0-9]+']);
     Route::get('/calendar/review/{date}', ContentReview::class)->name('calendar.review');
     Route::get('/content/add/{role}', \App\Livewire\AddContent::class)->name('content.add')->where('role', 'client|agency|admin');
+    
+    // Statusfaction - Weekly status updates for Account Managers and Admins
+    Route::get('/statusfaction', \App\Livewire\Statusfaction::class)
+        ->name('statusfaction')
+        ->middleware('can:access statusfaction');
 });
 
 Route::get('/debug', function () {

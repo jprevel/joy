@@ -38,4 +38,9 @@ class Client extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function statusUpdates(): HasMany
+    {
+        return $this->hasMany(ClientStatusUpdate::class);
+    }
 }

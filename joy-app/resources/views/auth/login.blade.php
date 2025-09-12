@@ -205,7 +205,6 @@
           <img src="{{ asset('MM_logo_200px.png') }}" alt="MajorMajor">
           <h1>Joy</h1>
         </div>
-        <p class="subtitle">Welcome back to your content calendar</p>
       </div>
 
       <!-- Login card -->

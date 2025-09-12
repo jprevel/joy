@@ -14,12 +14,12 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-// Root redirect to login if not authenticated, otherwise to calendar
+// Root redirect to login if not authenticated, otherwise to appropriate panel
 Route::get('/', function () {
     if (auth()->check()) {
         $user = auth()->user();
         if ($user->hasRole('admin')) {
-            return redirect('/calendar/admin');
+            return redirect('/admin');
         } elseif ($user->hasRole('agency')) {
             return redirect('/calendar/agency');
         } else {

@@ -19,47 +19,6 @@
 </head>
 <body class="with-stripe h-full bg-neutral-50 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100 selection:bg-indigo-200/60 selection:text-neutral-900">
   
-  <!-- Role Testing Bar -->
-  <div class="bg-yellow-100 dark:bg-yellow-900/30 border-b border-yellow-200 dark:border-yellow-800 px-4 py-2">
-    <div class="mx-auto max-w-5xl flex items-center justify-between">
-      <div class="flex items-center gap-2 text-sm">
-        <span class="font-medium text-yellow-800 dark:text-yellow-200">Testing Mode:</span>
-        <span class="px-2 py-1 bg-yellow-200 dark:bg-yellow-800 text-yellow-900 dark:text-yellow-100 rounded text-xs font-bold uppercase">
-          {{ $currentRole }}
-        </span>
-        @php $currentUser = $this->getCurrentUserRole(); @endphp
-        @if($currentUser)
-          <span class="text-xs text-yellow-700 dark:text-yellow-300">
-            ({{ $currentUser->name }})
-          </span>
-          <div class="text-xs text-yellow-600 dark:text-yellow-400">
-            Permissions: 
-            @if($this->hasPermission('view calendar')) ✓ View @endif
-            @if($this->hasPermission('edit content')) ✓ Edit @endif
-            @if($this->hasPermission('approve content')) ✓ Approve @endif
-            @if($this->hasPermission('manage clients')) ✓ Manage @endif
-            @if($this->hasPermission('manage system')) ✓ System @endif
-          </div>
-        @endif
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="text-xs text-yellow-700 dark:text-yellow-300">Switch Role:</span>
-        <a href="{{ route('calendar.role', 'client') }}" 
-           class="px-2 py-1 text-xs rounded transition {{ $currentRole === 'client' ? 'bg-yellow-300 dark:bg-yellow-700 font-bold' : 'bg-yellow-200 dark:bg-yellow-800 hover:bg-yellow-300 dark:hover:bg-yellow-700' }} text-yellow-900 dark:text-yellow-100">
-          Client
-        </a>
-        <a href="{{ route('calendar.role', 'agency') }}" 
-           class="px-2 py-1 text-xs rounded transition {{ $currentRole === 'agency' ? 'bg-yellow-300 dark:bg-yellow-700 font-bold' : 'bg-yellow-200 dark:bg-yellow-800 hover:bg-yellow-300 dark:hover:bg-yellow-700' }} text-yellow-900 dark:text-yellow-100">
-          Agency
-        </a>
-        <a href="{{ route('calendar.role', 'admin') }}" 
-           class="px-2 py-1 text-xs rounded transition {{ $currentRole === 'admin' ? 'bg-yellow-300 dark:bg-yellow-700 font-bold' : 'bg-yellow-200 dark:bg-yellow-800 hover:bg-yellow-300 dark:hover:bg-yellow-700' }} text-yellow-900 dark:text-yellow-100">
-          Admin
-        </a>
-      </div>
-    </div>
-  </div>
-  
   <!-- Sidebar -->
   <div x-data="{ sidebarOpen: true }" class="flex h-screen bg-neutral-50 dark:bg-neutral-900">
     <!-- Sidebar -->

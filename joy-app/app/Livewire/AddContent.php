@@ -3,9 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Client;
-use App\Models\ContentItem;
-use App\Models\Status;
+use App\Services\ContentItemService;
 use App\Traits\HasRoleManagement;
+use App\Helpers\PlatformHelper;
 use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -82,39 +82,24 @@ class AddContent extends Component
 
     public function save()
     {
-        // Validate content items
-        $this->validateContentItems();
-
-        // Check permission
+        // Check permission first
         if (!$this->hasPermission('edit content')) {
             session()->flash('error', 'You do not have permission to create content.');
             return;
         }
 
+        // Validate content items using the service
+        $contentItemService = app(ContentItemService::class);
+        $rules = $contentItemService->validateContentItems($this->contentItems);
+        $this->validate($rules);
+
         try {
-            $defaultStatus = Status::where('name', 'Draft')->first();
-            $createdCount = 0;
-            
-            foreach ($this->contentItems as $item) {
-                $contentItem = ContentItem::create([
-                    'client_id' => $this->client_id,
-                    'title' => $item['title'],
-                    'copy' => $item['copy'] ?? '',
-                    'platform' => $item['platform'],
-                    'scheduled_at' => Carbon::parse($item['scheduled_at'])->startOfDay(),
-                    'status_id' => $defaultStatus?->id,
-                    'status' => $defaultStatus?->name ?? 'Draft',
-                    'owner_id' => 1,
-                ]);
+            $createdItems = $contentItemService->createContentItems(
+                $this->contentItems,
+                $this->client_id
+            );
 
-                // Handle image upload if present
-                if ($item['image']) {
-                    $contentItem->storeImage($item['image']);
-                }
-                
-                $createdCount++;
-            }
-
+            $createdCount = count($createdItems);
             session()->flash('success', "Successfully created {$createdCount} content item(s)!");
             return redirect()->route('calendar.role', $this->currentRole);
             
@@ -123,20 +108,6 @@ class AddContent extends Component
         }
     }
     
-    private function validateContentItems()
-    {
-        $rules = [];
-        $platforms = ['Facebook', 'Instagram', 'LinkedIn', 'Twitter', 'Blog'];
-        
-        foreach ($this->contentItems as $index => $item) {
-            $rules["contentItems.{$index}.title"] = 'required|string|max:255';
-            $rules["contentItems.{$index}.platform"] = 'required|in:' . implode(',', $platforms);
-            $rules["contentItems.{$index}.scheduled_at"] = 'required|date_format:Y-m-d';
-            $rules["contentItems.{$index}.image"] = 'nullable|image|max:10240';
-        }
-        
-        $this->validate($rules);
-    }
 
     public function cancel()
     {
@@ -149,7 +120,7 @@ class AddContent extends Component
         $currentUser = $this->getCurrentUserRole();
         $clients = $currentUser ? $currentUser->accessibleClients()->get() : Client::all();
         
-        $platforms = ['Facebook', 'Instagram', 'LinkedIn', 'Twitter', 'Blog'];
+        $platforms = PlatformHelper::getAllPlatforms();
         
         return view('livewire.add-content', [
             'clients' => $clients,

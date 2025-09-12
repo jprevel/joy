@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class AuditLogData
 {
+    /**
+     * @param array<string, mixed> $oldValues
+     * @param array<string, mixed> $newValues
+     * @param array<string> $tags
+     * @param array<string, mixed>|null $requestData
+     * @param array<string, mixed>|null $responseData
+     */
     public function __construct(
         public string $action,
         public ?Model $auditable = null,
@@ -21,6 +28,9 @@ class AuditLogData
         public ?array $responseData = null
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(): array
     {
         return [
@@ -69,12 +79,19 @@ class AuditLogData
         return $this;
     }
     
+    /**
+     * @param array<string> $tags
+     */
     public function withTags(array $tags): self
     {
         $this->tags = $tags;
         return $this;
     }
     
+    /**
+     * @param array<string, mixed> $oldValues
+     * @param array<string, mixed> $newValues
+     */
     public function withChanges(array $oldValues, array $newValues): self
     {
         $this->oldValues = $oldValues;
@@ -82,12 +99,18 @@ class AuditLogData
         return $this;
     }
     
+    /**
+     * @param array<string, mixed> $requestData
+     */
     public function withRequestData(array $requestData): self
     {
         $this->requestData = $requestData;
         return $this;
     }
     
+    /**
+     * @param array<string, mixed> $responseData
+     */
     public function withResponseData(array $responseData): self
     {
         $this->responseData = $responseData;

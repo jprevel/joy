@@ -62,30 +62,63 @@ class ContentCalendar extends Component
 
     public function buildCalendarData()
     {
-        $startDate = $this->currentMonth->copy()->startOfWeek();
-        $endDate = $this->currentMonth->copy()->endOfMonth()->endOfWeek();
-        
-        $this->calendarData = [];
+        $dateRange = $this->getCalendarDateRange();
+        $this->calendarData = $this->generateWeekRows($dateRange['start']);
+    }
+
+    private function getCalendarDateRange(): array
+    {
+        return [
+            'start' => $this->currentMonth->copy()->startOfWeek(),
+            'end' => $this->currentMonth->copy()->endOfMonth()->endOfWeek(),
+        ];
+    }
+
+    private function generateWeekRows(Carbon $startDate): array
+    {
+        $calendarData = [];
         
         // Build 6 weeks of calendar data
         for ($week = 0; $week < 6; $week++) {
-            $this->calendarData[$week] = [];
-            
-            for ($day = 0; $day < 7; $day++) {
-                $currentDate = $startDate->copy()->addDays($week * 7 + $day);
-                
-                $dayContentItems = $this->contentItems->filter(function ($contentItem) use ($currentDate) {
-                    return $contentItem->scheduled_at && $contentItem->scheduled_at->isSameDay($currentDate);
-                });
-                
-                $this->calendarData[$week][$day] = [
-                    'date' => $currentDate,
-                    'isCurrentMonth' => $currentDate->month === $this->currentMonth->month,
-                    'isToday' => $currentDate->isToday(),
-                    'contentItems' => $dayContentItems->values()->all()
-                ];
-            }
+            $calendarData[$week] = $this->generateWeekDays($startDate, $week);
         }
+        
+        return $calendarData;
+    }
+
+    private function generateWeekDays(Carbon $startDate, int $week): array
+    {
+        $weekData = [];
+        
+        for ($day = 0; $day < 7; $day++) {
+            $currentDate = $startDate->copy()->addDays($week * 7 + $day);
+            $weekData[$day] = $this->generateDayData($currentDate);
+        }
+        
+        return $weekData;
+    }
+
+    private function generateDayData(Carbon $date): array
+    {
+        return [
+            'date' => $date,
+            'isCurrentMonth' => $this->isDateInCurrentMonth($date),
+            'isToday' => $date->isToday(),
+            'contentItems' => $this->getContentItemsForDate($date)
+        ];
+    }
+
+    private function isDateInCurrentMonth(Carbon $date): bool
+    {
+        return $date->month === $this->currentMonth->month;
+    }
+
+    private function getContentItemsForDate(Carbon $date): array
+    {
+        return $this->contentItems
+            ->filter(fn($item) => $item->scheduled_at && $item->scheduled_at->isSameDay($date))
+            ->values()
+            ->all();
     }
 
     public function switchView(string $view)

@@ -53,7 +53,7 @@ class AuditLog extends Model
         return $query->where('client_id', $clientId);
     }
 
-    public function scopeForUser(Builder $query, int $userId, string $userType = null): Builder
+    public function scopeForUser(Builder $query, int $userId, ?string $userType = null): Builder
     {
         $query->where('user_id', $userId);
         
@@ -69,7 +69,7 @@ class AuditLog extends Model
         return $query->where('action', $action);
     }
 
-    public function scopeForModel(Builder $query, string $modelType, int $modelId = null): Builder
+    public function scopeForModel(Builder $query, string $modelType, ?int $modelId = null): Builder
     {
         $query->where('auditable_type', $modelType);
         
@@ -95,76 +95,46 @@ class AuditLog extends Model
         return $query->where('expires_at', '<=', now());
     }
 
-    // Helper methods
+    // Helper methods - delegated to services
     public function getUserDisplayName(): string
     {
-        if ($this->user_type === 'magic_link') {
-            return "Client Access (ID: {$this->user_id})";
-        }
-        
-        return "User ID: {$this->user_id}";
+        $formatter = app(\App\Services\AuditLogFormatter::class);
+        return $formatter->getUserDisplayName($this);
     }
 
     public function getActionDisplayName(): string
     {
-        return match($this->action) {
-            'created' => 'Created',
-            'updated' => 'Updated',
-            'deleted' => 'Deleted',
-            'viewed' => 'Viewed',
-            'approved' => 'Approved',
-            'rejected' => 'Rejected',
-            'commented' => 'Added Comment',
-            'login' => 'Logged In',
-            'logout' => 'Logged Out',
-            'magic_link_accessed' => 'Accessed via Magic Link',
-            'trello_sync' => 'Synced to Trello',
-            'export' => 'Exported Data',
-            default => ucfirst($this->action)
-        };
+        $formatter = app(\App\Services\AuditLogFormatter::class);
+        return $formatter->getActionDisplayName($this);
     }
 
     public function getSeverityColor(): string
     {
-        return match($this->severity) {
-            'critical' => 'text-red-600 bg-red-100',
-            'error' => 'text-red-600 bg-red-50',
-            'warning' => 'text-yellow-600 bg-yellow-100',
-            'info' => 'text-blue-600 bg-blue-50',
-            'debug' => 'text-gray-600 bg-gray-100',
-            default => 'text-gray-600 bg-gray-50'
-        };
+        $formatter = app(\App\Services\AuditLogFormatter::class);
+        return $formatter->getSeverityColor($this);
     }
 
     public function hasAuditChanges(): bool
     {
-        return !empty($this->old_values) || !empty($this->new_values);
+        $analyzer = app(\App\Services\AuditLogAnalyzer::class);
+        return $analyzer->hasAuditChanges($this);
     }
 
     public function getChangedFields(): array
     {
-        if (!$this->hasAuditChanges()) {
-            return [];
-        }
-
-        $oldValues = $this->old_values ?? [];
-        $newValues = $this->new_values ?? [];
-        
-        return array_unique(array_merge(array_keys($oldValues), array_keys($newValues)));
+        $analyzer = app(\App\Services\AuditLogAnalyzer::class);
+        return $analyzer->getChangedFields($this);
     }
 
     public static function log(array $data): self
     {
-        // Set default expires_at to 90 days from now if not specified
-        if (!isset($data['expires_at'])) {
-            $data['expires_at'] = now()->addDays(90);
-        }
-
-        return self::create($data);
+        $creator = app(\App\Services\AuditLogCreator::class);
+        return $creator->log($data);
     }
 
     public static function cleanupExpired(): int
     {
-        return self::expired()->delete();
+        $cleanup = app(\App\Services\AuditLogCleanup::class);
+        return $cleanup->cleanupExpired();
     }
 }

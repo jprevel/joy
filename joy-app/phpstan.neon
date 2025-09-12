@@ -1,0 +1,20 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+        - routes/
+
+    # Level of rule strictness (0-9)
+    level: 6
+
+    ignoreErrors:
+        # Ignore Laravel specific patterns
+        - "#Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder#"
+        - "#Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Collection#"
+        - "#Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model#"
+        - "#Parameter .* of method .* has no type specified#"
+        - "#Method .* has parameter .* with no type specified#"
+        - "#has no value type specified in iterable type array#"
+        

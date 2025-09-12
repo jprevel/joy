@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Services\RoleDetectionService;
 
 trait HasRoleManagement
 {
@@ -12,19 +12,8 @@ trait HasRoleManagement
      */
     public function getCurrentUserRole(): ?User
     {
-        // If user is authenticated, return the actual authenticated user
-        if (Auth::check()) {
-            return Auth::user();
-        }
-        
-        // Fallback to demo users for testing (when not authenticated)
-        $demoUsers = [
-            'client' => User::whereHas('roles', fn($q) => $q->where('name', 'client'))->first(),
-            'agency' => User::whereHas('roles', fn($q) => $q->where('name', 'agency'))->first(),
-            'admin' => User::whereHas('roles', fn($q) => $q->where('name', 'admin'))->first(),
-        ];
-        
-        return $demoUsers[$this->currentRole] ?? null;
+        $roleService = app(RoleDetectionService::class);
+        return $roleService->getCurrentUserRole($this->currentRole ?? null);
     }
 
     /**
@@ -32,7 +21,7 @@ trait HasRoleManagement
      */
     public function hasPermission(string $permission): bool
     {
-        $user = $this->getCurrentUserRole();
-        return $user?->can($permission) ?? false;
+        $roleService = app(RoleDetectionService::class);
+        return $roleService->hasPermission($permission, $this->currentRole ?? null);
     }
 }

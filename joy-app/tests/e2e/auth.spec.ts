@@ -60,7 +60,7 @@ test.describe('Authentication - Login and Logout', () => {
     test('should logout admin user and redirect to login', async ({ page }) => {
       // Login as admin
       await page.goto('http://localhost:8000/login');
-      await page.fill('#email', 'admin@majormajor.marketing');
+      await page.fill('#email', 'admin@example.com');
       await page.fill('#password', 'password');
       await page.click('button[type="submit"]');
       await page.waitForLoadState('networkidle');

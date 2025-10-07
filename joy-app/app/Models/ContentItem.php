@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,15 +11,16 @@ use App\Helpers\PlatformHelper;
 
 class ContentItem extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'client_id',
         'title',
-        'notes',
-        'owner_id',
+        'description', // Updated from notes to match spec
+        'user_id', // Updated from owner_id to match spec
         'platform',
         'copy',
         'media_url', // Keep for backward compatibility during transition
-        'image_path',
+        'media_path', // Updated from image_path to match spec
         'image_filename',
         'image_mime_type',
         'image_size',
@@ -39,7 +41,12 @@ class ContentItem extends Model
 
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function comments(): HasMany
@@ -89,16 +96,16 @@ class ContentItem extends Model
     public function getImageUrlAttribute(): ?string
     {
         // Use local image if available, fallback to media_url for backward compatibility
-        if ($this->image_path) {
-            return asset('storage/' . $this->image_path);
+        if ($this->media_path) {
+            return asset('storage/' . $this->media_path);
         }
-        
+
         return $this->media_url;
     }
 
     public function hasImage(): bool
     {
-        return !empty($this->image_path) || !empty($this->media_url);
+        return !empty($this->media_path) || !empty($this->media_url);
     }
 
     public function getImageSizeFormattedAttribute(): string
@@ -130,36 +137,36 @@ class ContentItem extends Model
 
         // Store new image
         $path = $file->store($directory, 'public');
-        
+
         if ($path) {
             $this->update([
-                'image_path' => $path,
+                'media_path' => $path, // Updated to match spec
                 'image_filename' => $file->getClientOriginalName(),
                 'image_mime_type' => $file->getMimeType(),
                 'image_size' => $file->getSize(),
             ]);
-            
+
             return true;
         }
-        
+
         return false;
     }
 
     public function deleteImage(): bool
     {
-        if ($this->image_path && \Storage::disk('public')->exists($this->image_path)) {
-            \Storage::disk('public')->delete($this->image_path);
-            
+        if ($this->media_path && \Storage::disk('public')->exists($this->media_path)) {
+            \Storage::disk('public')->delete($this->media_path);
+
             $this->update([
-                'image_path' => null,
+                'media_path' => null,
                 'image_filename' => null,
                 'image_mime_type' => null,
                 'image_size' => null,
             ]);
-            
+
             return true;
         }
-        
+
         return false;
     }
 }

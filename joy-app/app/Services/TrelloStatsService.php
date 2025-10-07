@@ -20,9 +20,10 @@ class TrelloStatsService
             $q->where('client_id', $client->id);
         })->count();
 
-        $syncedComments = Comment::whereHas('contentItem', function ($q) use ($client) {
+        // Comment syncing is tracked via TrelloCard records where comment_id is set
+        $syncedComments = TrelloCard::whereHas('contentItem', function ($q) use ($client) {
             $q->where('client_id', $client->id);
-        })->whereHas('trelloCard')->count();
+        })->whereNotNull('comment_id')->count();
 
         return [
             'client_id' => $client->id,
@@ -79,8 +80,6 @@ class TrelloStatsService
 
         if ($clientId) {
             $query->whereHas('contentItem', function ($q) use ($clientId) {
-                $q->where('client_id', $clientId);
-            })->orWhereHas('comment.contentItem', function ($q) use ($clientId) {
                 $q->where('client_id', $clientId);
             });
         }

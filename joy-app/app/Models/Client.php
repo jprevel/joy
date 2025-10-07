@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Client extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'name',
         'description',
         'team_id',
+        'trello_board_id',
+        'trello_list_id',
     ];
 
     public function contentItems(): HasMany
@@ -42,5 +46,13 @@ class Client extends Model
     public function statusUpdates(): HasMany
     {
         return $this->hasMany(ClientStatusUpdate::class);
+    }
+
+    /**
+     * Check if client has Trello integration configured.
+     */
+    public function hasTrelloIntegration(): bool
+    {
+        return !empty($this->trello_board_id) && !empty($this->trello_list_id);
     }
 }

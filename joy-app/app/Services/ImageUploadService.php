@@ -22,13 +22,25 @@ class ImageUploadService
             throw new \InvalidArgumentException('Invalid image file provided');
         }
 
+        // Delete old image if exists
+        $this->deleteContentItemImage($contentItem);
+
         $filename = $this->generateUniqueFilename($file);
         $path = $file->storeAs(self::UPLOAD_PATH, $filename, 'public');
-        
-        // Update the content item with the image path
-        $contentItem->update(['image_path' => $path]);
-        
-        return $path;
+
+        if ($path) {
+            // Update the content item with complete image metadata
+            $contentItem->update([
+                'media_path' => $path, // Updated to match spec
+                'image_filename' => $file->getClientOriginalName(),
+                'image_mime_type' => $file->getMimeType(),
+                'image_size' => $file->getSize(),
+            ]);
+
+            return $path;
+        }
+
+        return null;
     }
 
     /**
@@ -36,16 +48,21 @@ class ImageUploadService
      */
     public function deleteContentItemImage(ContentItem $contentItem): bool
     {
-        if (!$contentItem->image_path) {
+        if (!$contentItem->media_path) {
             return true;
         }
 
-        $deleted = Storage::disk('public')->delete($contentItem->image_path);
-        
+        $deleted = Storage::disk('public')->delete($contentItem->media_path);
+
         if ($deleted) {
-            $contentItem->update(['image_path' => null]);
+            $contentItem->update([
+                'media_path' => null,
+                'image_filename' => null,
+                'image_mime_type' => null,
+                'image_size' => null,
+            ]);
         }
-        
+
         return $deleted;
     }
 

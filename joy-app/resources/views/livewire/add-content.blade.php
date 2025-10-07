@@ -4,11 +4,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Add Content - Joy Content Calendar</title>
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- MajorMajor Brand Styles -->
   @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <!-- Livewire Styles -->
+  @livewireStyles
 </head>
 <body class="with-stripe h-full bg-neutral-50 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100 selection:bg-indigo-200/60 selection:text-neutral-900">
   
@@ -109,7 +112,7 @@
         </div>
       @else
         <!-- Step 2: Content Items Form -->
-        <form wire:submit="save" class="space-y-6">
+        <form wire:submit="save" enctype="multipart/form-data" class="space-y-6">
           @foreach($contentItems as $index => $item)
             <div class="bg-white dark:bg-neutral-800 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6">
               <div class="flex items-center justify-between mb-4">
@@ -134,7 +137,7 @@
                           class="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md shadow-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                     <option value="">Select a platform...</option>
                     @foreach($platforms as $platform)
-                      <option value="{{ $platform }}">{{ $platform }}</option>
+                      <option value="{{ $platform }}">{{ config("platforms.config.{$platform}.display_name", ucfirst($platform)) }}</option>
                     @endforeach
                   </select>
                   @error("contentItems.{$index}.platform") <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p> @enderror
@@ -180,10 +183,19 @@
                 </label>
                 <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 dark:border-neutral-600 border-dashed rounded-md hover:border-indigo-400 transition">
                   <div class="space-y-1 text-center">
-                    @if ($item['image'])
+                    @if (isset($item['image']) && $item['image'])
                       <div class="mb-4">
-                        <img src="{{ $item['image']->temporaryUrl() }}" alt="Preview" class="mx-auto h-32 w-auto rounded-md">
-                        <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{{ $item['image']->getClientOriginalName() }}</p>
+                        @try
+                          <img src="{{ $item['image']->temporaryUrl() }}" alt="Preview" class="mx-auto h-32 w-auto rounded-md">
+                          <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{{ $item['image']->getClientOriginalName() }}</p>
+                        @catch(\Exception $e)
+                          <div class="text-center text-red-600 dark:text-red-400">
+                            <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                            <p class="mt-2 text-sm">Error loading image preview</p>
+                          </div>
+                        @endtry
                       </div>
                     @else
                       <svg class="mx-auto h-12 w-12 text-neutral-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
@@ -200,7 +212,7 @@
                       @endif
                     </div>
                     <p class="text-xs text-neutral-500 dark:text-neutral-400">
-                      PNG, JPG, GIF up to 10MB
+                      PNG, JPG, GIF up to 1MB
                     </p>
                   </div>
                 </div>
@@ -250,6 +262,9 @@
       <span class="text-neutral-900 dark:text-neutral-100">Creating content...</span>
     </div>
   </div>
+
+  <!-- Livewire Scripts -->
+  @livewireScripts
 </body>
 </html>
 </div>

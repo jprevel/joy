@@ -1,0 +1,519 @@
+<?xml version="1.0"?>
+<testSuite xmlns="https://xml.phpunit.de/testSuite">
+ <tests>
+  <testClass name="Tests\Contract\AuditServiceContractTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Contract/AuditServiceContractTest.php">
+   <testMethod id="Tests\Contract\AuditServiceContractTest::it_should_define_audit_logging_interface" name="it_should_define_audit_logging_interface"/>
+   <testMethod id="Tests\Contract\AuditServiceContractTest::it_should_handle_data_retention_contracts" name="it_should_handle_data_retention_contracts"/>
+   <testMethod id="Tests\Contract\AuditServiceContractTest::it_should_provide_search_and_analysis_contract" name="it_should_provide_search_and_analysis_contract"/>
+  </testClass>
+  <testClass name="Tests\Contract\ContentItemServiceContractTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Contract/ContentItemServiceContractTest.php">
+   <testMethod id="Tests\Contract\ContentItemServiceContractTest::it_should_define_content_creation_interface" name="it_should_define_content_creation_interface"/>
+   <testMethod id="Tests\Contract\ContentItemServiceContractTest::it_should_validate_platform_enum_values" name="it_should_validate_platform_enum_values"/>
+   <testMethod id="Tests\Contract\ContentItemServiceContractTest::it_should_handle_image_upload_contracts" name="it_should_handle_image_upload_contracts"/>
+   <testMethod id="Tests\Contract\ContentItemServiceContractTest::it_should_respect_status_workflow_contracts" name="it_should_respect_status_workflow_contracts"/>
+  </testClass>
+  <testClass name="Tests\Contract\MagicLinkServiceContractTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Contract/MagicLinkServiceContractTest.php">
+   <testMethod id="Tests\Contract\MagicLinkServiceContractTest::it_should_define_secure_token_generation_contract" name="it_should_define_secure_token_generation_contract"/>
+   <testMethod id="Tests\Contract\MagicLinkServiceContractTest::it_should_validate_expiration_handling_contract" name="it_should_validate_expiration_handling_contract"/>
+   <testMethod id="Tests\Contract\MagicLinkServiceContractTest::it_should_enforce_access_control_contracts" name="it_should_enforce_access_control_contracts"/>
+   <testMethod id="Tests\Contract\MagicLinkServiceContractTest::it_should_audit_access_attempts_contract" name="it_should_audit_access_attempts_contract"/>
+  </testClass>
+  <testClass name="Tests\Contract\TrelloIntegrationContractTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Contract/TrelloIntegrationContractTest.php">
+   <testMethod id="Tests\Contract\TrelloIntegrationContractTest::it_should_define_card_synchronization_contract" name="it_should_define_card_synchronization_contract"/>
+   <testMethod id="Tests\Contract\TrelloIntegrationContractTest::it_should_handle_webhook_processing_contract" name="it_should_handle_webhook_processing_contract"/>
+   <testMethod id="Tests\Contract\TrelloIntegrationContractTest::it_should_manage_api_rate_limiting_contract" name="it_should_manage_api_rate_limiting_contract"/>
+  </testClass>
+  <testClass name="Tests\Integration\ContentCreationWorkflowIntegrationTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Integration/ContentCreationWorkflowIntegrationTest.php">
+   <testMethod id="Tests\Integration\ContentCreationWorkflowIntegrationTest::it_creates_content_with_real_database_and_file_storage" name="it_creates_content_with_real_database_and_file_storage"/>
+   <testMethod id="Tests\Integration\ContentCreationWorkflowIntegrationTest::it_handles_image_uploads_with_real_filesystem" name="it_handles_image_uploads_with_real_filesystem"/>
+   <testMethod id="Tests\Integration\ContentCreationWorkflowIntegrationTest::it_integrates_with_audit_logging_system" name="it_integrates_with_audit_logging_system"/>
+   <testMethod id="Tests\Integration\ContentCreationWorkflowIntegrationTest::it_validates_platform_constraints_with_database" name="it_validates_platform_constraints_with_database"/>
+  </testClass>
+  <testClass name="Tests\Integration\MagicLinkSecurityIntegrationTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Integration/MagicLinkSecurityIntegrationTest.php">
+   <testMethod id="Tests\Integration\MagicLinkSecurityIntegrationTest::it_generates_secure_tokens_with_real_database" name="it_generates_secure_tokens_with_real_database"/>
+   <testMethod id="Tests\Integration\MagicLinkSecurityIntegrationTest::it_validates_access_with_real_session_handling" name="it_validates_access_with_real_session_handling"/>
+   <testMethod id="Tests\Integration\MagicLinkSecurityIntegrationTest::it_handles_token_expiration_with_database_cleanup" name="it_handles_token_expiration_with_database_cleanup"/>
+   <testMethod id="Tests\Integration\MagicLinkSecurityIntegrationTest::it_integrates_with_audit_system_for_security_events" name="it_integrates_with_audit_system_for_security_events"/>
+  </testClass>
+  <testClass name="Tests\Integration\TrelloSynchronizationIntegrationTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Integration/TrelloSynchronizationIntegrationTest.php">
+   <testMethod id="Tests\Integration\TrelloSynchronizationIntegrationTest::it_synchronizes_content_items_with_trello_cards" name="it_synchronizes_content_items_with_trello_cards"/>
+   <testMethod id="Tests\Integration\TrelloSynchronizationIntegrationTest::it_handles_webhook_events_with_database_updates" name="it_handles_webhook_events_with_database_updates"/>
+   <testMethod id="Tests\Integration\TrelloSynchronizationIntegrationTest::it_manages_api_rate_limits_with_real_timing" name="it_manages_api_rate_limits_with_real_timing"/>
+   <testMethod id="Tests\Integration\TrelloSynchronizationIntegrationTest::it_handles_api_failures_with_retry_logic" name="it_handles_api_failures_with_retry_logic"/>
+  </testClass>
+  <testClass name="Tests\Integration\UserRoleManagementIntegrationTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Integration/UserRoleManagementIntegrationTest.php">
+   <testMethod id="Tests\Integration\UserRoleManagementIntegrationTest::it_manages_admin_permissions_with_real_database" name="it_manages_admin_permissions_with_real_database"/>
+   <testMethod id="Tests\Integration\UserRoleManagementIntegrationTest::it_handles_agency_user_access_controls" name="it_handles_agency_user_access_controls"/>
+   <testMethod id="Tests\Integration\UserRoleManagementIntegrationTest::it_restricts_client_access_to_own_content" name="it_restricts_client_access_to_own_content"/>
+   <testMethod id="Tests\Integration\UserRoleManagementIntegrationTest::it_integrates_role_detection_with_navigation" name="it_integrates_role_detection_with_navigation"/>
+  </testClass>
+  <testClass name="Tests\Feature\AdminContentManagementE2ETest" file="/Users/jprevel/Documents/joy/joy-app/tests/Feature/AdminContentManagementE2ETest.php">
+   <testMethod id="Tests\Feature\AdminContentManagementE2ETest::admin_can_create_content_for_multiple_clients" name="admin_can_create_content_for_multiple_clients"/>
+   <testMethod id="Tests\Feature\AdminContentManagementE2ETest::admin_can_manage_content_approval_workflow" name="admin_can_manage_content_approval_workflow"/>
+   <testMethod id="Tests\Feature\AdminContentManagementE2ETest::admin_can_view_audit_logs_and_analytics" name="admin_can_view_audit_logs_and_analytics"/>
+   <testMethod id="Tests\Feature\AdminContentManagementE2ETest::admin_can_manage_user_roles_and_permissions" name="admin_can_manage_user_roles_and_permissions"/>
+  </testClass>
+  <testClass name="Tests\Feature\AgencyContentWorkflowE2ETest" file="/Users/jprevel/Documents/joy/joy-app/tests/Feature/AgencyContentWorkflowE2ETest.php">
+   <testMethod id="Tests\Feature\AgencyContentWorkflowE2ETest::agency_user_can_create_content_for_assigned_clients" name="agency_user_can_create_content_for_assigned_clients"/>
+   <testMethod id="Tests\Feature\AgencyContentWorkflowE2ETest::agency_user_can_upload_images_and_schedule_content" name="agency_user_can_upload_images_and_schedule_content"/>
+   <testMethod id="Tests\Feature\AgencyContentWorkflowE2ETest::agency_user_can_view_calendar_and_manage_deadlines" name="agency_user_can_view_calendar_and_manage_deadlines"/>
+   <testMethod id="Tests\Feature\AgencyContentWorkflowE2ETest::agency_user_can_generate_magic_links_for_clients" name="agency_user_can_generate_magic_links_for_clients"/>
+  </testClass>
+  <testClass name="Tests\Feature\AuditLogViewerTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Feature/AuditLogViewerTest.php">
+   <testMethod id="Tests\Feature\AuditLogViewerTest::admin_can_access_recent_audit_logs_page" name="admin_can_access_recent_audit_logs_page"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_page_displays_audit_logs" name="recent_audit_logs_page_displays_audit_logs"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_api_returns_json_data" name="recent_audit_logs_api_returns_json_data"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_limits_to_100_entries" name="recent_audit_logs_limits_to_100_entries"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_can_be_filtered_by_date" name="recent_audit_logs_can_be_filtered_by_date"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_can_be_filtered_by_user" name="recent_audit_logs_can_be_filtered_by_user"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_can_be_filtered_by_event_type" name="recent_audit_logs_can_be_filtered_by_event_type"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_shows_empty_state_message_when_no_logs" name="recent_audit_logs_shows_empty_state_message_when_no_logs"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_shows_empty_state_when_filtered_results_empty" name="recent_audit_logs_shows_empty_state_when_filtered_results_empty"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_page_shows_filter_options" name="recent_audit_logs_page_shows_filter_options"/>
+   <testMethod id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_page_handles_applied_filters" name="recent_audit_logs_page_handles_applied_filters"/>
+  </testClass>
+  <testClass name="Tests\Feature\CalendarViewAndNavigationE2ETest" file="/Users/jprevel/Documents/joy/joy-app/tests/Feature/CalendarViewAndNavigationE2ETest.php">
+   <testMethod id="Tests\Feature\CalendarViewAndNavigationE2ETest::user_can_navigate_monthly_calendar_view" name="user_can_navigate_monthly_calendar_view"/>
+   <testMethod id="Tests\Feature\CalendarViewAndNavigationE2ETest::user_can_filter_content_by_platform_and_status" name="user_can_filter_content_by_platform_and_status"/>
+   <testMethod id="Tests\Feature\CalendarViewAndNavigationE2ETest::user_can_view_content_details_from_calendar" name="user_can_view_content_details_from_calendar"/>
+   <testMethod id="Tests\Feature\CalendarViewAndNavigationE2ETest::user_can_drag_and_drop_reschedule_content" name="user_can_drag_and_drop_reschedule_content"/>
+  </testClass>
+  <testClass name="Tests\Feature\ClientApprovalWorkflowE2ETest" file="/Users/jprevel/Documents/joy/joy-app/tests/Feature/ClientApprovalWorkflowE2ETest.php">
+   <testMethod id="Tests\Feature\ClientApprovalWorkflowE2ETest::client_can_access_content_via_magic_link" name="client_can_access_content_via_magic_link"/>
+   <testMethod id="Tests\Feature\ClientApprovalWorkflowE2ETest::client_can_review_and_approve_content" name="client_can_review_and_approve_content"/>
+   <testMethod id="Tests\Feature\ClientApprovalWorkflowE2ETest::client_can_request_changes_with_comments" name="client_can_request_changes_with_comments"/>
+   <testMethod id="Tests\Feature\ClientApprovalWorkflowE2ETest::client_receives_notifications_about_new_content" name="client_receives_notifications_about_new_content"/>
+  </testClass>
+  <testClass name="Tests\Feature\StatusfactionReportingE2ETest" file="/Users/jprevel/Documents/joy/joy-app/tests/Feature/StatusfactionReportingE2ETest.php">
+   <testMethod id="Tests\Feature\StatusfactionReportingE2ETest::account_manager_can_generate_weekly_status_reports" name="account_manager_can_generate_weekly_status_reports"/>
+   <testMethod id="Tests\Feature\StatusfactionReportingE2ETest::account_manager_can_view_client_progress_metrics" name="account_manager_can_view_client_progress_metrics"/>
+   <testMethod id="Tests\Feature\StatusfactionReportingE2ETest::admin_can_view_all_team_status_reports" name="admin_can_view_all_team_status_reports"/>
+  </testClass>
+  <testClass name="Tests\Unit\Helpers\PlatformHelperTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Helpers/PlatformHelperTest.php">
+   <testMethod id="Tests\Unit\Helpers\PlatformHelperTest::it_provides_platform_icons" name="it_provides_platform_icons"/>
+   <testMethod id="Tests\Unit\Helpers\PlatformHelperTest::it_provides_platform_color_schemes" name="it_provides_platform_color_schemes"/>
+   <testMethod id="Tests\Unit\Helpers\PlatformHelperTest::it_validates_platform_names" name="it_validates_platform_names"/>
+   <testMethod id="Tests\Unit\Helpers\PlatformHelperTest::it_provides_platform_specific_constraints" name="it_provides_platform_specific_constraints"/>
+  </testClass>
+  <testClass name="Tests\Unit\Livewire\AddContentTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Livewire/AddContentTest.php">
+   <testMethod id="Tests\Unit\Livewire\AddContentTest::it_manages_multi_step_form_flow" name="it_manages_multi_step_form_flow"/>
+   <testMethod id="Tests\Unit\Livewire\AddContentTest::it_validates_form_input_data" name="it_validates_form_input_data"/>
+   <testMethod id="Tests\Unit\Livewire\AddContentTest::it_handles_dynamic_content_item_addition" name="it_handles_dynamic_content_item_addition"/>
+   <testMethod id="Tests\Unit\Livewire\AddContentTest::it_manages_file_upload_state" name="it_manages_file_upload_state"/>
+  </testClass>
+  <testClass name="Tests\Unit\Livewire\ContentCalendarTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Livewire/ContentCalendarTest.php">
+   <testMethod id="Tests\Unit\Livewire\ContentCalendarTest::it_initializes_with_current_month" name="it_initializes_with_current_month"/>
+   <testMethod id="Tests\Unit\Livewire\ContentCalendarTest::it_navigates_between_months" name="it_navigates_between_months"/>
+   <testMethod id="Tests\Unit\Livewire\ContentCalendarTest::it_filters_content_by_client" name="it_filters_content_by_client"/>
+   <testMethod id="Tests\Unit\Livewire\ContentCalendarTest::it_handles_role_based_access" name="it_handles_role_based_access"/>
+  </testClass>
+  <testClass name="Tests\Unit\Livewire\StatusfactionTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Livewire/StatusfactionTest.php">
+   <testMethod id="Tests\Unit\Livewire\StatusfactionTest::it_generates_weekly_metrics" name="it_generates_weekly_metrics"/>
+   <testMethod id="Tests\Unit\Livewire\StatusfactionTest::it_filters_by_date_range" name="it_filters_by_date_range"/>
+   <testMethod id="Tests\Unit\Livewire\StatusfactionTest::it_calculates_client_progress_statistics" name="it_calculates_client_progress_statistics"/>
+   <testMethod id="Tests\Unit\Livewire\StatusfactionTest::it_handles_role_based_report_access" name="it_handles_role_based_report_access"/>
+  </testClass>
+  <testClass name="Tests\Unit\Middleware\EnsureAuthenticatedTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Middleware/EnsureAuthenticatedTest.php">
+   <testMethod id="Tests\Unit\Middleware\EnsureAuthenticatedTest::it_allows_authenticated_user_to_pass" name="it_allows_authenticated_user_to_pass"/>
+   <testMethod id="Tests\Unit\Middleware\EnsureAuthenticatedTest::it_blocks_unauthenticated_user_with_401" name="it_blocks_unauthenticated_user_with_401"/>
+   <testMethod id="Tests\Unit\Middleware\EnsureAuthenticatedTest::it_merges_authenticated_user_into_request" name="it_merges_authenticated_user_into_request"/>
+   <testMethod id="Tests\Unit\Middleware\EnsureAuthenticatedTest::it_does_not_modify_request_when_authentication_fails" name="it_does_not_modify_request_when_authentication_fails"/>
+  </testClass>
+  <testClass name="Tests\Unit\Middleware\ResolveClientAccessTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Middleware/ResolveClientAccessTest.php">
+   <testMethod id="Tests\Unit\Middleware\ResolveClientAccessTest::it_resolves_client_from_client_id_parameter" name="it_resolves_client_from_client_id_parameter"/>
+   <testMethod id="Tests\Unit\Middleware\ResolveClientAccessTest::it_resolves_client_from_authenticated_client_user" name="it_resolves_client_from_authenticated_client_user"/>
+   <testMethod id="Tests\Unit\Middleware\ResolveClientAccessTest::it_validates_user_has_access_to_client" name="it_validates_user_has_access_to_client"/>
+   <testMethod id="Tests\Unit\Middleware\ResolveClientAccessTest::it_returns_403_when_access_denied" name="it_returns_403_when_access_denied"/>
+   <testMethod id="Tests\Unit\Middleware\ResolveClientAccessTest::it_returns_422_when_admin_missing_client_id" name="it_returns_422_when_admin_missing_client_id"/>
+   <testMethod id="Tests\Unit\Middleware\ResolveClientAccessTest::it_merges_resolved_client_into_request" name="it_merges_resolved_client_into_request"/>
+   <testMethod id="Tests\Unit\Middleware\ResolveClientAccessTest::it_handles_client_id_from_route_parameter" name="it_handles_client_id_from_route_parameter"/>
+  </testClass>
+  <testClass name="Tests\Unit\Middleware\ValidateMagicLinkTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Middleware/ValidateMagicLinkTest.php">
+   <testMethod id="Tests\Unit\Middleware\ValidateMagicLinkTest::it_validates_magic_link_tokens" name="it_validates_magic_link_tokens"/>
+   <testMethod id="Tests\Unit\Middleware\ValidateMagicLinkTest::it_handles_expired_tokens" name="it_handles_expired_tokens"/>
+   <testMethod id="Tests\Unit\Middleware\ValidateMagicLinkTest::it_logs_access_attempts" name="it_logs_access_attempts"/>
+  </testClass>
+  <testClass name="Tests\Unit\Models\AuditLogTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Models/AuditLogTest.php">
+   <testMethod id="Tests\Unit\Models\AuditLogTest::it_records_user_actions_with_metadata" name="it_records_user_actions_with_metadata"/>
+   <testMethod id="Tests\Unit\Models\AuditLogTest::it_handles_data_retention_policies" name="it_handles_data_retention_policies"/>
+   <testMethod id="Tests\Unit\Models\AuditLogTest::it_formats_audit_entries_for_display" name="it_formats_audit_entries_for_display"/>
+  </testClass>
+  <testClass name="Tests\Unit\Models\ClientTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Models/ClientTest.php">
+   <testMethod id="Tests\Unit\Models\ClientTest::it_manages_client_workspace_isolation" name="it_manages_client_workspace_isolation"/>
+   <testMethod id="Tests\Unit\Models\ClientTest::it_handles_client_content_relationships" name="it_handles_client_content_relationships"/>
+   <testMethod id="Tests\Unit\Models\ClientTest::it_manages_magic_link_associations" name="it_manages_magic_link_associations"/>
+  </testClass>
+  <testClass name="Tests\Unit\Models\CommentTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Models/CommentTest.php">
+   <testMethod id="Tests\Unit\Models\CommentTest::it_associates_comments_with_content_items" name="it_associates_comments_with_content_items"/>
+   <testMethod id="Tests\Unit\Models\CommentTest::it_tracks_comment_authors" name="it_tracks_comment_authors"/>
+   <testMethod id="Tests\Unit\Models\CommentTest::it_manages_comment_timestamps" name="it_manages_comment_timestamps"/>
+  </testClass>
+  <testClass name="Tests\Unit\Models\ContentItemTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Models/ContentItemTest.php">
+   <testMethod id="Tests\Unit\Models\ContentItemTest::it_has_correct_fillable_attributes" name="it_has_correct_fillable_attributes"/>
+   <testMethod id="Tests\Unit\Models\ContentItemTest::it_casts_dates_properly" name="it_casts_dates_properly"/>
+   <testMethod id="Tests\Unit\Models\ContentItemTest::it_provides_platform_specific_helpers" name="it_provides_platform_specific_helpers"/>
+   <testMethod id="Tests\Unit\Models\ContentItemTest::it_manages_image_metadata" name="it_manages_image_metadata"/>
+  </testClass>
+  <testClass name="Tests\Unit\Models\MagicLinkTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Models/MagicLinkTest.php">
+   <testMethod id="Tests\Unit\Models\MagicLinkTest::it_generates_secure_tokens" name="it_generates_secure_tokens"/>
+   <testMethod id="Tests\Unit\Models\MagicLinkTest::it_handles_expiration_logic" name="it_handles_expiration_logic"/>
+   <testMethod id="Tests\Unit\Models\MagicLinkTest::it_manages_access_tracking" name="it_manages_access_tracking"/>
+   <testMethod id="Tests\Unit\Models\MagicLinkTest::it_validates_token_format" name="it_validates_token_format"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\AuditLogViewerServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/AuditLogViewerServiceTest.php">
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_retrieves_recent_audit_logs_limited_to_100" name="it_retrieves_recent_audit_logs_limited_to_100"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_orders_audit_logs_by_created_at_desc" name="it_orders_audit_logs_by_created_at_desc"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_filters_by_date_range" name="it_filters_by_date_range"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_filters_by_user" name="it_filters_by_user"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_filters_by_event_type" name="it_filters_by_event_type"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_returns_empty_collection_when_no_logs_match_filters" name="it_returns_empty_collection_when_no_logs_match_filters"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_gets_distinct_event_types" name="it_gets_distinct_event_types"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_gets_users_with_audit_log_entries" name="it_gets_users_with_audit_log_entries"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_formats_audit_log_entry_correctly" name="it_formats_audit_log_entry_correctly"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_handles_audit_log_without_user" name="it_handles_audit_log_without_user"/>
+   <testMethod id="Tests\Unit\Services\AuditLogViewerServiceTest::it_gets_paginated_audit_logs" name="it_gets_paginated_audit_logs"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\AuditServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/AuditServiceTest.php">
+   <testMethod id="Tests\Unit\Services\AuditServiceTest::it_formats_audit_log_entries" name="it_formats_audit_log_entries"/>
+   <testMethod id="Tests\Unit\Services\AuditServiceTest::it_analyzes_user_activity_patterns" name="it_analyzes_user_activity_patterns"/>
+   <testMethod id="Tests\Unit\Services\AuditServiceTest::it_generates_security_reports" name="it_generates_security_reports"/>
+   <testMethod id="Tests\Unit\Services\AuditServiceTest::it_handles_log_cleanup_and_retention" name="it_handles_log_cleanup_and_retention"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\CalendarStatsServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/CalendarStatsServiceTest.php">
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_calculates_statistics_for_content_items" name="it_calculates_statistics_for_content_items"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_groups_content_items_by_week" name="it_groups_content_items_by_week"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_handles_empty_collection_when_grouping_by_week" name="it_handles_empty_collection_when_grouping_by_week"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_calculates_completion_rate" name="it_calculates_completion_rate"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_returns_zero_completion_rate_for_empty_collection" name="it_returns_zero_completion_rate_for_empty_collection"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_identifies_busiest_day" name="it_identifies_busiest_day"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_returns_null_for_busiest_day_when_collection_empty" name="it_returns_null_for_busiest_day_when_collection_empty"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_groups_content_by_date_for_grid_view" name="it_groups_content_by_date_for_grid_view"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_includes_empty_dates_in_grid_view" name="it_includes_empty_dates_in_grid_view"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_provides_calendar_metadata" name="it_provides_calendar_metadata"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_marks_weekends_in_grid_view" name="it_marks_weekends_in_grid_view"/>
+   <testMethod id="Tests\Unit\Services\CalendarStatsServiceTest::it_marks_today_in_grid_view" name="it_marks_today_in_grid_view"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\CleanupServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/CleanupServiceTest.php">
+   <testMethod id="Tests\Unit\Services\CleanupServiceTest::it_executes_audit_logs_cleanup_operation" name="it_executes_audit_logs_cleanup_operation"/>
+   <testMethod id="Tests\Unit\Services\CleanupServiceTest::it_executes_expired_magic_links_cleanup_operation" name="it_executes_expired_magic_links_cleanup_operation"/>
+   <testMethod id="Tests\Unit\Services\CleanupServiceTest::it_executes_failed_syncs_cleanup_operation" name="it_executes_failed_syncs_cleanup_operation"/>
+   <testMethod id="Tests\Unit\Services\CleanupServiceTest::it_passes_days_parameter_to_command" name="it_passes_days_parameter_to_command"/>
+   <testMethod id="Tests\Unit\Services\CleanupServiceTest::it_returns_command_execution_results" name="it_returns_command_execution_results"/>
+   <testMethod id="Tests\Unit\Services\CleanupServiceTest::it_throws_exception_for_unknown_operation" name="it_throws_exception_for_unknown_operation"/>
+   <testMethod id="Tests\Unit\Services\CleanupServiceTest::it_returns_available_operations_list" name="it_returns_available_operations_list"/>
+   <testMethod id="Tests\Unit\Services\CleanupServiceTest::it_uses_command_pattern_for_extensibility" name="it_uses_command_pattern_for_extensibility"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\ClientAccessResolverTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/ClientAccessResolverTest.php">
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_resolves_client_with_client_id_for_admin" name="it_resolves_client_with_client_id_for_admin"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_resolves_client_from_user_for_client_role" name="it_resolves_client_from_user_for_client_role"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_throws_exception_when_admin_missing_client_id" name="it_throws_exception_when_admin_missing_client_id"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_throws_exception_when_agency_missing_client_id" name="it_throws_exception_when_agency_missing_client_id"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_validates_access_passes_for_authorized_user" name="it_validates_access_passes_for_authorized_user"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_validates_access_throws_for_unauthorized_user" name="it_validates_access_throws_for_unauthorized_user"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_validates_access_passes_for_client_own_data" name="it_validates_access_passes_for_client_own_data"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_resolves_and_validates_in_one_call" name="it_resolves_and_validates_in_one_call"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_throws_model_not_found_exception_for_invalid_client_id" name="it_throws_model_not_found_exception_for_invalid_client_id"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_handles_agency_user_accessing_assigned_client" name="it_handles_agency_user_accessing_assigned_client"/>
+   <testMethod id="Tests\Unit\Services\ClientAccessResolverTest::it_handles_client_user_without_client_id_parameter" name="it_handles_client_user_without_client_id_parameter"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/Commands/CleanupAuditLogsCommandTest.php">
+   <testMethod id="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest::it_executes_audit_log_cleanup" name="it_executes_audit_log_cleanup"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest::it_returns_deleted_count_and_operation_name" name="it_returns_deleted_count_and_operation_name"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest::it_has_correct_operation_name" name="it_has_correct_operation_name"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest::it_implements_cleanup_command_interface" name="it_implements_cleanup_command_interface"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/Commands/CleanupExpiredMagicLinksCommandTest.php">
+   <testMethod id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_deletes_expired_magic_links" name="it_deletes_expired_magic_links"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_does_not_delete_active_magic_links" name="it_does_not_delete_active_magic_links"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_returns_deleted_count_and_operation_name" name="it_returns_deleted_count_and_operation_name"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_has_correct_operation_name" name="it_has_correct_operation_name"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_implements_cleanup_command_interface" name="it_implements_cleanup_command_interface"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/Commands/CleanupFailedSyncsCommandTest.php">
+   <testMethod id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_deletes_failed_trello_syncs_older_than_specified_days" name="it_deletes_failed_trello_syncs_older_than_specified_days"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_does_not_delete_recent_failed_syncs" name="it_does_not_delete_recent_failed_syncs"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_does_not_delete_successful_syncs" name="it_does_not_delete_successful_syncs"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_returns_deleted_count_and_operation_name" name="it_returns_deleted_count_and_operation_name"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_has_correct_operation_name" name="it_has_correct_operation_name"/>
+   <testMethod id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_implements_cleanup_command_interface" name="it_implements_cleanup_command_interface"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\ContentItemServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/ContentItemServiceTest.php">
+   <testMethod id="Tests\Unit\Services\ContentItemServiceTest::it_validates_content_item_data_structure" name="it_validates_content_item_data_structure"/>
+   <testMethod id="Tests\Unit\Services\ContentItemServiceTest::it_processes_platform_specific_requirements" name="it_processes_platform_specific_requirements"/>
+   <testMethod id="Tests\Unit\Services\ContentItemServiceTest::it_handles_scheduled_date_formatting" name="it_handles_scheduled_date_formatting"/>
+   <testMethod id="Tests\Unit\Services\ContentItemServiceTest::it_manages_content_status_transitions" name="it_manages_content_status_transitions"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\ImageUploadServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/ImageUploadServiceTest.php">
+   <testMethod id="Tests\Unit\Services\ImageUploadServiceTest::it_validates_image_file_types" name="it_validates_image_file_types"/>
+   <testMethod id="Tests\Unit\Services\ImageUploadServiceTest::it_validates_image_file_sizes" name="it_validates_image_file_sizes"/>
+   <testMethod id="Tests\Unit\Services\ImageUploadServiceTest::it_generates_unique_filenames" name="it_generates_unique_filenames"/>
+   <testMethod id="Tests\Unit\Services\ImageUploadServiceTest::it_handles_upload_error_scenarios" name="it_handles_upload_error_scenarios"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\MagicLinkValidatorTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/MagicLinkValidatorTest.php">
+   <testMethod id="Tests\Unit\Services\MagicLinkValidatorTest::it_validates_token_format" name="it_validates_token_format"/>
+   <testMethod id="Tests\Unit\Services\MagicLinkValidatorTest::it_checks_token_expiration" name="it_checks_token_expiration"/>
+   <testMethod id="Tests\Unit\Services\MagicLinkValidatorTest::it_validates_access_permissions" name="it_validates_access_permissions"/>
+   <testMethod id="Tests\Unit\Services\MagicLinkValidatorTest::it_logs_security_events" name="it_logs_security_events"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/QueryBuilders/AuditLogQueryBuilderTest.php">
+   <testMethod id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_applies_filters_from_request" name="it_applies_filters_from_request"/>
+   <testMethod id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_filters_by_client_id" name="it_filters_by_client_id"/>
+   <testMethod id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_filters_by_user_id" name="it_filters_by_user_id"/>
+   <testMethod id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_filters_by_event_type" name="it_filters_by_event_type"/>
+   <testMethod id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_filters_by_date_range" name="it_filters_by_date_range"/>
+   <testMethod id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_applies_limit_to_results" name="it_applies_limit_to_results"/>
+   <testMethod id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_returns_collection_of_audit_logs" name="it_returns_collection_of_audit_logs"/>
+   <testMethod id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_chains_multiple_filters" name="it_chains_multiple_filters"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\RoleDetectionServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/RoleDetectionServiceTest.php">
+   <testMethod id="Tests\Unit\Services\RoleDetectionServiceTest::it_detects_admin_roles" name="it_detects_admin_roles"/>
+   <testMethod id="Tests\Unit\Services\RoleDetectionServiceTest::it_detects_agency_roles" name="it_detects_agency_roles"/>
+   <testMethod id="Tests\Unit\Services\RoleDetectionServiceTest::it_detects_client_roles" name="it_detects_client_roles"/>
+   <testMethod id="Tests\Unit\Services\RoleDetectionServiceTest::it_handles_role_permission_mapping" name="it_handles_role_permission_mapping"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\TrelloServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/TrelloServiceTest.php">
+   <testMethod id="Tests\Unit\Services\TrelloServiceTest::it_formats_card_data_for_api" name="it_formats_card_data_for_api"/>
+   <testMethod id="Tests\Unit\Services\TrelloServiceTest::it_handles_api_rate_limiting" name="it_handles_api_rate_limiting"/>
+   <testMethod id="Tests\Unit\Services\TrelloServiceTest::it_processes_webhook_payloads" name="it_processes_webhook_payloads"/>
+   <testMethod id="Tests\Unit\Services\TrelloServiceTest::it_manages_retry_logic_for_failed_requests" name="it_manages_retry_logic_for_failed_requests"/>
+  </testClass>
+  <testClass name="Tests\Unit\Services\TrelloStatsServiceTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Services/TrelloStatsServiceTest.php">
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_gets_client_specific_statistics" name="it_gets_client_specific_statistics"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_calculates_content_sync_rate_for_client" name="it_calculates_content_sync_rate_for_client"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_calculates_comment_sync_rate_for_client" name="it_calculates_comment_sync_rate_for_client"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_handles_zero_content_when_calculating_sync_rate" name="it_handles_zero_content_when_calculating_sync_rate"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_gets_system_wide_statistics" name="it_gets_system_wide_statistics"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_calculates_integration_rate" name="it_calculates_integration_rate"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_calculates_sync_health" name="it_calculates_sync_health"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_retries_failed_syncs_for_specific_client" name="it_retries_failed_syncs_for_specific_client"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_retries_all_failed_syncs_when_no_client_specified" name="it_retries_all_failed_syncs_when_no_client_specified"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_returns_retry_results_with_counts" name="it_returns_retry_results_with_counts"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_handles_content_item_cards_when_retrying" name="it_handles_content_item_cards_when_retrying"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_handles_comment_cards_when_retrying" name="it_handles_comment_cards_when_retrying"/>
+   <testMethod id="Tests\Unit\Services\TrelloStatsServiceTest::it_captures_errors_during_retry_operation" name="it_captures_errors_during_retry_operation"/>
+  </testClass>
+  <testClass name="Tests\Unit\Traits\HasRoleManagementTest" file="/Users/jprevel/Documents/joy/joy-app/tests/Unit/Traits/HasRoleManagementTest.php">
+   <testMethod id="Tests\Unit\Traits\HasRoleManagementTest::it_detects_user_roles" name="it_detects_user_roles"/>
+   <testMethod id="Tests\Unit\Traits\HasRoleManagementTest::it_manages_accessible_clients" name="it_manages_accessible_clients"/>
+   <testMethod id="Tests\Unit\Traits\HasRoleManagementTest::it_handles_permission_checks" name="it_handles_permission_checks"/>
+   <testMethod id="Tests\Unit\Traits\HasRoleManagementTest::it_provides_navigation_context" name="it_provides_navigation_context"/>
+  </testClass>
+ </tests>
+ <groups>
+  <group name="default">
+   <test id="Tests\Contract\AuditServiceContractTest::it_should_define_audit_logging_interface"/>
+   <test id="Tests\Contract\AuditServiceContractTest::it_should_handle_data_retention_contracts"/>
+   <test id="Tests\Contract\AuditServiceContractTest::it_should_provide_search_and_analysis_contract"/>
+   <test id="Tests\Contract\ContentItemServiceContractTest::it_should_define_content_creation_interface"/>
+   <test id="Tests\Contract\ContentItemServiceContractTest::it_should_validate_platform_enum_values"/>
+   <test id="Tests\Contract\ContentItemServiceContractTest::it_should_handle_image_upload_contracts"/>
+   <test id="Tests\Contract\ContentItemServiceContractTest::it_should_respect_status_workflow_contracts"/>
+   <test id="Tests\Contract\MagicLinkServiceContractTest::it_should_define_secure_token_generation_contract"/>
+   <test id="Tests\Contract\MagicLinkServiceContractTest::it_should_validate_expiration_handling_contract"/>
+   <test id="Tests\Contract\MagicLinkServiceContractTest::it_should_enforce_access_control_contracts"/>
+   <test id="Tests\Contract\MagicLinkServiceContractTest::it_should_audit_access_attempts_contract"/>
+   <test id="Tests\Contract\TrelloIntegrationContractTest::it_should_define_card_synchronization_contract"/>
+   <test id="Tests\Contract\TrelloIntegrationContractTest::it_should_handle_webhook_processing_contract"/>
+   <test id="Tests\Contract\TrelloIntegrationContractTest::it_should_manage_api_rate_limiting_contract"/>
+   <test id="Tests\Integration\ContentCreationWorkflowIntegrationTest::it_creates_content_with_real_database_and_file_storage"/>
+   <test id="Tests\Integration\ContentCreationWorkflowIntegrationTest::it_handles_image_uploads_with_real_filesystem"/>
+   <test id="Tests\Integration\ContentCreationWorkflowIntegrationTest::it_integrates_with_audit_logging_system"/>
+   <test id="Tests\Integration\ContentCreationWorkflowIntegrationTest::it_validates_platform_constraints_with_database"/>
+   <test id="Tests\Integration\MagicLinkSecurityIntegrationTest::it_generates_secure_tokens_with_real_database"/>
+   <test id="Tests\Integration\MagicLinkSecurityIntegrationTest::it_validates_access_with_real_session_handling"/>
+   <test id="Tests\Integration\MagicLinkSecurityIntegrationTest::it_handles_token_expiration_with_database_cleanup"/>
+   <test id="Tests\Integration\MagicLinkSecurityIntegrationTest::it_integrates_with_audit_system_for_security_events"/>
+   <test id="Tests\Integration\TrelloSynchronizationIntegrationTest::it_synchronizes_content_items_with_trello_cards"/>
+   <test id="Tests\Integration\TrelloSynchronizationIntegrationTest::it_handles_webhook_events_with_database_updates"/>
+   <test id="Tests\Integration\TrelloSynchronizationIntegrationTest::it_manages_api_rate_limits_with_real_timing"/>
+   <test id="Tests\Integration\TrelloSynchronizationIntegrationTest::it_handles_api_failures_with_retry_logic"/>
+   <test id="Tests\Integration\UserRoleManagementIntegrationTest::it_manages_admin_permissions_with_real_database"/>
+   <test id="Tests\Integration\UserRoleManagementIntegrationTest::it_handles_agency_user_access_controls"/>
+   <test id="Tests\Integration\UserRoleManagementIntegrationTest::it_restricts_client_access_to_own_content"/>
+   <test id="Tests\Integration\UserRoleManagementIntegrationTest::it_integrates_role_detection_with_navigation"/>
+   <test id="Tests\Feature\AdminContentManagementE2ETest::admin_can_create_content_for_multiple_clients"/>
+   <test id="Tests\Feature\AdminContentManagementE2ETest::admin_can_manage_content_approval_workflow"/>
+   <test id="Tests\Feature\AdminContentManagementE2ETest::admin_can_view_audit_logs_and_analytics"/>
+   <test id="Tests\Feature\AdminContentManagementE2ETest::admin_can_manage_user_roles_and_permissions"/>
+   <test id="Tests\Feature\AgencyContentWorkflowE2ETest::agency_user_can_create_content_for_assigned_clients"/>
+   <test id="Tests\Feature\AgencyContentWorkflowE2ETest::agency_user_can_upload_images_and_schedule_content"/>
+   <test id="Tests\Feature\AgencyContentWorkflowE2ETest::agency_user_can_view_calendar_and_manage_deadlines"/>
+   <test id="Tests\Feature\AgencyContentWorkflowE2ETest::agency_user_can_generate_magic_links_for_clients"/>
+   <test id="Tests\Feature\AuditLogViewerTest::admin_can_access_recent_audit_logs_page"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_page_displays_audit_logs"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_api_returns_json_data"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_limits_to_100_entries"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_can_be_filtered_by_date"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_can_be_filtered_by_user"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_can_be_filtered_by_event_type"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_shows_empty_state_message_when_no_logs"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_shows_empty_state_when_filtered_results_empty"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_page_shows_filter_options"/>
+   <test id="Tests\Feature\AuditLogViewerTest::recent_audit_logs_page_handles_applied_filters"/>
+   <test id="Tests\Feature\CalendarViewAndNavigationE2ETest::user_can_navigate_monthly_calendar_view"/>
+   <test id="Tests\Feature\CalendarViewAndNavigationE2ETest::user_can_filter_content_by_platform_and_status"/>
+   <test id="Tests\Feature\CalendarViewAndNavigationE2ETest::user_can_view_content_details_from_calendar"/>
+   <test id="Tests\Feature\CalendarViewAndNavigationE2ETest::user_can_drag_and_drop_reschedule_content"/>
+   <test id="Tests\Feature\ClientApprovalWorkflowE2ETest::client_can_access_content_via_magic_link"/>
+   <test id="Tests\Feature\ClientApprovalWorkflowE2ETest::client_can_review_and_approve_content"/>
+   <test id="Tests\Feature\ClientApprovalWorkflowE2ETest::client_can_request_changes_with_comments"/>
+   <test id="Tests\Feature\ClientApprovalWorkflowE2ETest::client_receives_notifications_about_new_content"/>
+   <test id="Tests\Feature\StatusfactionReportingE2ETest::account_manager_can_generate_weekly_status_reports"/>
+   <test id="Tests\Feature\StatusfactionReportingE2ETest::account_manager_can_view_client_progress_metrics"/>
+   <test id="Tests\Feature\StatusfactionReportingE2ETest::admin_can_view_all_team_status_reports"/>
+   <test id="Tests\Unit\Helpers\PlatformHelperTest::it_provides_platform_icons"/>
+   <test id="Tests\Unit\Helpers\PlatformHelperTest::it_provides_platform_color_schemes"/>
+   <test id="Tests\Unit\Helpers\PlatformHelperTest::it_validates_platform_names"/>
+   <test id="Tests\Unit\Helpers\PlatformHelperTest::it_provides_platform_specific_constraints"/>
+   <test id="Tests\Unit\Livewire\AddContentTest::it_manages_multi_step_form_flow"/>
+   <test id="Tests\Unit\Livewire\AddContentTest::it_validates_form_input_data"/>
+   <test id="Tests\Unit\Livewire\AddContentTest::it_handles_dynamic_content_item_addition"/>
+   <test id="Tests\Unit\Livewire\AddContentTest::it_manages_file_upload_state"/>
+   <test id="Tests\Unit\Livewire\ContentCalendarTest::it_initializes_with_current_month"/>
+   <test id="Tests\Unit\Livewire\ContentCalendarTest::it_navigates_between_months"/>
+   <test id="Tests\Unit\Livewire\ContentCalendarTest::it_filters_content_by_client"/>
+   <test id="Tests\Unit\Livewire\ContentCalendarTest::it_handles_role_based_access"/>
+   <test id="Tests\Unit\Livewire\StatusfactionTest::it_generates_weekly_metrics"/>
+   <test id="Tests\Unit\Livewire\StatusfactionTest::it_filters_by_date_range"/>
+   <test id="Tests\Unit\Livewire\StatusfactionTest::it_calculates_client_progress_statistics"/>
+   <test id="Tests\Unit\Livewire\StatusfactionTest::it_handles_role_based_report_access"/>
+   <test id="Tests\Unit\Middleware\EnsureAuthenticatedTest::it_allows_authenticated_user_to_pass"/>
+   <test id="Tests\Unit\Middleware\EnsureAuthenticatedTest::it_blocks_unauthenticated_user_with_401"/>
+   <test id="Tests\Unit\Middleware\EnsureAuthenticatedTest::it_merges_authenticated_user_into_request"/>
+   <test id="Tests\Unit\Middleware\EnsureAuthenticatedTest::it_does_not_modify_request_when_authentication_fails"/>
+   <test id="Tests\Unit\Middleware\ResolveClientAccessTest::it_resolves_client_from_client_id_parameter"/>
+   <test id="Tests\Unit\Middleware\ResolveClientAccessTest::it_resolves_client_from_authenticated_client_user"/>
+   <test id="Tests\Unit\Middleware\ResolveClientAccessTest::it_validates_user_has_access_to_client"/>
+   <test id="Tests\Unit\Middleware\ResolveClientAccessTest::it_returns_403_when_access_denied"/>
+   <test id="Tests\Unit\Middleware\ResolveClientAccessTest::it_returns_422_when_admin_missing_client_id"/>
+   <test id="Tests\Unit\Middleware\ResolveClientAccessTest::it_merges_resolved_client_into_request"/>
+   <test id="Tests\Unit\Middleware\ResolveClientAccessTest::it_handles_client_id_from_route_parameter"/>
+   <test id="Tests\Unit\Middleware\ValidateMagicLinkTest::it_validates_magic_link_tokens"/>
+   <test id="Tests\Unit\Middleware\ValidateMagicLinkTest::it_handles_expired_tokens"/>
+   <test id="Tests\Unit\Middleware\ValidateMagicLinkTest::it_logs_access_attempts"/>
+   <test id="Tests\Unit\Models\AuditLogTest::it_records_user_actions_with_metadata"/>
+   <test id="Tests\Unit\Models\AuditLogTest::it_handles_data_retention_policies"/>
+   <test id="Tests\Unit\Models\AuditLogTest::it_formats_audit_entries_for_display"/>
+   <test id="Tests\Unit\Models\ClientTest::it_manages_client_workspace_isolation"/>
+   <test id="Tests\Unit\Models\ClientTest::it_handles_client_content_relationships"/>
+   <test id="Tests\Unit\Models\ClientTest::it_manages_magic_link_associations"/>
+   <test id="Tests\Unit\Models\CommentTest::it_associates_comments_with_content_items"/>
+   <test id="Tests\Unit\Models\CommentTest::it_tracks_comment_authors"/>
+   <test id="Tests\Unit\Models\CommentTest::it_manages_comment_timestamps"/>
+   <test id="Tests\Unit\Models\ContentItemTest::it_has_correct_fillable_attributes"/>
+   <test id="Tests\Unit\Models\ContentItemTest::it_casts_dates_properly"/>
+   <test id="Tests\Unit\Models\ContentItemTest::it_provides_platform_specific_helpers"/>
+   <test id="Tests\Unit\Models\ContentItemTest::it_manages_image_metadata"/>
+   <test id="Tests\Unit\Models\MagicLinkTest::it_generates_secure_tokens"/>
+   <test id="Tests\Unit\Models\MagicLinkTest::it_handles_expiration_logic"/>
+   <test id="Tests\Unit\Models\MagicLinkTest::it_manages_access_tracking"/>
+   <test id="Tests\Unit\Models\MagicLinkTest::it_validates_token_format"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_retrieves_recent_audit_logs_limited_to_100"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_orders_audit_logs_by_created_at_desc"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_filters_by_date_range"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_filters_by_user"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_filters_by_event_type"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_returns_empty_collection_when_no_logs_match_filters"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_gets_distinct_event_types"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_gets_users_with_audit_log_entries"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_formats_audit_log_entry_correctly"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_handles_audit_log_without_user"/>
+   <test id="Tests\Unit\Services\AuditLogViewerServiceTest::it_gets_paginated_audit_logs"/>
+   <test id="Tests\Unit\Services\AuditServiceTest::it_formats_audit_log_entries"/>
+   <test id="Tests\Unit\Services\AuditServiceTest::it_analyzes_user_activity_patterns"/>
+   <test id="Tests\Unit\Services\AuditServiceTest::it_generates_security_reports"/>
+   <test id="Tests\Unit\Services\AuditServiceTest::it_handles_log_cleanup_and_retention"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_calculates_statistics_for_content_items"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_groups_content_items_by_week"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_handles_empty_collection_when_grouping_by_week"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_calculates_completion_rate"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_returns_zero_completion_rate_for_empty_collection"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_identifies_busiest_day"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_returns_null_for_busiest_day_when_collection_empty"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_groups_content_by_date_for_grid_view"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_includes_empty_dates_in_grid_view"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_provides_calendar_metadata"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_marks_weekends_in_grid_view"/>
+   <test id="Tests\Unit\Services\CalendarStatsServiceTest::it_marks_today_in_grid_view"/>
+   <test id="Tests\Unit\Services\CleanupServiceTest::it_executes_audit_logs_cleanup_operation"/>
+   <test id="Tests\Unit\Services\CleanupServiceTest::it_executes_expired_magic_links_cleanup_operation"/>
+   <test id="Tests\Unit\Services\CleanupServiceTest::it_executes_failed_syncs_cleanup_operation"/>
+   <test id="Tests\Unit\Services\CleanupServiceTest::it_passes_days_parameter_to_command"/>
+   <test id="Tests\Unit\Services\CleanupServiceTest::it_returns_command_execution_results"/>
+   <test id="Tests\Unit\Services\CleanupServiceTest::it_throws_exception_for_unknown_operation"/>
+   <test id="Tests\Unit\Services\CleanupServiceTest::it_returns_available_operations_list"/>
+   <test id="Tests\Unit\Services\CleanupServiceTest::it_uses_command_pattern_for_extensibility"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_resolves_client_with_client_id_for_admin"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_resolves_client_from_user_for_client_role"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_throws_exception_when_admin_missing_client_id"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_throws_exception_when_agency_missing_client_id"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_validates_access_passes_for_authorized_user"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_validates_access_throws_for_unauthorized_user"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_validates_access_passes_for_client_own_data"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_resolves_and_validates_in_one_call"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_throws_model_not_found_exception_for_invalid_client_id"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_handles_agency_user_accessing_assigned_client"/>
+   <test id="Tests\Unit\Services\ClientAccessResolverTest::it_handles_client_user_without_client_id_parameter"/>
+   <test id="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest::it_executes_audit_log_cleanup"/>
+   <test id="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest::it_returns_deleted_count_and_operation_name"/>
+   <test id="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest::it_has_correct_operation_name"/>
+   <test id="Tests\Unit\Services\Commands\CleanupAuditLogsCommandTest::it_implements_cleanup_command_interface"/>
+   <test id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_deletes_expired_magic_links"/>
+   <test id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_does_not_delete_active_magic_links"/>
+   <test id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_returns_deleted_count_and_operation_name"/>
+   <test id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_has_correct_operation_name"/>
+   <test id="Tests\Unit\Services\Commands\CleanupExpiredMagicLinksCommandTest::it_implements_cleanup_command_interface"/>
+   <test id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_deletes_failed_trello_syncs_older_than_specified_days"/>
+   <test id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_does_not_delete_recent_failed_syncs"/>
+   <test id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_does_not_delete_successful_syncs"/>
+   <test id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_returns_deleted_count_and_operation_name"/>
+   <test id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_has_correct_operation_name"/>
+   <test id="Tests\Unit\Services\Commands\CleanupFailedSyncsCommandTest::it_implements_cleanup_command_interface"/>
+   <test id="Tests\Unit\Services\ContentItemServiceTest::it_validates_content_item_data_structure"/>
+   <test id="Tests\Unit\Services\ContentItemServiceTest::it_processes_platform_specific_requirements"/>
+   <test id="Tests\Unit\Services\ContentItemServiceTest::it_handles_scheduled_date_formatting"/>
+   <test id="Tests\Unit\Services\ContentItemServiceTest::it_manages_content_status_transitions"/>
+   <test id="Tests\Unit\Services\ImageUploadServiceTest::it_validates_image_file_types"/>
+   <test id="Tests\Unit\Services\ImageUploadServiceTest::it_validates_image_file_sizes"/>
+   <test id="Tests\Unit\Services\ImageUploadServiceTest::it_generates_unique_filenames"/>
+   <test id="Tests\Unit\Services\ImageUploadServiceTest::it_handles_upload_error_scenarios"/>
+   <test id="Tests\Unit\Services\MagicLinkValidatorTest::it_validates_token_format"/>
+   <test id="Tests\Unit\Services\MagicLinkValidatorTest::it_checks_token_expiration"/>
+   <test id="Tests\Unit\Services\MagicLinkValidatorTest::it_validates_access_permissions"/>
+   <test id="Tests\Unit\Services\MagicLinkValidatorTest::it_logs_security_events"/>
+   <test id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_applies_filters_from_request"/>
+   <test id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_filters_by_client_id"/>
+   <test id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_filters_by_user_id"/>
+   <test id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_filters_by_event_type"/>
+   <test id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_filters_by_date_range"/>
+   <test id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_applies_limit_to_results"/>
+   <test id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_returns_collection_of_audit_logs"/>
+   <test id="Tests\Unit\Services\QueryBuilders\AuditLogQueryBuilderTest::it_chains_multiple_filters"/>
+   <test id="Tests\Unit\Services\RoleDetectionServiceTest::it_detects_admin_roles"/>
+   <test id="Tests\Unit\Services\RoleDetectionServiceTest::it_detects_agency_roles"/>
+   <test id="Tests\Unit\Services\RoleDetectionServiceTest::it_detects_client_roles"/>
+   <test id="Tests\Unit\Services\RoleDetectionServiceTest::it_handles_role_permission_mapping"/>
+   <test id="Tests\Unit\Services\TrelloServiceTest::it_formats_card_data_for_api"/>
+   <test id="Tests\Unit\Services\TrelloServiceTest::it_handles_api_rate_limiting"/>
+   <test id="Tests\Unit\Services\TrelloServiceTest::it_processes_webhook_payloads"/>
+   <test id="Tests\Unit\Services\TrelloServiceTest::it_manages_retry_logic_for_failed_requests"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_gets_client_specific_statistics"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_calculates_content_sync_rate_for_client"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_calculates_comment_sync_rate_for_client"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_handles_zero_content_when_calculating_sync_rate"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_gets_system_wide_statistics"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_calculates_integration_rate"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_calculates_sync_health"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_retries_failed_syncs_for_specific_client"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_retries_all_failed_syncs_when_no_client_specified"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_returns_retry_results_with_counts"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_handles_content_item_cards_when_retrying"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_handles_comment_cards_when_retrying"/>
+   <test id="Tests\Unit\Services\TrelloStatsServiceTest::it_captures_errors_during_retry_operation"/>
+   <test id="Tests\Unit\Traits\HasRoleManagementTest::it_detects_user_roles"/>
+   <test id="Tests\Unit\Traits\HasRoleManagementTest::it_manages_accessible_clients"/>
+   <test id="Tests\Unit\Traits\HasRoleManagementTest::it_handles_permission_checks"/>
+   <test id="Tests\Unit\Traits\HasRoleManagementTest::it_provides_navigation_context"/>
+  </group>
+ </groups>
+</testSuite>

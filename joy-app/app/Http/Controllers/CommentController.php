@@ -136,13 +136,11 @@ class CommentController extends Controller
             return $this->forbidden();
         }
 
-        // Check if comment belongs to the content item
-        if ($comment->content_item_id !== $contentItem->id) {
+        if ($this->commentDoesNotBelongToContentItem($comment, $contentItem)) {
             return $this->notFound('Comment not found');
         }
 
-        // Only agency users can update comments, and only their own
-        if (!$this->roleDetectionService->isAgency($user) || ($comment->user_id && $comment->user_id !== $user->id)) {
+        if ($this->userCannotUpdateComment($user, $comment)) {
             return $this->forbidden();
         }
 
@@ -174,20 +172,18 @@ class CommentController extends Controller
             return $this->forbidden();
         }
 
-        // Check if comment belongs to the content item
-        if ($comment->content_item_id !== $contentItem->id) {
+        if ($this->commentDoesNotBelongToContentItem($comment, $contentItem)) {
             return $this->notFound('Comment not found');
         }
 
-        // Only agency users can delete comments, and only their own
-        if (!$this->roleDetectionService->isAgency($user) || ($comment->user_id && $comment->user_id !== $user->id)) {
+        if ($this->userCannotDeleteComment($user, $comment)) {
             return $this->forbidden();
         }
 
         try {
             $deleted = $this->commentService->delete($comment, $user);
 
-            if ($deleted) {
+            if ($this->commentWasDeleted($deleted)) {
                 return $this->deleted('Comment deleted successfully');
             } else {
                 return $this->serverError('Failed to delete comment');
@@ -270,15 +266,14 @@ class CommentController extends Controller
                 ->where('content_item_id', $contentItem->id)
                 ->get();
 
-            if ($comments->count() !== count($commentIds)) {
+            if ($this->notAllCommentsWereFound($comments, $commentIds)) {
                 return $this->notFound('Some comments not found');
             }
 
             $results = ['success' => 0, 'failed' => 0, 'errors' => []];
 
             foreach ($comments as $comment) {
-                // Check ownership for non-admin users
-                if (!$this->roleDetectionService->isAdmin($user) && $comment->user_id && $comment->user_id !== $user->id) {
+                if ($this->userCannotModifyComment($user, $comment)) {
                     $results['failed']++;
                     $results['errors'][] = "Cannot modify comment {$comment->id}";
                     continue;
@@ -305,5 +300,60 @@ class CommentController extends Controller
         } catch (\Exception $e) {
             return $this->serverError('Bulk operation failed', $e);
         }
+    }
+
+    /**
+     * Check if comment does not belong to the content item.
+     */
+    private function commentDoesNotBelongToContentItem(Comment $comment, ContentItem $contentItem): bool
+    {
+        return $comment->content_item_id !== $contentItem->id;
+    }
+
+    /**
+     * Check if user cannot update the comment.
+     * Only agency users can update comments, and only their own.
+     */
+    private function userCannotUpdateComment($user, Comment $comment): bool
+    {
+        return !$this->roleDetectionService->isAgency($user)
+            || ($comment->user_id && $comment->user_id !== $user->id);
+    }
+
+    /**
+     * Check if user cannot delete the comment.
+     * Only agency users can delete comments, and only their own.
+     */
+    private function userCannotDeleteComment($user, Comment $comment): bool
+    {
+        return !$this->roleDetectionService->isAgency($user)
+            || ($comment->user_id && $comment->user_id !== $user->id);
+    }
+
+    /**
+     * Check if comment was successfully deleted.
+     */
+    private function commentWasDeleted(bool $deleted): bool
+    {
+        return $deleted === true;
+    }
+
+    /**
+     * Check if not all requested comments were found.
+     */
+    private function notAllCommentsWereFound($comments, array $commentIds): bool
+    {
+        return $comments->count() !== count($commentIds);
+    }
+
+    /**
+     * Check if user cannot modify the comment (for bulk operations).
+     * Non-admin users can only modify their own comments.
+     */
+    private function userCannotModifyComment($user, Comment $comment): bool
+    {
+        return !$this->roleDetectionService->isAdmin($user)
+            && $comment->user_id
+            && $comment->user_id !== $user->id;
     }
 }

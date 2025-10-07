@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,37 +10,32 @@ use Carbon\Carbon;
 
 class AuditLog extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'client_id',
         'user_id',
-        'user_type',
-        'action',
+        'event',
         'auditable_type',
         'auditable_id',
         'old_values',
         'new_values',
         'ip_address',
         'user_agent',
-        'session_id',
-        'request_data',
-        'response_data',
-        'severity',
-        'tags',
-        'expires_at',
     ];
 
     protected $casts = [
         'old_values' => 'array',
         'new_values' => 'array',
-        'request_data' => 'array',
-        'response_data' => 'array',
-        'tags' => 'array',
-        'expires_at' => 'datetime',
     ];
 
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'client_id');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function auditable()
@@ -53,20 +49,14 @@ class AuditLog extends Model
         return $query->where('client_id', $clientId);
     }
 
-    public function scopeForUser(Builder $query, int $userId, ?string $userType = null): Builder
+    public function scopeForUser(Builder $query, int $userId): Builder
     {
-        $query->where('user_id', $userId);
-        
-        if ($userType) {
-            $query->where('user_type', $userType);
-        }
-        
-        return $query;
+        return $query->where('user_id', $userId);
     }
 
-    public function scopeForAction(Builder $query, string $action): Builder
+    public function scopeForEvent(Builder $query, string $event): Builder
     {
-        return $query->where('action', $action);
+        return $query->where('event', $event);
     }
 
     public function scopeForModel(Builder $query, string $modelType, ?int $modelId = null): Builder
@@ -80,19 +70,9 @@ class AuditLog extends Model
         return $query;
     }
 
-    public function scopeBySeverity(Builder $query, string $severity): Builder
-    {
-        return $query->where('severity', $severity);
-    }
-
     public function scopeRecent(Builder $query, int $days = 30): Builder
     {
         return $query->where('created_at', '>=', now()->subDays($days));
-    }
-
-    public function scopeExpired(Builder $query): Builder
-    {
-        return $query->where('expires_at', '<=', now());
     }
 
     // Helper methods - delegated to services

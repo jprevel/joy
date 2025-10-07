@@ -1,0 +1,338 @@
+openapi: 3.0.0
+info:
+  title: Joy Content Calendar API
+  version: 1.0.0
+  description: Content management API for Joy calendar system
+
+paths:
+  /api/content:
+    get:
+      summary: List content items
+      parameters:
+        - name: client_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, review, approved, scheduled]
+        - name: platform
+          in: query
+          schema:
+            type: string
+            enum: [facebook, instagram, linkedin, twitter, blog]
+        - name: from_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to_date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Content items list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContentItem'
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      current_page:
+                        type: integer
+                      last_page:
+                        type: integer
+
+    post:
+      summary: Create content item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  format: uuid
+                title:
+                  type: string
+                  maxLength: 255
+                description:
+                  type: string
+                platform:
+                  type: string
+                  enum: [facebook, instagram, linkedin, twitter, blog]
+                scheduled_at:
+                  type: string
+                  format: date-time
+                  nullable: true
+              required:
+                - client_id
+                - title
+                - platform
+      responses:
+        '201':
+          description: Content item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/content/{id}:
+    get:
+      summary: Get content item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Content item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        '404':
+          description: Content item not found
+
+    put:
+      summary: Update content item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  maxLength: 255
+                description:
+                  type: string
+                status:
+                  type: string
+                  enum: [draft, review, approved, scheduled]
+                scheduled_at:
+                  type: string
+                  format: date-time
+                  nullable: true
+      responses:
+        '200':
+          description: Content item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        '404':
+          description: Content item not found
+        '422':
+          description: Validation error
+
+    delete:
+      summary: Delete content item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Content item deleted
+        '404':
+          description: Content item not found
+
+  /api/content/{id}/comments:
+    get:
+      summary: Get content item comments
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Comments list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+
+    post:
+      summary: Add comment to content item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  maxLength: 2000
+                author_name:
+                  type: string
+                  maxLength: 255
+                is_internal:
+                  type: boolean
+                  default: false
+              required:
+                - content
+      responses:
+        '201':
+          description: Comment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+
+components:
+  schemas:
+    ContentItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        platform:
+          type: string
+          enum: [facebook, instagram, linkedin, twitter, blog]
+        status:
+          type: string
+          enum: [draft, review, approved, scheduled]
+        scheduled_at:
+          type: string
+          format: date-time
+          nullable: true
+        media_path:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        comments_count:
+          type: integer
+        client:
+          $ref: '#/components/schemas/Client'
+        user:
+          $ref: '#/components/schemas/User'
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        content_item_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+          nullable: true
+        author_name:
+          type: string
+          nullable: true
+        content:
+          type: string
+        is_internal:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Client:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        logo:
+          type: string
+          nullable: true
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string

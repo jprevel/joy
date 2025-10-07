@@ -123,8 +123,8 @@ class ContentItemSeeder extends Seeder
             ContentItem::create([
                 'client_id' => $client->id,
                 'title' => $campaign,
-                'notes' => $this->getNotesForPlatform($platform, $client->name),
-                'owner_id' => $owner->id,
+                'description' => $this->getNotesForPlatform($platform, $client->name),
+                'user_id' => $owner->id,
                 'platform' => $platform,
                 'copy' => $this->getCopyForPlatform($platform, $client->name, $campaign),
                 'media_url' => $this->getMediaUrl($platform),

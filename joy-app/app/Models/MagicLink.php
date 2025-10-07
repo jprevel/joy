@@ -3,29 +3,27 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 class MagicLink extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'client_id',
         'token',
-        'email',
-        'name',
-        'permissions',
         'expires_at',
-        'last_accessed_at',
-        'access_count',
-        'is_active',
+        'accessed_at',
+        'scopes',
+        'pin',
     ];
 
     protected $casts = [
-        'permissions' => 'array',
+        'scopes' => 'array',
         'expires_at' => 'datetime',
-        'last_accessed_at' => 'datetime',
-        'is_active' => 'boolean',
+        'accessed_at' => 'datetime',
     ];
 
     public function client(): BelongsTo

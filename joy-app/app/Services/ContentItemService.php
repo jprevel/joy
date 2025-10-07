@@ -43,11 +43,11 @@ class ContentItemService
             'client_id' => $clientId,
             'title' => $itemData['title'],
             'copy' => $itemData['copy'] ?? '',
-            'platform' => $itemData['platform'],
+            'platform' => $itemData['platform'], // Platform should already be lowercase from config
             'scheduled_at' => Carbon::parse($itemData['scheduled_at'])->startOfDay(),
             'status_id' => $defaultStatus?->id,
-            'status' => $defaultStatus?->name ?? 'Draft',
-            'owner_id' => 1, // TODO: Replace with actual owner logic
+            'status' => strtolower($defaultStatus?->name ?? 'draft'), // Convert to lowercase to match enum
+            'user_id' => auth()->id() ?? 1, // Use authenticated user or fallback to user 1
         ]);
     }
 
@@ -66,14 +66,14 @@ class ContentItemService
     {
         $rules = [];
         $platforms = config('platforms.available', ['Facebook', 'Instagram', 'LinkedIn', 'Twitter', 'Blog']);
-        
+
         foreach ($contentItems as $index => $item) {
             $rules["contentItems.{$index}.title"] = 'required|string|max:255';
             $rules["contentItems.{$index}.platform"] = 'required|in:' . implode(',', $platforms);
             $rules["contentItems.{$index}.scheduled_at"] = 'required|date_format:Y-m-d';
-            $rules["contentItems.{$index}.image"] = 'nullable|image|max:' . config('uploads.max_image_size', 10240);
+            $rules["contentItems.{$index}.image"] = 'nullable|image|max:1024'; // 1MB to match PHP limits
         }
-        
+
         return $rules;
     }
 }

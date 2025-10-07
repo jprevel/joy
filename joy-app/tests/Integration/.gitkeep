@@ -1,0 +1,4 @@
+# Integration Tests Directory
+
+Tests that verify component integration with real dependencies.
+These run second in the TDD cycle.

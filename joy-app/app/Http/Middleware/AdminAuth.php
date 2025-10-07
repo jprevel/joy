@@ -21,17 +21,36 @@ class AdminAuth
     
     public function handle(Request $request, Closure $next): Response
     {
+        // Check if user is authenticated
+        if (!auth()->check()) {
+            return redirect('/login')->with('error', 'Authentication required');
+        }
+
+        $user = auth()->user();
+
+        // Check if user has admin role
+        if (!$user->hasRole('admin')) {
+            // Redirect based on user's actual role
+            if ($user->hasRole('agency')) {
+                return redirect('/calendar/agency')->with('error', 'Admin access required');
+            } elseif ($user->hasRole('client')) {
+                return redirect('/calendar/client')->with('error', 'Admin access required');
+            } else {
+                return redirect('/')->with('error', 'Admin access required');
+            }
+        }
+
         // Allow access if coming from calendar/admin route (testing mode)
         if ($this->isTestingModeAdminAccess($request)) {
             $this->logAuthorizedAccess($request);
             return $next($request);
         }
-        
+
         if (!$this->isAuthorizedIP($request)) {
             $this->logUnauthorizedAccess($request);
             return $this->createUnauthorizedResponse();
         }
-        
+
         $this->logAuthorizedAccess($request);
         return $next($request);
     }
@@ -76,16 +95,21 @@ class AdminAuth
     
     private function logAuthorizedAccess(Request $request): void
     {
-        AuditService::log(
-            AuditLogRequest::create('admin_access')
-                ->withNewValues([
-                    'ip_address' => $request->ip(),
-                    'route' => $request->route()?->getName(),
-                    'url' => $request->fullUrl(),
-                ])
-                ->withSeverity(AuditConstants::SEVERITY_INFO)
-                ->withTags(['admin', 'access'])
-        );
+        try {
+            AuditService::log(
+                AuditLogRequest::create('admin_access')
+                    ->withNewValues([
+                        'ip_address' => $request->ip(),
+                        'route' => $request->route()?->getName(),
+                        'url' => $request->fullUrl(),
+                    ])
+                    ->withSeverity(AuditConstants::SEVERITY_INFO)
+                    ->withTags(['admin', 'access'])
+            );
+        } catch (\Exception $e) {
+            // Log error but don't break the request
+            \Log::warning('Failed to log admin access: ' . $e->getMessage());
+        }
     }
     
     private function createUnauthorizedResponse(): Response

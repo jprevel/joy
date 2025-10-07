@@ -1,0 +1,4 @@
+# Contract Tests Directory
+
+Tests that verify API contracts and service interfaces.
+These run first in the TDD cycle.

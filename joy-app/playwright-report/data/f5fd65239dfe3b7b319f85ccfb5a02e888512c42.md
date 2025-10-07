@@ -1,0 +1,226 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - img [ref=e8]
+        - generic [ref=e10]: Internal Server Error
+      - generic [ref=e11]:
+        - generic [ref=e13] [cursor=pointer]: Copy as Markdown
+        - button [ref=e15] [cursor=pointer]:
+          - img [ref=e16] [cursor=pointer]
+  - main [ref=e18]:
+    - generic [ref=e19]:
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e24]: Symfony\Component\Routing\Exception\RouteNotFoundException
+          - generic [ref=e25]: Route [filament.admin.pages.dashboard] not defined.
+        - generic [ref=e26]:
+          - generic [ref=e28]: GET localhost:8001
+          - generic [ref=e30]: PHP 8.4.12 — Laravel 12.28.1
+      - generic [ref=e33]:
+        - generic [ref=e35]:
+          - button "Expand vendor frames" [ref=e37] [cursor=pointer]:
+            - generic [ref=e38] [cursor=pointer]: Expand
+            - generic [ref=e39] [cursor=pointer]: vendor frames
+            - generic [ref=e40] [cursor=pointer]:
+              - img [ref=e41] [cursor=pointer]
+              - img [ref=e43] [cursor=pointer]
+          - generic [ref=e45]:
+            - generic [ref=e47]: 34 vendor frames collapsed
+            - button "storage/framework/views/4943bc92ebba41e8b0e508149542e0ad.blade.php :16 require" [ref=e48] [cursor=pointer]:
+              - generic [ref=e50] [cursor=pointer]:
+                - generic [ref=e52] [cursor=pointer]:
+                  - generic [ref=e53] [cursor=pointer]: storage/framework/views/4943bc92ebba41e8b0e508149542e0ad.blade.php
+                  - generic [ref=e54] [cursor=pointer]: :16
+                - generic [ref=e55] [cursor=pointer]: require
+            - generic [ref=e57]: 72 vendor frames collapsed
+            - button "public/index.php :20 require_once" [ref=e58] [cursor=pointer]:
+              - generic [ref=e60] [cursor=pointer]:
+                - generic [ref=e62] [cursor=pointer]:
+                  - generic [ref=e63] [cursor=pointer]: public/index.php
+                  - generic [ref=e64] [cursor=pointer]: :20
+                - generic [ref=e65] [cursor=pointer]: require_once
+            - generic [ref=e67]: 1 vendor frame collapsed
+        - text: 521 522 523 524 525 526 527 528 529 530 531 532 533 534 535 536 537 538 866 867 868 869 870 871 872 873 874 875 876 877 878 879 880 881 882 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 112 113 114 115 116 117 118 119 120 121 122 123 124 125 126 127 128 308 309 310 311 312 313 314 315 316 317 318 319 320 321 322 323 324 325 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 254 255 256 257 258 259 260 261 262 263 264 265 266 267 268 269 270 298 299 300 301 302 303 304 305 306 307 308 309 310 311 312 313 314 246 247 248 249 250 251 252 253 254 255 256 257 258 259 260 261 262 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114
+        - generic [ref=e68]:
+          - generic [ref=e71]:
+            - generic [ref=e72]: storage/framework/views/4943bc92ebba41e8b0e508149542e0ad.blade.php
+            - generic [ref=e73]: :16
+          - code [ref=e76]:
+            - table [ref=e77]:
+              - rowgroup [ref=e78]:
+                - 'row "11 $__env->slot($name, attributes: $slot->attributes->getAttributes());" [ref=e79]':
+                  - cell "11" [ref=e80]:
+                    - generic [ref=e81]: "11"
+                  - 'cell "$__env->slot($name, attributes: $slot->attributes->getAttributes());" [ref=e82]':
+                    - generic [ref=e83]: $__env
+                    - text: "->"
+                    - generic [ref=e84]: slot
+                    - text: (
+                    - generic [ref=e85]: $name
+                    - text: ","
+                    - generic [ref=e86]: attributes
+                    - text: ":"
+                    - generic [ref=e87]: $slot
+                    - text: "->attributes->"
+                    - generic [ref=e88]: getAttributes
+                    - text: ());
+                - row "12 echo $slot->toHtml();" [ref=e89]:
+                  - cell "12" [ref=e90]:
+                    - generic [ref=e91]: "12"
+                  - cell "echo $slot->toHtml();" [ref=e92]:
+                    - generic [ref=e93]: echo
+                    - generic [ref=e94]: $slot
+                    - text: "->"
+                    - generic [ref=e95]: toHtml
+                    - text: ();
+                - row "13 $__env->endSlot();" [ref=e96]:
+                  - cell "13" [ref=e97]:
+                    - generic [ref=e98]: "13"
+                  - cell "$__env->endSlot();" [ref=e99]:
+                    - generic [ref=e100]: $__env
+                    - text: "->"
+                    - generic [ref=e101]: endSlot
+                    - text: ();
+                - 'row "14 }" [ref=e102]':
+                  - cell "14" [ref=e103]:
+                    - generic [ref=e104]: "14"
+                  - 'cell "}" [ref=e105]'
+                - row "15 ?>" [ref=e106]:
+                  - cell "15" [ref=e107]:
+                    - generic [ref=e108]: "15"
+                  - cell "?>" [ref=e109]:
+                    - generic [ref=e110]: "?>"
+                - row "16 @endcomponent" [ref=e111]:
+                  - cell "16" [ref=e112]:
+                    - generic [ref=e113]: "16"
+                  - cell "@endcomponent" [ref=e114]
+        - text: 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 203 204 205 206 207 208 209 210 211 212 213 214 215 216 217 218 219 186 187 188 189 190 191 192 193 194 195 196 197 198 199 200 201 202 203 155 156 157 158 159 160 161 162 163 164 165 166 167 168 169 170 171 347 348 349 350 351 352 353 354 355 356 357 358 359 360 361 362 363 364 358 359 360 361 362 363 364 365 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 19 20 21 22 23 24 25 26 27 28 29 30 31 32 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 260 261 262 263 264 265 266 267 268 269 270 271 272 273 274 275 276 206 207 208 209 210 211 212 213 214 215 216 217 218 219 220 221 222 223 817 818 819 820 821 822 823 824 825 826 827 828 829 830 831 832 833 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 10 11 12 13 14 15 16 17 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 9 10 11 12 13 14 15 16 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 45 46 47 48 49 50 51 52 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 43 44 45 46 47 48 49 50 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 115 116 117 118 119 120 121 122 123 124 125 126 127 128 129 130 131 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 31 32 33 34 35 36 37 38 39 40 41 42 43 44 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 14 15 16 17 18 19 20 21 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 816 817 818 819 820 821 822 823 824 825 826 827 828 829 830 831 832 833 795 796 797 798 799 800 801 802 803 804 805 806 807 808 809 810 811 812 759 760 761 762 763 764 765 766 767 768 769 770 771 772 773 774 775 748 749 750 751 752 753 754 755 756 757 758 759 760 761 762 763 764 195 196 197 198 199 200 201 202 203 204 205 206 207 208 209 210 211 212 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 21 22 23 24 25 26 27 28 214 215 216 217 218 219 220 221 222 223 224 225 226 227 228 229 230 231 132 133 134 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 139 140 141 142 143 144 145 146 147 148 149 150 151 152 153 154 155 1215 1216 1217 1218 1219 1220 1221 1222 1223 1224 1225 1226 1227 1228 1229 1230 1231 1232 15 16 17 18 19 20 18 19 20 21 22 23
+      - generic [ref=e115]:
+        - generic [ref=e117]: Request
+        - generic [ref=e118]:
+          - generic [ref=e119]: GET
+          - generic [ref=e120]: /admin/users
+        - generic [ref=e122]: Headers
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e125] [cursor=pointer]: host
+            - code [ref=e128]: localhost:8001
+          - generic [ref=e129]:
+            - generic [ref=e130] [cursor=pointer]: connection
+            - code [ref=e133]: keep-alive
+          - generic [ref=e134]:
+            - generic [ref=e135] [cursor=pointer]: sec-ch-ua
+            - code [ref=e138]: "\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"HeadlessChrome\";v=\"140\""
+          - generic [ref=e139]:
+            - generic [ref=e140] [cursor=pointer]: sec-ch-ua-mobile
+            - code [ref=e143]: "?0"
+          - generic [ref=e144]:
+            - generic [ref=e145] [cursor=pointer]: sec-ch-ua-platform
+            - code [ref=e148]: "\"Windows\""
+          - generic [ref=e149]:
+            - generic [ref=e150] [cursor=pointer]: upgrade-insecure-requests
+            - code [ref=e153]: "1"
+          - generic [ref=e154]:
+            - generic [ref=e155] [cursor=pointer]: user-agent
+            - code [ref=e158]: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.7339.16 Safari/537.36
+          - generic [ref=e159]:
+            - generic [ref=e160] [cursor=pointer]: accept-language
+            - code [ref=e163]: en-US
+          - generic [ref=e164]:
+            - generic [ref=e165] [cursor=pointer]: accept
+            - code [ref=e168]: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+          - generic [ref=e169]:
+            - generic [ref=e170] [cursor=pointer]: sec-fetch-site
+            - code [ref=e173]: none
+          - generic [ref=e174]:
+            - generic [ref=e175] [cursor=pointer]: sec-fetch-mode
+            - code [ref=e178]: navigate
+          - generic [ref=e179]:
+            - generic [ref=e180] [cursor=pointer]: sec-fetch-user
+            - code [ref=e183]: "?1"
+          - generic [ref=e184]:
+            - generic [ref=e185] [cursor=pointer]: sec-fetch-dest
+            - code [ref=e188]: document
+          - generic [ref=e189]:
+            - generic [ref=e190] [cursor=pointer]: accept-encoding
+            - code [ref=e193]: gzip, deflate, br, zstd
+          - generic [ref=e194]:
+            - generic [ref=e195] [cursor=pointer]: cookie
+            - code [ref=e198]: XSRF-TOKEN=eyJpdiI6IkdvQVAxa1JVV1RyeW85UTloUXQ5TXc9PSIsInZhbHVlIjoiakVkaUFYcW9zMnM5TkxRYlFMN0ZVUVA4R2pSTDRjczR5c0UvVjNaT3JPZUtBNDZMSDRyem0yd0xldm85TmhqamNoU1N1dFVGSDZBWDBrc3JxWWYxMlFoUUxmdGFBL1dNWktHQTJtOVIwc1N0ZjU4UjdaenJxZTlRWmNVOUdrOW4iLCJtYWMiOiI1ZjFjZmFjMTBkOWM1OWM0YTBmZTc0Yjc5OTRkYjhjMmEwZDlkNzQ5NDJjMWQ4NzdjNzk5MjI2MGQ4ZjAyMTVhIiwidGFnIjoiIn0%3D; joy-session=eyJpdiI6IlpqdDQyUU12TVB3U2NGODlhWmtTK1E9PSIsInZhbHVlIjoiWG1DaXBiQjd2NmJkNGFYK0RSOTd1NGN3Ykpua2ZtU001MEswNjM4eXpCRTRpK2pVMUZ2elR5RkxFVkVtVXA1R1F2aG5sMDFwQk1BTzRnaFk2QmRxNkZLVkU3QkZnaUtFVjRtdHNtTlpNNjA2cmhlMmkzeXJkdEhHd25TYkRBZWIiLCJtYWMiOiJiZWFiZTZkYzAyNGU4NDk2NzU4OGE5NWU2MjUzNWYxM2JmNmY5NGEwYmU4ZTg3YTUyMjVlNjVkZDgxNTYzMzFlIiwidGFnIjoiIn0%3D
+        - generic [ref=e200]: Body
+        - code [ref=e205]: No body data
+      - generic [ref=e206]:
+        - generic [ref=e208]: Application
+        - generic [ref=e210]: Routing
+        - generic [ref=e211]:
+          - generic [ref=e212]:
+            - generic [ref=e213] [cursor=pointer]: controller
+            - code [ref=e216]: App\Filament\Resources\Users\Pages\ListUsers
+          - generic [ref=e217]:
+            - generic [ref=e218] [cursor=pointer]: route name
+            - code [ref=e221]: filament.admin.resources.users.index
+          - generic [ref=e222]:
+            - generic [ref=e223] [cursor=pointer]: middleware
+            - code [ref=e226]: panel:admin, Illuminate\Cookie\Middleware\EncryptCookies, Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse, Illuminate\Session\Middleware\StartSession, Filament\Http\Middleware\AuthenticateSession, Illuminate\View\Middleware\ShareErrorsFromSession, Illuminate\Foundation\Http\Middleware\VerifyCsrfToken, Illuminate\Routing\Middleware\SubstituteBindings, Filament\Http\Middleware\DisableBladeIconComponents, Filament\Http\Middleware\DispatchServingFilamentEvent, Filament\Http\Middleware\Authenticate
+        - generic [ref=e228]: Database Queries
+        - generic [ref=e229]:
+          - generic [ref=e230]:
+            - generic [ref=e231]:
+              - generic [ref=e232]: pgsql
+              - generic [ref=e233]: (22.57 ms)
+            - code [ref=e236]: select * from "cache" where "key" in ('joy-cache-telescope:dump-watcher')
+          - generic [ref=e237]:
+            - generic [ref=e238]:
+              - generic [ref=e239]: pgsql
+              - generic [ref=e240]: (0.42 ms)
+            - code [ref=e243]: select * from "cache" where "key" in ('joy-cache-telescope:pause-recording')
+          - generic [ref=e244]:
+            - generic [ref=e245]:
+              - generic [ref=e246]: pgsql
+              - generic [ref=e247]: (1.26 ms)
+            - code [ref=e250]: select * from "sessions" where "id" = 'oHpnYeyE5YdOVqVPRTxIQhkHtKZvWHlriiCPecou' limit 1
+          - generic [ref=e251]:
+            - generic [ref=e252]:
+              - generic [ref=e253]: pgsql
+              - generic [ref=e254]: (1.39 ms)
+            - code [ref=e257]: select * from "users" where "id" = 3 limit 1
+          - generic [ref=e258]:
+            - generic [ref=e259]:
+              - generic [ref=e260]: pgsql
+              - generic [ref=e261]: (0.62 ms)
+            - code [ref=e264]: select * from "cache" where "key" in ('joy-cache-spatie.permission.cache')
+          - generic [ref=e265]:
+            - generic [ref=e266]:
+              - generic [ref=e267]: pgsql
+              - generic [ref=e268]: (2.82 ms)
+            - code [ref=e271]: select count(*) as aggregate from "users"
+          - generic [ref=e272]:
+            - generic [ref=e273]:
+              - generic [ref=e274]: pgsql
+              - generic [ref=e275]: (1.93 ms)
+            - code [ref=e278]: select * from "users" order by "users"."id" asc limit 10 offset 0
+          - generic [ref=e279]:
+            - generic [ref=e280]:
+              - generic [ref=e281]: pgsql
+              - generic [ref=e282]: (8.21 ms)
+            - code [ref=e285]: select "roles".*, "model_has_roles"."model_id" as "pivot_model_id", "model_has_roles"."role_id" as "pivot_role_id", "model_has_roles"."model_type" as "pivot_model_type" from "roles" inner join "model_has_roles" on "roles"."id" = "model_has_roles"."role_id" where "model_has_roles"."model_id" in (1, 2, 3, 4, 6) and "model_has_roles"."model_type" = 'App\Models\User'
+          - generic [ref=e286]:
+            - generic [ref=e287]:
+              - generic [ref=e288]: pgsql
+              - generic [ref=e289]: (1.48 ms)
+            - code [ref=e292]: select "teams".*, "team_user"."user_id" as "pivot_user_id", "team_user"."team_id" as "pivot_team_id" from "teams" inner join "team_user" on "teams"."id" = "team_user"."team_id" where "team_user"."user_id" in (1, 2, 3, 4, 6)
+          - generic [ref=e293]:
+            - generic [ref=e294]:
+              - generic [ref=e295]: pgsql
+              - generic [ref=e296]: (4.7 ms)
+            - code [ref=e299]: select distinct "roles".* from "roles" left join "model_has_roles" on "roles"."id" = "model_has_roles"."role_id" order by "roles"."name" asc
+          - generic [ref=e300]:
+            - generic [ref=e301]:
+              - generic [ref=e302]: pgsql
+              - generic [ref=e303]: (1.08 ms)
+            - code [ref=e306]: select distinct "teams".* from "teams" left join "team_user" on "teams"."id" = "team_user"."team_id" order by "teams"."name" asc
+```

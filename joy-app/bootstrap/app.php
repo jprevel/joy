@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'validate.magic.link' => \App\Http\Middleware\ValidateMagicLink::class,
             'admin.auth' => \App\Http\Middleware\AdminAuth::class,
+            'auth.api' => \App\Http\Middleware\EnsureAuthenticated::class,
+            'client.access' => \App\Http\Middleware\ResolveClientAccess::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

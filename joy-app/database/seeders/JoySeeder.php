@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\ClientWorkspace;
 use App\Models\AgencyUser;
 use App\Models\Concept;
-use App\Models\Variant;
+use App\Models\ContentItem;
 use App\Models\Comment;
 
 class JoySeeder extends Seeder
@@ -39,7 +39,7 @@ class JoySeeder extends Seeder
                 'title' => 'Q4 Product Launch Campaign',
                 'notes' => 'Multi-platform campaign for new widget product line',
                 'status' => 'In Review',
-                'variants' => [
+                'contentItems' => [
                     [
                         'platform' => 'facebook',
                         'copy' => '🚀 Exciting news! Our new widget is revolutionizing the industry. Get ready for something amazing! #Innovation #TechNews',
@@ -64,7 +64,7 @@ class JoySeeder extends Seeder
                 'title' => 'Holiday Season Content',
                 'notes' => 'Festive content for holiday season',
                 'status' => 'Draft',
-                'variants' => [
+                'contentItems' => [
                     [
                         'platform' => 'facebook',
                         'copy' => '🎄 Wishing all our customers a wonderful holiday season! Special offers coming soon...',
@@ -83,7 +83,7 @@ class JoySeeder extends Seeder
                 'title' => 'Weekly Blog Content',
                 'notes' => 'Regular blog posts for thought leadership',
                 'status' => 'Scheduled',
-                'variants' => [
+                'contentItems' => [
                     [
                         'platform' => 'blog',
                         'copy' => 'The Future of Widget Technology: 5 Trends to Watch in 2024',
@@ -96,7 +96,7 @@ class JoySeeder extends Seeder
                 'title' => 'Customer Success Stories',
                 'notes' => 'Showcase client achievements',
                 'status' => 'In Review', 
-                'variants' => [
+                'contentItems' => [
                     [
                         'platform' => 'linkedin',
                         'copy' => 'Case Study: How Widget Corp increased efficiency by 300% using our solutions. Read their story.',
@@ -115,7 +115,7 @@ class JoySeeder extends Seeder
                 'title' => 'Team Spotlight Series',
                 'notes' => 'Highlight team members',
                 'status' => 'Approved',
-                'variants' => [
+                'contentItems' => [
                     [
                         'platform' => 'instagram',
                         'copy' => '👋 Meet Sarah, our lead developer! She\'s been instrumental in our latest widget innovations.',
@@ -142,14 +142,14 @@ class JoySeeder extends Seeder
                 'due_date' => null,
             ]);
 
-            foreach ($conceptData['variants'] as $variantData) {
-                $variant = Variant::create([
+            foreach ($conceptData['contentItems'] as $contentItemData) {
+                $contentItem = ContentItem::create([
                     'concept_id' => $concept->id,
-                    'platform' => $variantData['platform'],
-                    'copy' => $variantData['copy'],
+                    'platform' => $contentItemData['platform'],
+                    'copy' => $contentItemData['copy'],
                     'media_url' => null,
-                    'scheduled_at' => $variantData['scheduled_at'],
-                    'status' => $variantData['status'],
+                    'scheduled_at' => $contentItemData['scheduled_at'],
+                    'status' => $contentItemData['status'],
                     'trello_card_id' => null,
                 ]);
             }

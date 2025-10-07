@@ -8,12 +8,16 @@ use App\Models\AuditLog;
 use App\Models\ClientWorkspace;
 use App\Services\Audit\AuditExportService;
 use App\Services\AuditService;
+use App\Services\AuditLogViewerService;
 use App\DTOs\AuditLogRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
 class AuditLogController extends Controller
 {
+    public function __construct(
+        private AuditLogViewerService $auditLogViewerService
+    ) {}
     public function index(Request $request)
     {
         $filters = $request->only(['workspace_id', 'action', 'severity', 'user_type', 'days']);
@@ -173,6 +177,43 @@ class AuditLogController extends Controller
         return response()->json($stats);
     }
     
+    /**
+     * Display the last 100 audit log entries
+     */
+    public function recent(Request $request)
+    {
+        $filters = $request->only(['date_from', 'date_to', 'user_id', 'event']);
+
+        if ($request->expectsJson()) {
+            $auditLogs = $this->auditLogViewerService->getRecentAuditLogs($filters);
+
+            $formattedLogs = $auditLogs->map(function ($auditLog) {
+                return $this->auditLogViewerService->formatAuditLogEntry($auditLog);
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $formattedLogs,
+                'count' => $formattedLogs->count(),
+                'message' => $formattedLogs->isEmpty()
+                    ? 'No audit log entries found matching the criteria.'
+                    : "Showing {$formattedLogs->count()} most recent audit log entries."
+            ]);
+        }
+
+        // For web requests, show the viewer page
+        $auditLogs = $this->auditLogViewerService->getRecentAuditLogs($filters);
+        $eventTypes = $this->auditLogViewerService->getEventTypes();
+        $users = $this->auditLogViewerService->getAuditLogUsers();
+
+        return view('admin.audit.recent', [
+            'auditLogs' => $auditLogs,
+            'eventTypes' => $eventTypes,
+            'users' => $users,
+            'filters' => $filters,
+        ]);
+    }
+
     private function getMinCleanupDays(): int
     {
         return AuditConstants::MIN_CLEANUP_DAYS;

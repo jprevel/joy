@@ -1,0 +1,412 @@
+openapi: 3.0.3
+info:
+  title: Joy Content Item API
+  description: API for content item management
+  version: 2.0.0
+
+servers:
+  - url: /api
+    description: API base path
+
+security:
+  - bearerAuth: []
+
+paths:
+  /content-items:
+    get:
+      summary: List content items
+      operationId: listContentItems
+      tags:
+        - ContentItems
+      parameters:
+        - name: client_id
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, pending_review, approved, published, rejected]
+        - name: platform
+          in: query
+          schema:
+            type: string
+            enum: [facebook, instagram, linkedin, blog]
+      responses:
+        '200':
+          description: List of content items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContentItem'
+
+    post:
+      summary: Create content item
+      operationId: createContentItem
+      tags:
+        - ContentItems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContentItemRequest'
+      responses:
+        '201':
+          description: Content item created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /content-items/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+
+    get:
+      summary: Get content item details
+      operationId: getContentItem
+      tags:
+        - ContentItems
+      responses:
+        '200':
+          description: Content item details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItemDetailed'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      summary: Update content item
+      operationId: updateContentItem
+      tags:
+        - ContentItems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContentItemRequest'
+      responses:
+        '200':
+          description: Content item updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    delete:
+      summary: Delete content item
+      operationId: deleteContentItem
+      tags:
+        - ContentItems
+      responses:
+        '204':
+          description: Content item deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /content-items/{id}/status:
+    put:
+      summary: Update content item status
+      operationId: updateContentItemStatus
+      tags:
+        - ContentItems
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatusRequest'
+      responses:
+        '200':
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        '422':
+          description: Invalid status transition
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "Invalid status transition"
+                message: "Cannot transition from pending_review to published"
+
+  /content-items/bulk/status:
+    put:
+      summary: Bulk update content item statuses
+      operationId: bulkUpdateStatus
+      tags:
+        - ContentItems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkStatusUpdateRequest'
+      responses:
+        '200':
+          description: Statuses updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ContentItem'
+                  failed:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        reason:
+                          type: string
+
+components:
+  schemas:
+    ContentItem:
+      type: object
+      required:
+        - id
+        - title
+        - scheduled_date
+        - status
+        - platform
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        scheduled_date:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [draft, pending_review, approved, published, rejected]
+        platform:
+          type: string
+          enum: [facebook, instagram, linkedin, blog]
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+        comments_count:
+          type: integer
+        client:
+          $ref: '#/components/schemas/Client'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ContentItemDetailed:
+      allOf:
+        - $ref: '#/components/schemas/ContentItem'
+        - type: object
+          properties:
+            comments:
+              type: array
+              items:
+                $ref: '#/components/schemas/Comment'
+            trello_card:
+              $ref: '#/components/schemas/TrelloCard'
+              nullable: true
+            status_history:
+              type: array
+              items:
+                type: object
+                properties:
+                  from:
+                    type: string
+                  to:
+                    type: string
+                  user:
+                    type: string
+                  changed_at:
+                    type: string
+                    format: date-time
+
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        comment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    TrelloCard:
+      type: object
+      properties:
+        id:
+          type: integer
+        trello_id:
+          type: string
+        url:
+          type: string
+          format: uri
+
+    CreateContentItemRequest:
+      type: object
+      required:
+        - title
+        - scheduled_date
+        - platform
+        - client_id
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        scheduled_date:
+          type: string
+          format: date
+        platform:
+          type: string
+          enum: [facebook, instagram, linkedin, blog]
+        client_id:
+          type: integer
+        image:
+          type: string
+          format: binary
+
+    UpdateContentItemRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        scheduled_date:
+          type: string
+          format: date
+        platform:
+          type: string
+          enum: [facebook, instagram, linkedin, blog]
+        image:
+          type: string
+          format: binary
+
+    UpdateStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [draft, pending_review, approved, published, rejected]
+        reason:
+          type: string
+          maxLength: 500
+          description: Required when status is 'rejected'
+
+    BulkStatusUpdateRequest:
+      type: object
+      required:
+        - content_item_ids
+        - status
+      properties:
+        content_item_ids:
+          type: array
+          items:
+            type: integer
+          minItems: 1
+        status:
+          type: string
+          enum: [draft, pending_review, approved, published, rejected]
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+  responses:
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Not Found"
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer

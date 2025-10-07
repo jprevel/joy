@@ -1,0 +1,274 @@
+openapi: 3.0.0
+info:
+  title: Joy Magic Link API
+  version: 1.0.0
+  description: Magic link access API for client content review
+
+paths:
+  /api/magic-links:
+    post:
+      summary: Create magic link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                  format: uuid
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                    enum: [view, comment, approve]
+                expires_at:
+                  type: string
+                  format: date-time
+                pin:
+                  type: string
+                  pattern: '^\d{4}$'
+                  nullable: true
+              required:
+                - client_id
+                - scopes
+                - expires_at
+      responses:
+        '201':
+          description: Magic link created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MagicLink'
+        '422':
+          description: Validation error
+
+  /api/magic-links/{token}:
+    get:
+      summary: Get magic link details
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Magic link details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MagicLink'
+        '404':
+          description: Magic link not found
+        '410':
+          description: Magic link expired
+
+    delete:
+      summary: Revoke magic link
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Magic link revoked
+        '404':
+          description: Magic link not found
+
+  /magic/{token}:
+    get:
+      summary: Access client workspace via magic link
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: pin
+          in: query
+          schema:
+            type: string
+            pattern: '^\d{4}$'
+      responses:
+        '200':
+          description: Workspace access granted
+          content:
+            text/html:
+              schema:
+                type: string
+                description: HTML page with client workspace
+        '401':
+          description: Invalid PIN required
+        '404':
+          description: Magic link not found
+        '410':
+          description: Magic link expired
+
+  /magic/{token}/content:
+    get:
+      summary: Get client content via magic link
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: view
+          in: query
+          schema:
+            type: string
+            enum: [calendar, timeline]
+            default: calendar
+        - name: from_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to_date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Client content
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content_items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ClientContentItem'
+                  client:
+                    $ref: '#/components/schemas/ClientInfo'
+                  scopes:
+                    type: array
+                    items:
+                      type: string
+        '401':
+          description: Insufficient scope
+        '404':
+          description: Magic link not found
+        '410':
+          description: Magic link expired
+
+  /magic/{token}/content/{id}/approve:
+    post:
+      summary: Approve content item via magic link
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Content item approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientContentItem'
+        '401':
+          description: Insufficient scope (approve required)
+        '404':
+          description: Magic link or content not found
+        '410':
+          description: Magic link expired
+        '422':
+          description: Cannot approve (invalid status)
+
+components:
+  schemas:
+    MagicLink:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        client_id:
+          type: string
+          format: uuid
+        token:
+          type: string
+          format: uuid
+        scopes:
+          type: array
+          items:
+            type: string
+        expires_at:
+          type: string
+          format: date-time
+        has_pin:
+          type: boolean
+        accessed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        client:
+          $ref: '#/components/schemas/ClientInfo'
+
+    ClientContentItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        platform:
+          type: string
+          enum: [facebook, instagram, linkedin, twitter, blog]
+        status:
+          type: string
+          enum: [draft, review, approved, scheduled]
+        scheduled_at:
+          type: string
+          format: date-time
+          nullable: true
+        media_path:
+          type: string
+          nullable: true
+        comments_count:
+          type: integer
+        can_approve:
+          type: boolean
+        can_comment:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    ClientInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        logo:
+          type: string
+          nullable: true

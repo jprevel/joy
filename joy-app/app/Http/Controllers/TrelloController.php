@@ -98,14 +98,13 @@ class TrelloController extends Controller
 
             $contentItem = ContentItem::findOrFail($request->input('content_item_id'));
 
-            // Check if user can access this content item
-            if (!$this->roleDetectionService->canAccessContent($user, $contentItem)) {
+            if ($this->userCannotAccessContent($user, $contentItem)) {
                 return $this->forbidden();
             }
 
             $trelloCard = $this->trelloService->createCardForContent($contentItem);
 
-            if ($trelloCard) {
+            if ($this->cardWasCreatedSuccessfully($trelloCard)) {
                 return $this->created([
                     'trello_card_id' => $trelloCard->trello_card_id,
                     'content_item_id' => $contentItem->id,
@@ -356,5 +355,21 @@ class TrelloController extends Controller
         } catch (\Exception $e) {
             return $this->serverError('Bulk operation failed', $e);
         }
+    }
+
+    /**
+     * Check if user cannot access the content item.
+     */
+    private function userCannotAccessContent($user, ContentItem $contentItem): bool
+    {
+        return !$this->roleDetectionService->canAccessContent($user, $contentItem);
+    }
+
+    /**
+     * Check if Trello card was created successfully.
+     */
+    private function cardWasCreatedSuccessfully($trelloCard): bool
+    {
+        return $trelloCard !== null;
     }
 }

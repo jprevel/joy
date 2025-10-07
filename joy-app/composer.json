@@ -59,6 +59,31 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "test-tdd": [
+            "echo '🔴🟢🔵 Running Constitutional TDD Cycle'",
+            "./scripts/test-tdd-cycle.sh"
+        ],
+        "test-red": [
+            "echo '🔴 RED Phase: Tests should fail'",
+            "vendor/bin/phpunit --testsuite=Contract --stop-on-failure"
+        ],
+        "test-green": [
+            "echo '🟢 GREEN Phase: All tests should pass'",
+            "./scripts/test-tdd-cycle.sh"
+        ],
+        "new-feature": [
+            "echo '🚀 Starting new feature TDD cycle'",
+            "echo 'Usage: composer new-feature -- <feature-name>'"
+        ],
+        "build": [
+            "echo '🏛️  Starting Constitutional Build Process'",
+            "./scripts/constitutional-build.sh"
+        ],
+        "build-force": [
+            "echo '⚠️  WARNING: Bypassing Constitutional requirements'",
+            "echo '🏛️  This violates Joy Constitution Article I & II'",
+            "npm run build"
         ]
     },
     "extra": {

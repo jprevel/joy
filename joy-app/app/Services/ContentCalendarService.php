@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\ClientWorkspace;
-use App\Repositories\Contracts\VariantRepositoryInterface;
+use App\Repositories\Contracts\ContentItemRepositoryInterface;
 use App\Helpers\PlatformHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -11,32 +11,32 @@ use Illuminate\Support\Collection;
 class ContentCalendarService
 {
     public function __construct(
-        private VariantRepositoryInterface $variantRepository
+        private ContentItemRepositoryInterface $contentItemRepository
     ) {}
 
-    public function getAllVariantsForWorkspace(int $workspaceId): Collection
+    public function getAllContentItemsForWorkspace(int $workspaceId): Collection
     {
-        $variants = $this->variantRepository->getAllForWorkspace($workspaceId);
+        $contentItems = $this->contentItemRepository->getAllForWorkspace($workspaceId);
         
-        return $variants->map(function($variant) {
+        return $contentItems->map(function($contentItem) {
             return [
-                'id' => $variant->id,
-                'platform' => $variant->platform,
-                'copy' => $variant->copy,
-                'media_url' => $variant->media_url,
-                'scheduled_at' => $variant->scheduled_at,
-                'status' => $variant->status,
-                'comment_count' => $variant->comments_count,
+                'id' => $contentItem->id,
+                'platform' => $contentItem->platform,
+                'copy' => $contentItem->copy,
+                'media_url' => $contentItem->media_url,
+                'scheduled_at' => $contentItem->scheduled_at,
+                'status' => $contentItem->status,
+                'comment_count' => $contentItem->comments_count,
                 'concept' => [
-                    'id' => $variant->concept->id,
-                    'title' => $variant->concept->title,
-                    'status' => $variant->concept->status,
+                    'id' => $contentItem->concept->id,
+                    'title' => $contentItem->concept->title,
+                    'status' => $contentItem->concept->status,
                 ],
             ];
         });
     }
     
-    public function getJoyDemoVariants(): Collection
+    public function getJoyDemoContentItems(): Collection
     {
         $workspace = ClientWorkspace::where('name', 'Joy Demo Company')->first();
         
@@ -44,7 +44,7 @@ class ContentCalendarService
             return collect([]);
         }
         
-        return $this->getAllVariantsForWorkspace($workspace->id);
+        return $this->getAllContentItemsForWorkspace($workspace->id);
     }
     
     public static function getPlatformIcon(string $platform): string
@@ -59,7 +59,7 @@ class ContentCalendarService
     
     public static function getStatusColor(string $status): string
     {
-        $statusEnum = \App\Enums\VariantStatus::tryFrom($status);
+        $statusEnum = \App\Enums\ContentItemStatus::tryFrom($status);
         return $statusEnum ? $statusEnum->getColor() : 'bg-gray-400';
     }
 }

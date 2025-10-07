@@ -295,9 +295,7 @@ class AdminController extends Controller
                 'overall_status' => 'healthy'
             ];
 
-            // Determine overall status
-            $issues = array_filter($health, fn($check) => is_array($check) && ($check['status'] ?? 'ok') !== 'ok');
-            if (!empty($issues)) {
+            if ($this->systemHasHealthIssues($health)) {
                 $health['overall_status'] = 'degraded';
             }
 
@@ -458,5 +456,14 @@ class AdminController extends Controller
         }
 
         return ['status' => 'ok', 'message' => "Memory usage normal: {$memoryUsage}MB"];
+    }
+
+    /**
+     * Check if system has any health issues.
+     */
+    private function systemHasHealthIssues(array $health): bool
+    {
+        $issues = array_filter($health, fn($check) => is_array($check) && ($check['status'] ?? 'ok') !== 'ok');
+        return !empty($issues);
     }
 }

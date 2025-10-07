@@ -63,4 +63,20 @@ class User extends Authenticatable
     {
         return Client::whereIn('team_id', $this->teams()->pluck('teams.id'));
     }
+
+    /**
+     * Check if user has a specific role
+     * Uses Spatie's HasRoles trait, but we override to maintain compatibility
+     */
+    // Spatie's hasRole() method is already provided by the HasRoles trait
+    // No need to override unless we want custom logic
+
+    /**
+     * Get the user's primary role name
+     * Returns the first role name if user has multiple roles
+     */
+    public function getRoleName(): ?string
+    {
+        return $this->roles->first()?->name;
+    }
 }

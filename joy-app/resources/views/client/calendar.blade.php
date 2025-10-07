@@ -84,7 +84,7 @@
                                             <div :class="[
                                                 'text-xs p-1 rounded cursor-pointer',
                                                 getPlatformColor(event.platform)
-                                            ]" @click="openVariantModal(event)">
+                                            ]" @click="openContentItemModal(event)">
                                                 <div class="flex items-center space-x-1">
                                                     <span x-text="getPlatformIcon(event.platform)"></span>
                                                     <span class="truncate" x-text="event.title"></span>
@@ -289,7 +289,7 @@
                     return colors[status] || 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
                 },
 
-                openVariantModal(event) {
+                openContentItemModal(event) {
                     this.selectedEvent = event;
                     this.showModal = true;
                 },

@@ -34,7 +34,7 @@ class AuditLogData
     public function toArray(): array
     {
         return [
-            'action' => $this->action,
+            'event' => $this->action,  // Database column is 'event'
             'auditable_type' => $this->auditable ? get_class($this->auditable) : null,
             'auditable_id' => $this->auditable?->id,
             'old_values' => $this->oldValues,

@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Repositories\Contracts\VariantRepositoryInterface;
+use App\Repositories\Contracts\ContentItemRepositoryInterface;
 use App\Repositories\Contracts\ConceptRepositoryInterface;
-use App\Repositories\VariantRepository;
+use App\Repositories\ContentItemRepository;
 use App\Repositories\ConceptRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -15,7 +15,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(VariantRepositoryInterface::class, VariantRepository::class);
+        $this->app->bind(ContentItemRepositoryInterface::class, ContentItemRepository::class);
         $this->app->bind(ConceptRepositoryInterface::class, ConceptRepository::class);
     }
 

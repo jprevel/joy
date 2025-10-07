@@ -13,13 +13,11 @@ class AuditCleanupService
         if ($daysToKeep < AuditConstants::MIN_CLEANUP_DAYS) {
             throw new \InvalidArgumentException("Cannot cleanup logs newer than {$this->getMinCleanupDays()} days");
         }
-        
+
         $cutoffDate = Carbon::now()->subDays($daysToKeep);
-        
-        return AuditLog::where('created_at', '<', $cutoffDate)
-            ->whereNull('expires_at')
-            ->orWhere('expires_at', '<', Carbon::now())
-            ->delete();
+
+        // Delete logs older than cutoff date
+        return AuditLog::where('created_at', '<', $cutoffDate)->delete();
     }
     
     public function getRetentionSummary(): array

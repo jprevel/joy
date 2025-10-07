@@ -134,12 +134,11 @@ class ContentItemController extends Controller
             $validatedData = $request->validated();
             $newStatus = $validatedData['status'];
 
-            // Only agency can move to draft/review, clients can approve
-            if (in_array($newStatus, ['draft', 'review', 'scheduled']) && !$this->roleDetectionService->isAgency($user)) {
+            if ($this->userCannotSetAgencyStatus($user, $newStatus)) {
                 return $this->forbidden();
             }
 
-            if ($newStatus === 'approved' && !$this->roleDetectionService->hasPermission($user, 'approve_content')) {
+            if ($this->userCannotApproveContent($user, $newStatus)) {
                 return $this->forbidden();
             }
 
@@ -245,5 +244,25 @@ class ContentItemController extends Controller
             'stats' => $stats,
             'client_id' => $client->id
         ]);
+    }
+
+    /**
+     * Check if user cannot set agency-only status.
+     * Only agency users can set draft, review, or scheduled status.
+     */
+    private function userCannotSetAgencyStatus($user, string $newStatus): bool
+    {
+        return in_array($newStatus, ['draft', 'review', 'scheduled'])
+            && !$this->roleDetectionService->isAgency($user);
+    }
+
+    /**
+     * Check if user cannot approve content.
+     * User must have approve_content permission to set approved status.
+     */
+    private function userCannotApproveContent($user, string $newStatus): bool
+    {
+        return $newStatus === 'approved'
+            && !$this->roleDetectionService->hasPermission($user, 'approve_content');
     }
 }

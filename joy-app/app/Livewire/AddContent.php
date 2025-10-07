@@ -74,6 +74,8 @@ class AddContent extends Component
             $this->contentItems = array_values($this->contentItems); // Reindex
         }
     }
+
+    // Remove the updatedContentItems method to let Livewire handle uploads naturally
     
     public function backToClientSelection()
     {
@@ -102,9 +104,17 @@ class AddContent extends Component
             $createdCount = count($createdItems);
             session()->flash('success', "Successfully created {$createdCount} content item(s)!");
             return redirect()->route('calendar.role', $this->currentRole);
-            
+
+        } catch (\InvalidArgumentException $e) {
+            session()->flash('error', 'Invalid file upload: ' . $e->getMessage());
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to create content items: ' . $e->getMessage());
+            \Log::error('Content creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'content_items' => $this->contentItems,
+                'client_id' => $this->client_id
+            ]);
         }
     }
     

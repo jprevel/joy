@@ -21,6 +21,9 @@
                         <h1 class="text-2xl font-bold text-gray-900">Audit Dashboard</h1>
                     </div>
                     <div class="flex items-center space-x-3">
+                        <a href="{{ route('admin.audit.recent') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                            Recent Logs
+                        </a>
                         <a href="{{ route('admin.audit.index') }}" class="brand-button">
                             View All Logs
                         </a>

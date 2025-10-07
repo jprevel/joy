@@ -12,11 +12,11 @@ return [
     */
 
     'available' => [
-        'Facebook',
-        'Instagram',
-        'LinkedIn',
-        'Twitter',
-        'Blog',
+        'facebook',
+        'instagram',
+        'linkedin',
+        'twitter',
+        'blog',
     ],
 
     /*
@@ -30,7 +30,7 @@ return [
     */
 
     'config' => [
-        'Facebook' => [
+        'facebook' => [
             'display_name' => 'Facebook',
             'icon' => '📘',
             'character_limit' => null, // Flexible limit
@@ -42,8 +42,8 @@ return [
             'url_pattern' => 'https://facebook.com/',
             'optimal_posting_times' => [9, 13, 15], // Hours in 24h format
         ],
-        
-        'Instagram' => [
+
+        'instagram' => [
             'display_name' => 'Instagram',
             'icon' => '📷',
             'character_limit' => 2200,
@@ -55,8 +55,8 @@ return [
             'url_pattern' => 'https://instagram.com/',
             'optimal_posting_times' => [11, 13, 17],
         ],
-        
-        'LinkedIn' => [
+
+        'linkedin' => [
             'display_name' => 'LinkedIn',
             'icon' => '💼',
             'character_limit' => 3000,
@@ -68,8 +68,8 @@ return [
             'url_pattern' => 'https://linkedin.com/',
             'optimal_posting_times' => [8, 12, 17],
         ],
-        
-        'Twitter' => [
+
+        'twitter' => [
             'display_name' => 'Twitter',
             'icon' => '🐦',
             'character_limit' => 280,
@@ -81,8 +81,8 @@ return [
             'url_pattern' => 'https://twitter.com/',
             'optimal_posting_times' => [9, 12, 15, 18],
         ],
-        
-        'Blog' => [
+
+        'blog' => [
             'display_name' => 'Blog',
             'icon' => '📝',
             'character_limit' => null,

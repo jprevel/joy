@@ -22,7 +22,6 @@ class MagicLinkValidator
     {
         $magicLink = MagicLink::where('token', $token)
             ->where('expires_at', '>', now())
-            ->where('is_active', true)
             ->first();
 
         return $magicLink;
@@ -33,8 +32,7 @@ class MagicLinkValidator
      */
     public function isValid(MagicLink $magicLink): bool
     {
-        return $magicLink->is_active && 
-               $magicLink->expires_at > now();
+        return $magicLink->expires_at > now();
     }
 
     /**
@@ -42,7 +40,7 @@ class MagicLinkValidator
      */
     public function hasWorkspaceAccess(MagicLink $magicLink, int $workspaceId): bool
     {
-        return $magicLink->workspace_id === $workspaceId;
+        return $magicLink->client_id === $workspaceId;
     }
 
     /**

@@ -22,13 +22,19 @@ class ContentCalendar extends Component
     public Collection $accessibleClients;
     public ?int $selectedClientId = null;
 
-    public function mount($role = 'client', $clientId = null)
+    public function mount($role = null, $clientId = null)
     {
         $this->currentMonth = Carbon::now()->startOfMonth();
-        $this->currentRole = $role;
-        
+
+        // If no role provided, detect from authenticated user
+        if ($role === null && auth()->check()) {
+            $this->currentRole = auth()->user()->getRoleName() ?? 'client';
+        } else {
+            $this->currentRole = $role ?? 'client';
+        }
+
         // Load accessible clients based on role
-        if ($role === 'agency' || $role === 'admin') {
+        if ($this->currentRole === 'agency' || $this->currentRole === 'admin') {
             $currentUser = $this->getCurrentUserRole();
             $this->accessibleClients = $currentUser ? $currentUser->accessibleClients()->get() : collect();
             

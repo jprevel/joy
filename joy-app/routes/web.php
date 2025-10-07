@@ -61,6 +61,13 @@ Route::middleware('validate.magic.link')->group(function () {
 
 // Admin routes - protected by admin authentication middleware
 Route::middleware('admin.auth')->group(function () {
+    // Main admin dashboard
+    Route::get('/admin', [\App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
+
+    // Simple admin management pages
+    Route::get('/admin/users/list', [\App\Http\Controllers\AdminController::class, 'usersList'])->name('admin.users.list');
+    Route::get('/admin/clients/list', [\App\Http\Controllers\AdminController::class, 'clientsList'])->name('admin.clients.list');
+
     // Admin routes for Trello integration management
     Route::prefix('admin/trello')->name('admin.trello.')->group(function () {
         Route::get('/', [TrelloIntegrationController::class, 'index'])->name('index');
@@ -80,9 +87,10 @@ Route::middleware('admin.auth')->group(function () {
     Route::prefix('admin/audit')->name('admin.audit.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\AuditLogController::class, 'dashboard'])->name('dashboard');
         Route::get('/', [\App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('index');
-        Route::get('/{auditLog}', [\App\Http\Controllers\Admin\AuditLogController::class, 'show'])->name('show');
+        Route::get('/recent', [\App\Http\Controllers\Admin\AuditLogController::class, 'recent'])->name('recent');
         Route::get('/export', [\App\Http\Controllers\Admin\AuditLogController::class, 'export'])->name('export');
         Route::post('/cleanup', [\App\Http\Controllers\Admin\AuditLogController::class, 'cleanup'])->name('cleanup');
         Route::get('/stats', [\App\Http\Controllers\Admin\AuditLogController::class, 'stats'])->name('stats');
+        Route::get('/{auditLog}', [\App\Http\Controllers\Admin\AuditLogController::class, 'show'])->name('show');
     });
 });

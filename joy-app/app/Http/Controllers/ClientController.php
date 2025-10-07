@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\MagicLink;
 use App\Services\ContentCalendarService;
 use App\Services\MagicLinkValidator;
-use App\Repositories\Contracts\VariantRepositoryInterface;
+use App\Repositories\Contracts\ContentItemRepositoryInterface;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
     public function __construct(
         private ContentCalendarService $contentCalendarService,
-        private VariantRepositoryInterface $variantRepository,
+        private ContentItemRepositoryInterface $contentItemRepository,
         private MagicLinkValidator $magicLinkValidator
     ) {}
 
@@ -33,12 +33,12 @@ class ClientController extends Controller
         $magicLink = $this->magicLinkValidator->validateOrFail($request);
         
         $this->magicLinkValidator->logAccess($magicLink, 'calendar_access');
-        $variants = $this->contentCalendarService->getAllVariantsForWorkspace($magicLink->workspace->id);
+        $contentItems = $this->contentCalendarService->getAllContentItemsForWorkspace($magicLink->workspace->id);
 
         return view('client.calendar', [
             'magicLink' => $magicLink,
             'workspace' => $magicLink->workspace,
-            'variants' => $variants,
+            'contentItems' => $contentItems,
         ]);
     }
 
@@ -47,7 +47,7 @@ class ClientController extends Controller
         $magicLink = $this->magicLinkValidator->validateOrFail($request);
         
         $concept = $magicLink->workspace->concepts()
-            ->with(['variants', 'owner'])
+            ->with(['contentItems', 'owner'])
             ->findOrFail($conceptId);
             
         $this->magicLinkValidator->logAccess($magicLink, 'concept_access', ['concept_id' => $conceptId]);
@@ -59,22 +59,22 @@ class ClientController extends Controller
         ]);
     }
 
-    public function variant(Request $request, string $token, int $variantId)
+    public function contentItem(Request $request, string $token, int $contentItemId)
     {
         $magicLink = $this->magicLinkValidator->validateOrFail($request);
         
-        $variant = $this->variantRepository->find($variantId);
+        $contentItem = $this->contentItemRepository->find($contentItemId);
 
-        if (!$variant || !$this->magicLinkValidator->canAccessContentItem($magicLink, $variant)) {
-            abort(404, 'Variant not found');
+        if (!$contentItem || !$this->magicLinkValidator->canAccessContentItem($magicLink, $contentItem)) {
+            abort(404, 'Content item not found');
         }
         
-        $this->magicLinkValidator->logAccess($magicLink, 'variant_access', ['variant_id' => $variantId]);
+        $this->magicLinkValidator->logAccess($magicLink, 'content_item_access', ['content_item_id' => $contentItemId]);
 
-        return view('client.variant', [
+        return view('client.content-item', [
             'magicLink' => $magicLink,
             'workspace' => $magicLink->workspace,
-            'variant' => $variant,
+            'contentItem' => $contentItem,
         ]);
     }
 }

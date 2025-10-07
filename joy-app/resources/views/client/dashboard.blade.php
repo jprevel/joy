@@ -32,7 +32,7 @@
                 <div class="bg-white rounded-lg shadow p-6 mb-6">
                     <h2 class="text-xl font-semibold text-gray-900 mb-4">Content Review Dashboard</h2>
                     <p class="text-gray-600 mb-4">
-                        Review and approve content concepts and social media variants for {{ $workspace->name }}.
+                        Review and approve content concepts and social media content items for {{ $workspace->name }}.
                         Use the navigation below to access your content calendar and detailed reviews.
                     </p>
                     <div class="flex space-x-4">
@@ -46,10 +46,10 @@
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     @php
-                        $concepts = $workspace->concepts()->with('variants')->get();
-                        $totalVariants = $concepts->sum(fn($concept) => $concept->variants->count());
-                        $pendingApproval = $concepts->sum(fn($concept) => $concept->variants->where('status', 'In Review')->count());
-                        $scheduled = $concepts->sum(fn($concept) => $concept->variants->where('status', 'Scheduled')->count());
+                        $concepts = $workspace->concepts()->with('contentItems')->get();
+                        $totalContentItems = $concepts->sum(fn($concept) => $concept->contentItems->count());
+                        $pendingApproval = $concepts->sum(fn($concept) => $concept->contentItems->where('status', 'In Review')->count());
+                        $scheduled = $concepts->sum(fn($concept) => $concept->contentItems->where('status', 'Scheduled')->count());
                     @endphp
                     
                     <div class="bg-white rounded-lg shadow p-6">
@@ -61,7 +61,7 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-500">Total Content</p>
-                                <p class="text-2xl font-semibold text-gray-900">{{ $totalVariants }}</p>
+                                <p class="text-2xl font-semibold text-gray-900">{{ $totalContentItems }}</p>
                             </div>
                         </div>
                     </div>
@@ -120,18 +120,18 @@
                                                 {{ $concept->status === 'Scheduled' ? 'bg-blue-100 text-blue-800' : '' }}">
                                                 {{ $concept->status }}
                                             </span>
-                                            <span class="text-xs text-gray-500">{{ $concept->variants->count() }} variants</span>
+                                            <span class="text-xs text-gray-500">{{ $concept->contentItems->count() }} content items</span>
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        @foreach($concept->variants->take(3) as $variant)
+                                        @foreach($concept->contentItems->take(3) as $contentItem)
                                             <span class="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm 
-                                                {{ App\Services\ContentCalendarService::getPlatformColor($variant->platform) }}">
-                                                {{ App\Services\ContentCalendarService::getPlatformIcon($variant->platform) }}
+                                                {{ App\Services\ContentCalendarService::getPlatformColor($contentItem->platform) }}">
+                                                {{ App\Services\ContentCalendarService::getPlatformIcon($contentItem->platform) }}
                                             </span>
                                         @endforeach
-                                        @if($concept->variants->count() > 3)
-                                            <span class="text-xs text-gray-400">+{{ $concept->variants->count() - 3 }}</span>
+                                        @if($concept->contentItems->count() > 3)
+                                            <span class="text-xs text-gray-400">+{{ $concept->contentItems->count() - 3 }}</span>
                                         @endif
                                     </div>
                                 </div>

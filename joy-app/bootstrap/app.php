@@ -19,5 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->respond(function ($response, $exception, $request) {
+            if ($exception instanceof \Illuminate\Auth\AuthenticationException && $request->expectsHtml()) {
+                session()->flash('status', 'Your session has expired. Please sign in again to continue.');
+            }
+            return $response;
+        });
     })->create();

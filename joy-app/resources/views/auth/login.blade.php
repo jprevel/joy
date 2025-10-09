@@ -109,6 +109,29 @@
     /* Error messages */
     .error { color: #f87171; font-size: 14px; margin-top: 6px; }
 
+    /* Session expired notice */
+    .session-notice {
+      margin: 18px 20px 0 20px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      backdrop-filter: blur(8px);
+      font-size: 14px;
+      line-height: 1.5;
+      opacity: 0;
+      animation: fadeInSlide 0.4s ease-out 0.3s forwards;
+    }
+    .session-notice-icon {
+      display: inline-block;
+      margin-right: 8px;
+      opacity: 0.9;
+    }
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     /* Logo lockup */
     .logo-lockup {
       display: flex;
@@ -210,6 +233,14 @@
       <!-- Login card -->
       <div class="card" role="region" aria-label="Sign in">
         <h2>Sign in</h2>
+
+        @if (session('status') || request()->has('expired'))
+          <div class="session-notice">
+            <span class="session-notice-icon">✨</span>
+            {{ session('status') ?? 'Your session has expired. Please sign in again to continue.' }}
+          </div>
+        @endif
+
         <form method="POST" action="{{ route('login') }}">
           @csrf
           <div class="row">

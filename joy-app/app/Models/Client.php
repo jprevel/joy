@@ -16,6 +16,8 @@ class Client extends Model
         'team_id',
         'trello_board_id',
         'trello_list_id',
+        'slack_channel_id',
+        'slack_channel_name',
     ];
 
     public function contentItems(): HasMany
@@ -45,7 +47,7 @@ class Client extends Model
 
     public function statusUpdates(): HasMany
     {
-        return $this->hasMany(ClientStatusUpdate::class);
+        return $this->hasMany(ClientStatusfactionUpdate::class);
     }
 
     /**
@@ -54,5 +56,13 @@ class Client extends Model
     public function hasTrelloIntegration(): bool
     {
         return !empty($this->trello_board_id) && !empty($this->trello_list_id);
+    }
+
+    /**
+     * Check if client has Slack integration configured.
+     */
+    public function hasSlackIntegration(): bool
+    {
+        return !empty($this->slack_channel_id);
     }
 }

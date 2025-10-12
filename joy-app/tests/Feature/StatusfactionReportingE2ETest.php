@@ -4,15 +4,17 @@ namespace Tests\Feature;
 
 use App\Livewire\Statusfaction;
 use App\Models\Client;
-use App\Models\ClientStatusUpdate;
+use App\Models\ClientStatusfactionUpdate;
 use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
+use Tests\Traits\SlackNotificationAssertions;
 
 /**
  * E2E Test: Statusfaction Weekly Reporting
@@ -21,6 +23,7 @@ use Tests\TestCase;
 class StatusfactionReportingE2ETest extends TestCase
 {
     use RefreshDatabase;
+    use SlackNotificationAssertions;
 
     /** @test */
     public function account_manager_can_generate_weekly_status_reports()
@@ -99,7 +102,7 @@ class StatusfactionReportingE2ETest extends TestCase
         $weekStart = Carbon::now()->startOfWeek(Carbon::SUNDAY);
 
         // Create existing pending status
-        $status = ClientStatusUpdate::factory()->create([
+        $status = ClientStatusfactionUpdate::factory()->create([
             'client_id' => $client->id,
             'user_id' => $accountManager->id,
             'status_notes' => 'Original notes',
@@ -134,7 +137,7 @@ class StatusfactionReportingE2ETest extends TestCase
         ]);
 
         // Only 1 record for this week
-        $count = ClientStatusUpdate::where('client_id', $client->id)
+        $count = ClientStatusfactionUpdate::where('client_id', $client->id)
             ->where('week_start_date', $weekStart)
             ->count();
         $this->assertEquals(1, $count);
@@ -161,7 +164,7 @@ class StatusfactionReportingE2ETest extends TestCase
         $weekStart = Carbon::now()->startOfWeek(Carbon::SUNDAY);
 
         // Create approved status
-        ClientStatusUpdate::factory()->create([
+        ClientStatusfactionUpdate::factory()->create([
             'client_id' => $client->id,
             'user_id' => $accountManager->id,
             'week_start_date' => $weekStart,
@@ -189,7 +192,7 @@ class StatusfactionReportingE2ETest extends TestCase
 
         $weekStart = Carbon::now()->startOfWeek(Carbon::SUNDAY);
 
-        $status = ClientStatusUpdate::factory()->create([
+        $status = ClientStatusfactionUpdate::factory()->create([
             'week_start_date' => $weekStart,
             'approval_status' => 'pending_approval',
         ]);
@@ -280,7 +283,7 @@ class StatusfactionReportingE2ETest extends TestCase
 
         // Client with pending submission
         $client2 = Client::factory()->create(['name' => 'Client Pending']);
-        ClientStatusUpdate::factory()->create([
+        ClientStatusfactionUpdate::factory()->create([
             'client_id' => $client2->id,
             'week_start_date' => $weekStart,
             'approval_status' => 'pending_approval',
@@ -288,7 +291,7 @@ class StatusfactionReportingE2ETest extends TestCase
 
         // Client with approved submission
         $client3 = Client::factory()->create(['name' => 'Client Approved']);
-        ClientStatusUpdate::factory()->create([
+        ClientStatusfactionUpdate::factory()->create([
             'client_id' => $client3->id,
             'week_start_date' => $weekStart,
             'approval_status' => 'approved',
@@ -322,7 +325,7 @@ class StatusfactionReportingE2ETest extends TestCase
 
         // Create data for weeks -4, -2, 0 (current) - missing weeks -3 and -1
         foreach ([4, 2, 0] as $weeksAgo) {
-            ClientStatusUpdate::factory()->create([
+            ClientStatusfactionUpdate::factory()->create([
                 'client_id' => $client->id,
                 'week_start_date' => $weekStart->copy()->subWeeks($weeksAgo),
                 'client_satisfaction' => 8,
@@ -388,7 +391,7 @@ class StatusfactionReportingE2ETest extends TestCase
         $weekStart = Carbon::now()->startOfWeek(Carbon::SUNDAY);
 
         // Create first status for current week
-        ClientStatusUpdate::factory()->create([
+        ClientStatusfactionUpdate::factory()->create([
             'client_id' => $client->id,
             'week_start_date' => $weekStart,
         ]);
@@ -396,7 +399,7 @@ class StatusfactionReportingE2ETest extends TestCase
         // Attempt to create second status for same week
         $this->expectException(\Illuminate\Database\QueryException::class);
 
-        ClientStatusUpdate::create([
+        ClientStatusfactionUpdate::create([
             'user_id' => User::factory()->create()->id,
             'client_id' => $client->id,
             'status_notes' => 'Duplicate attempt',
@@ -419,5 +422,157 @@ class StatusfactionReportingE2ETest extends TestCase
 
         // Check indexes exist (this is harder to test directly in Laravel, so we'll trust migration)
         // Could use raw SQL: SELECT * FROM information_schema.statistics WHERE table_name = 'client_status_updates'
+    }
+
+    // T029: Slack Notification Tests
+    /** @test */
+    public function slack_notification_sent_when_statusfaction_submitted()
+    {
+        $this->mockSlackApiSuccess();
+        $this->fakeQueue();
+
+        Role::firstOrCreate(['name' => 'agency']);
+
+        $accountManager = User::factory()->create();
+        $accountManager->assignRole('agency');
+
+        $team = Team::factory()->create();
+        $accountManager->teams()->attach($team);
+
+        // Create client with Slack integration
+        $client = Client::factory()->create([
+            'team_id' => $team->id,
+            'slack_channel_id' => 'C123456',
+            'slack_channel_name' => '#test-channel',
+        ]);
+
+        // Create workspace
+        \App\Models\SlackWorkspace::factory()->create([
+            'is_active' => true,
+            'bot_token' => 'xoxb-test-token',
+        ]);
+
+        // Submit statusfaction report
+        ClientStatusfactionUpdate::factory()->create([
+            'client_id' => $client->id,
+            'user_id' => $accountManager->id,
+            'status_notes' => 'Test status',
+            'approval_status' => 'pending_approval',
+        ]);
+
+        // Assert job was dispatched
+        $this->assertSlackJobDispatched(\App\Jobs\SendStatusfactionSubmittedNotification::class);
+    }
+
+    /** @test */
+    public function slack_notification_sent_when_statusfaction_approved()
+    {
+        $this->mockSlackApiSuccess();
+        $this->fakeQueue();
+
+        Role::firstOrCreate(['name' => 'admin']);
+
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        // Create client with Slack integration
+        $client = Client::factory()->create([
+            'slack_channel_id' => 'C123456',
+            'slack_channel_name' => '#test-channel',
+        ]);
+
+        // Create workspace
+        \App\Models\SlackWorkspace::factory()->create([
+            'is_active' => true,
+            'bot_token' => 'xoxb-test-token',
+        ]);
+
+        // Create pending status
+        $status = ClientStatusfactionUpdate::factory()->create([
+            'client_id' => $client->id,
+            'approval_status' => 'pending_approval',
+        ]);
+
+        // Approve status
+        $status->update([
+            'approval_status' => 'approved',
+            'approved_by' => $admin->id,
+            'approved_at' => now(),
+        ]);
+
+        // Assert job was dispatched
+        $this->assertSlackJobDispatched(\App\Jobs\SendStatusfactionApprovedNotification::class);
+    }
+
+    /** @test */
+    public function slack_notification_not_sent_when_editing_pending_statusfaction()
+    {
+        // CRITICAL TEST: Verify clarification #1 from spec.md - NO notifications on edits
+        $this->mockSlackApiSuccess();
+        $this->fakeQueue();
+
+        Role::firstOrCreate(['name' => 'agency']);
+
+        $accountManager = User::factory()->create();
+        $accountManager->assignRole('agency');
+
+        // Create client with Slack integration
+        $client = Client::factory()->create([
+            'slack_channel_id' => 'C123456',
+            'slack_channel_name' => '#test-channel',
+        ]);
+
+        // Create workspace
+        \App\Models\SlackWorkspace::factory()->create([
+            'is_active' => true,
+            'bot_token' => 'xoxb-test-token',
+        ]);
+
+        // Create initial status (this WILL dispatch notification)
+        $status = ClientStatusfactionUpdate::factory()->create([
+            'client_id' => $client->id,
+            'user_id' => $accountManager->id,
+            'status_notes' => 'Original notes',
+            'approval_status' => 'pending_approval',
+        ]);
+
+        // Clear queue to reset assertions
+        Queue::fake();
+
+        // Edit the pending status
+        $status->update([
+            'status_notes' => 'Updated notes',
+            'client_satisfaction' => 9,
+        ]);
+
+        // Assert submission notification was NOT dispatched on edit
+        $this->assertSlackJobNotDispatched(\App\Jobs\SendStatusfactionSubmittedNotification::class);
+    }
+
+    /** @test */
+    public function slack_notification_not_sent_when_client_has_no_slack_integration()
+    {
+        $this->fakeQueue();
+
+        Role::firstOrCreate(['name' => 'agency']);
+
+        $accountManager = User::factory()->create();
+        $accountManager->assignRole('agency');
+
+        // Create client WITHOUT Slack integration
+        $client = Client::factory()->create([
+            'slack_channel_id' => null,
+            'slack_channel_name' => null,
+        ]);
+
+        // Submit statusfaction report
+        ClientStatusfactionUpdate::factory()->create([
+            'client_id' => $client->id,
+            'user_id' => $accountManager->id,
+            'approval_status' => 'pending_approval',
+        ]);
+
+        // Assert job was NOT dispatched (no Slack integration)
+        $this->assertSlackJobNotDispatched(\App\Jobs\SendStatusfactionSubmittedNotification::class);
     }
 }

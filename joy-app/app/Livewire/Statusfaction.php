@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Client;
-use App\Models\ClientStatusUpdate;
+use App\Models\ClientStatusfactionUpdate;
 use App\Traits\HasRoleManagement;
 use Carbon\Carbon;
 use Livewire\Attributes\Computed;
@@ -50,7 +50,7 @@ class Statusfaction extends Component
         $this->selectedClient = Client::findOrFail($clientId);
         $currentWeek = Carbon::now()->startOfWeek(Carbon::SUNDAY);
 
-        $this->selectedStatus = ClientStatusUpdate::where('client_id', $clientId)
+        $this->selectedStatus = ClientStatusfactionUpdate::where('client_id', $clientId)
             ->where('week_start_date', $currentWeek)
             ->first();
 
@@ -116,7 +116,7 @@ class Statusfaction extends Component
             return;
         }
 
-        ClientStatusUpdate::updateOrCreate(
+        ClientStatusfactionUpdate::updateOrCreate(
             [
                 'client_id' => $this->selectedClient->id,
                 'week_start_date' => $weekStart,
@@ -142,7 +142,7 @@ class Statusfaction extends Component
             return;
         }
 
-        $status = ClientStatusUpdate::findOrFail($statusId);
+        $status = ClientStatusfactionUpdate::findOrFail($statusId);
 
         if ($status->approval_status !== 'pending_approval') {
             session()->flash('error', 'Status is not pending approval');
@@ -208,7 +208,7 @@ class Statusfaction extends Component
         $weekStart = Carbon::now()->startOfWeek(Carbon::SUNDAY);
         $fiveWeeksAgo = $weekStart->copy()->subWeeks(4);
 
-        $statusData = ClientStatusUpdate::where('client_id', $this->selectedClient->id)
+        $statusData = ClientStatusfactionUpdate::where('client_id', $this->selectedClient->id)
             ->whereBetween('week_start_date', [$fiveWeeksAgo, $weekStart])
             ->orderBy('week_start_date')
             ->get(['week_start_date', 'client_satisfaction', 'team_health']);
@@ -255,7 +255,7 @@ class Statusfaction extends Component
         ];
     }
 
-    private function canEdit(ClientStatusUpdate $status): bool
+    private function canEdit(ClientStatusfactionUpdate $status): bool
     {
         // Cannot edit approved statuses
         if ($status->approval_status === 'approved') {

@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ClientStatusUpdate extends Model
+class ClientStatusfactionUpdate extends Model
 {
     use HasFactory;
+
+    // Keep pointing to existing table name for backwards compatibility
+    protected $table = 'client_status_updates';
 
     protected $fillable = [
         'user_id',

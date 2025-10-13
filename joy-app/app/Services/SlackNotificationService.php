@@ -12,6 +12,22 @@ use App\Models\SlackNotification;
 use App\Models\SlackWorkspace;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * Slack Notification Service
+ *
+ * ⚠️  IMPORTANT: STATUSFACTION CHANNEL OVERRIDE ⚠️
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ * ALL Statusfaction notifications are HARDCODED to go to the
+ * #account-managers private Slack channel (not client channels).
+ *
+ * 📍 To find/modify: Search for "STATUSFACTION_CHANNEL_OVERRIDE"
+ * 📍 Location 1: sendStatusfactionSubmittedNotification() method
+ * 📍 Location 2: sendStatusfactionApprovedNotification() method
+ *
+ * Channel ID: 'ACCOUNT_MANAGERS_CHANNEL_ID' (replace with actual Slack channel ID)
+ * Channel Name: 'account-managers'
+ * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ */
 class SlackNotificationService implements SlackNotificationServiceContract
 {
     public function __construct(
@@ -144,6 +160,9 @@ class SlackNotificationService implements SlackNotificationServiceContract
      *
      * CRITICAL: NO notifications when editing pending reports (clarification #1 from spec.md)
      * Only sent on initial submission
+     *
+     * 🔔 HARDCODED CHANNEL: Statusfaction notifications go to #account-managers private channel
+     * 📍 SEARCH FOR: "STATUSFACTION_CHANNEL_OVERRIDE" to find all hardcoded channel references
      */
     public function sendStatusfactionSubmittedNotification(ClientStatusfactionUpdate $statusUpdate): array
     {
@@ -159,20 +178,25 @@ class SlackNotificationService implements SlackNotificationServiceContract
             return ['success' => false, 'error' => 'No Slack workspace configured'];
         }
 
+        // 🔔 STATUSFACTION_CHANNEL_OVERRIDE: Hardcoded to #account-managers private channel
+        // TODO: Replace 'ACCOUNT_MANAGERS_CHANNEL_ID' with actual Slack channel ID (e.g., 'C01234567')
+        $statusfactionChannelId = 'ACCOUNT_MANAGERS_CHANNEL_ID'; // ← HARDCODED: #account-managers
+        $statusfactionChannelName = 'account-managers';
+
         $notification = SlackNotification::create([
             'workspace_id' => $workspace->id,
             'type' => 'statusfaction_submitted',
             'notifiable_type' => ClientStatusfactionUpdate::class,
             'notifiable_id' => $statusUpdate->id,
-            'channel_id' => $client->slack_channel_id,
-            'channel_name' => $client->slack_channel_name,
+            'channel_id' => $statusfactionChannelId,  // Using hardcoded channel instead of client channel
+            'channel_name' => $statusfactionChannelName,
             'status' => 'pending',
         ]);
 
         try {
             $blocks = $this->formatter->formatStatusfactionSubmitted($statusUpdate);
             $result = $this->slackService->postMessage(
-                $client->slack_channel_id,
+                $statusfactionChannelId,  // 🔔 Sending to #account-managers instead of client channel
                 $blocks,
                 "New statusfaction report for {$client->name}"
             );
@@ -194,6 +218,9 @@ class SlackNotificationService implements SlackNotificationServiceContract
 
     /**
      * Send statusfaction approved notification
+     *
+     * 🔔 HARDCODED CHANNEL: Statusfaction notifications go to #account-managers private channel
+     * 📍 SEARCH FOR: "STATUSFACTION_CHANNEL_OVERRIDE" to find all hardcoded channel references
      */
     public function sendStatusfactionApprovedNotification(ClientStatusfactionUpdate $statusUpdate): array
     {
@@ -209,20 +236,25 @@ class SlackNotificationService implements SlackNotificationServiceContract
             return ['success' => false, 'error' => 'No Slack workspace configured'];
         }
 
+        // 🔔 STATUSFACTION_CHANNEL_OVERRIDE: Hardcoded to #account-managers private channel
+        // TODO: Replace 'ACCOUNT_MANAGERS_CHANNEL_ID' with actual Slack channel ID (e.g., 'C01234567')
+        $statusfactionChannelId = 'ACCOUNT_MANAGERS_CHANNEL_ID'; // ← HARDCODED: #account-managers
+        $statusfactionChannelName = 'account-managers';
+
         $notification = SlackNotification::create([
             'workspace_id' => $workspace->id,
             'type' => 'statusfaction_approved',
             'notifiable_type' => ClientStatusfactionUpdate::class,
             'notifiable_id' => $statusUpdate->id,
-            'channel_id' => $client->slack_channel_id,
-            'channel_name' => $client->slack_channel_name,
+            'channel_id' => $statusfactionChannelId,  // Using hardcoded channel instead of client channel
+            'channel_name' => $statusfactionChannelName,
             'status' => 'pending',
         ]);
 
         try {
             $blocks = $this->formatter->formatStatusfactionApproved($statusUpdate);
             $result = $this->slackService->postMessage(
-                $client->slack_channel_id,
+                $statusfactionChannelId,  // 🔔 Sending to #account-managers instead of client channel
                 $blocks,
                 "Statusfaction report approved for {$client->name}"
             );

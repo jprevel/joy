@@ -54,12 +54,9 @@
                                 <p class="text-sm text-gray-500">Monitor system activity and user actions</p>
                             </div>
                         </div>
-                        <div class="mt-4 flex space-x-2">
-                            <a href="{{ route('admin.audit.dashboard') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                                Dashboard
-                            </a>
-                            <a href="{{ route('admin.audit.recent') }}" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                Recent Logs
+                        <div class="mt-4">
+                            <a href="{{ route('admin.audit.recent') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                View Logs
                             </a>
                         </div>
                     </div>
@@ -149,28 +146,6 @@
                             <a href="{{ route('admin.trello.index') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
                                 Trello Setup
                             </a>
-                        </div>
-                    </div>
-
-                    <!-- System Status -->
-                    <div class="bg-white rounded-lg shadow p-6">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-lg font-medium text-gray-900">System Status</h3>
-                                <p class="text-sm text-gray-500">Monitor system health and performance</p>
-                            </div>
-                        </div>
-                        <div class="mt-4">
-                            <span class="inline-flex items-center px-3 py-2 text-sm font-medium text-green-800 bg-green-100 rounded-md">
-                                System Healthy
-                            </span>
                         </div>
                     </div>
 

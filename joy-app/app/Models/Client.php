@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'name',
         'description',
@@ -18,6 +20,10 @@ class Client extends Model
         'trello_list_id',
         'slack_channel_id',
         'slack_channel_name',
+    ];
+
+    protected $casts = [
+        'deleted_at' => 'datetime',
     ];
 
     public function contentItems(): HasMany

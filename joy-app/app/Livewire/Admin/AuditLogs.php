@@ -20,18 +20,52 @@ class AuditLogs extends Component
     public string $dateFrom = '';
     public string $dateTo = '';
     public string $sortDirection = 'desc';
+    public bool $filtersOpen = false;
 
-    public function __construct(
-        private RoleDetectionService $roleDetectionService
-    ) {
-        parent::__construct();
+    protected RoleDetectionService $roleDetectionService;
+
+    public function boot(RoleDetectionService $roleDetectionService)
+    {
+        $this->roleDetectionService = $roleDetectionService;
+    }
+
+    public function toggleFilters()
+    {
+        $this->filtersOpen = !$this->filtersOpen;
+    }
+
+    public function getActiveFilterCountProperty(): int
+    {
+        $count = 0;
+
+        if (!empty($this->search)) {
+            $count++;
+        }
+
+        if (!empty($this->eventFilter)) {
+            $count++;
+        }
+
+        if (!empty($this->userFilter)) {
+            $count++;
+        }
+
+        if (!empty($this->dateFrom)) {
+            $count++;
+        }
+
+        if (!empty($this->dateTo)) {
+            $count++;
+        }
+
+        return $count;
     }
 
     public function mount()
     {
-        $this->currentUser = $this->roleDetectionService->getCurrentUser();
+        $this->currentUser = auth()->user();
 
-        if (!$this->roleDetectionService->isAdmin($this->currentUser)) {
+        if (!$this->currentUser || !$this->currentUser->hasRole('admin')) {
             abort(403, 'Admin access required');
         }
 

@@ -575,4 +575,48 @@ class StatusfactionReportingE2ETest extends TestCase
         // Assert job was NOT dispatched (no Slack integration)
         $this->assertSlackJobNotDispatched(\App\Jobs\SendStatusfactionSubmittedNotification::class);
     }
+
+    // ========== User Story 6: Complete Audit Event Coverage ==========
+
+    /** @test */
+    public function content_created_event_is_captured_in_audit_log()
+    {
+        $this->markTestIncomplete('Verify ContentItem creation logs "Content Created" event in audit logs');
+    }
+
+    /** @test */
+    public function content_approved_event_is_captured_in_audit_log()
+    {
+        $this->markTestIncomplete('Verify content approval logs "Content Approved" event in audit logs');
+    }
+
+    /** @test */
+    public function content_rejected_event_is_captured_in_audit_log()
+    {
+        $this->markTestIncomplete('Verify content rejection logs "Content Rejected" event in audit logs');
+    }
+
+    /** @test */
+    public function comment_added_event_is_captured_in_audit_log()
+    {
+        $this->markTestIncomplete('Verify comment creation logs "Comment Added" event in audit logs');
+    }
+
+    /** @test */
+    public function statusfaction_submitted_event_is_captured_in_audit_log()
+    {
+        $this->markTestIncomplete('Verify statusfaction submission logs event in audit logs');
+    }
+
+    /** @test */
+    public function statusfaction_approved_event_is_captured_in_audit_log()
+    {
+        $this->markTestIncomplete('Verify statusfaction approval logs event in audit logs');
+    }
+
+    /** @test */
+    public function event_filter_dropdown_shows_all_event_types()
+    {
+        $this->markTestIncomplete('Verify event filter includes all captured event types');
+    }
 }

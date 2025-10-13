@@ -39,8 +39,7 @@ class AdminController extends Controller
      */
     public function usersList()
     {
-        $users = User::with(['teams', 'roles'])->orderBy('created_at', 'desc')->get();
-        return view('admin.users.index', compact('users'));
+        return view('livewire.admin.user-management-page');
     }
 
     /**
@@ -48,8 +47,7 @@ class AdminController extends Controller
      */
     public function clientsList()
     {
-        $clients = Client::with(['team'])->withCount(['contentItems'])->orderBy('created_at', 'desc')->get();
-        return view('admin.clients.index', compact('clients'));
+        return view('livewire.admin.client-management-page');
     }
 
     /**

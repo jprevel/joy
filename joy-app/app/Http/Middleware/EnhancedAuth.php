@@ -34,6 +34,18 @@ class EnhancedAuth
 
         $user = Auth::user();
 
+        // Check if user has been soft-deleted
+        if ($user->trashed()) {
+            $this->logFailedAuth($request, 'account_deleted', $user->id);
+            Auth::logout();
+
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Account deleted'], 403);
+            }
+
+            return redirect()->route('login')->with('error', 'Your account has been deleted.');
+        }
+
         // Check if user account is active
         if (!$user->is_active ?? true) {
             $this->logFailedAuth($request, 'account_inactive', $user->id);

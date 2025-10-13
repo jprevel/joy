@@ -220,7 +220,7 @@ class SlackBlockFormatter implements SlackBlockFormatterContract
                 'type' => 'header',
                 'text' => [
                     'type' => 'plain_text',
-                    'text' => '✅ Statusfaction Report Approved',
+                    'text' => "✨ {$client->name} Statusfaction Reviewed",
                 ],
             ],
             [
@@ -228,27 +228,11 @@ class SlackBlockFormatter implements SlackBlockFormatterContract
                 'fields' => [
                     [
                         'type' => 'mrkdwn',
-                        'text' => "*Client:*\n{$this->escapeText($client->name)}",
+                        'text' => "*Reviewed by:*\n" . $this->escapeText($approver->name ?? 'Admin'),
                     ],
                     [
                         'type' => 'mrkdwn',
-                        'text' => "*Approved by:*\n" . $this->escapeText($approver->name ?? 'Admin'),
-                    ],
-                ],
-            ],
-            [
-                'type' => 'section',
-                'text' => [
-                    'type' => 'mrkdwn',
-                    'text' => "*Week:*\n{$statusUpdate->week_start_date->format('M d, Y')}",
-                ],
-            ],
-            [
-                'type' => 'context',
-                'elements' => [
-                    [
-                        'type' => 'mrkdwn',
-                        'text' => "Approved {$this->formatTimestamp($statusUpdate->approved_at)}",
+                        'text' => "*Week:*\n{$statusUpdate->week_start_date->format('M d, Y')}",
                     ],
                 ],
             ],

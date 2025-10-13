@@ -6,56 +6,19 @@
 
     <!-- Filters -->
     <div class="bg-white rounded-lg shadow mb-6 p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                <input type="text"
-                       wire:model.live="search"
-                       placeholder="Search logs..."
-                       class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Event</label>
-                <select wire:model.live="eventFilter"
-                        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">All Events</option>
-                    @foreach($events as $event)
-                        <option value="{{ $event }}">{{ ucfirst(str_replace('.', ' ', $event)) }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">User</label>
-                <select wire:model.live="userFilter"
-                        class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">All Users</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Date From</label>
-                <input type="date"
-                       wire:model.live="dateFrom"
-                       class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Date To</label>
-                <input type="date"
-                       wire:model.live="dateTo"
-                       class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
-        </div>
-
-        <div class="mt-4 flex justify-between items-center">
-            <button wire:click="clearFilters"
-                    class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
-                Clear Filters
+        <!-- Filter Toggle Button -->
+        <div class="flex justify-between items-center mb-4">
+            <button wire:click="toggleFilters"
+                    class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <span class="font-medium">{{ $filtersOpen ? 'Hide Filters' : 'Show Filters' }}</span>
+                @if(!$filtersOpen && $this->activeFilterCount > 0)
+                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">
+                        {{ $this->activeFilterCount }} active
+                    </span>
+                @endif
             </button>
 
             <div class="flex items-center space-x-2 text-sm text-gray-600">
@@ -69,6 +32,64 @@
                 </button>
             </div>
         </div>
+
+        <!-- Collapsible Filter Form -->
+        @if($filtersOpen)
+            <div class="border-t pt-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                        <input type="text"
+                               wire:model.live="search"
+                               placeholder="Search logs..."
+                               class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Event</label>
+                        <select wire:model.live="eventFilter"
+                                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">All Events</option>
+                            @foreach($events as $event)
+                                <option value="{{ $event }}">{{ ucfirst(str_replace('.', ' ', $event)) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">User</label>
+                        <select wire:model.live="userFilter"
+                                class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">All Users</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date From</label>
+                        <input type="date"
+                               wire:model.live="dateFrom"
+                               class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Date To</label>
+                        <input type="date"
+                               wire:model.live="dateTo"
+                               class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button wire:click="clearFilters"
+                            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
+                        Clear Filters
+                    </button>
+                </div>
+            </div>
+        @endif
     </div>
 
     <!-- Audit Logs Table -->
@@ -131,21 +152,73 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 max-w-xs">
                                     @if($log->new_values || $log->old_values)
-                                        <div class="space-y-1">
-                                            @if($log->new_values)
-                                                @foreach($log->new_values as $key => $value)
-                                                    @if(is_scalar($value) && strlen($value) < 50)
-                                                        <div class="text-xs">
-                                                            <span class="font-medium">{{ ucfirst(str_replace('_', ' ', $key)) }}:</span>
-                                                            <span class="text-green-600">{{ $value }}</span>
-                                                            @if(isset($log->old_values[$key]))
-                                                                <span class="text-gray-400">(was: {{ $log->old_values[$key] }})</span>
-                                                            @endif
-                                                        </div>
-                                                    @endif
+                                        @php
+                                            $changes = [];
+                                            $allKeys = array_unique(array_merge(
+                                                array_keys($log->new_values ?? []),
+                                                array_keys($log->old_values ?? [])
+                                            ));
+                                            foreach ($allKeys as $key) {
+                                                $oldVal = $log->old_values[$key] ?? null;
+                                                $newVal = $log->new_values[$key] ?? null;
+                                                if ($oldVal !== $newVal && is_scalar($newVal) && strlen((string)$newVal) < 50) {
+                                                    $changes[] = [
+                                                        'key' => $key,
+                                                        'old' => $oldVal,
+                                                        'new' => $newVal
+                                                    ];
+                                                }
+                                            }
+                                            $totalChanges = count($changes);
+                                            $shouldTruncate = $totalChanges > 5;
+                                        @endphp
+
+                                        @if($shouldTruncate)
+                                            <div x-data="{ expanded: false }" class="space-y-1">
+                                                @foreach(array_slice($changes, 0, 5) as $change)
+                                                    <div class="text-xs">
+                                                        <span class="font-medium">{{ ucfirst(str_replace('_', ' ', $change['key'])) }}:</span>
+                                                        <span class="text-green-600">{{ $change['new'] }}</span>
+                                                        @if($change['old'] !== null)
+                                                            <span class="text-gray-400">(was: {{ $change['old'] }})</span>
+                                                        @endif
+                                                    </div>
                                                 @endforeach
-                                            @endif
-                                        </div>
+                                                <template x-if="!expanded">
+                                                    <button @click="expanded = true" class="text-xs text-blue-600 hover:text-blue-800 font-medium mt-1">
+                                                        Show {{ $totalChanges - 5 }} more changes
+                                                    </button>
+                                                </template>
+                                                <template x-if="expanded">
+                                                    <div class="space-y-1 mt-1">
+                                                        @foreach(array_slice($changes, 5) as $change)
+                                                            <div class="text-xs">
+                                                                <span class="font-medium">{{ ucfirst(str_replace('_', ' ', $change['key'])) }}:</span>
+                                                                <span class="text-green-600">{{ $change['new'] }}</span>
+                                                                @if($change['old'] !== null)
+                                                                    <span class="text-gray-400">(was: {{ $change['old'] }})</span>
+                                                                @endif
+                                                            </div>
+                                                        @endforeach
+                                                        <button @click="expanded = false" class="text-xs text-blue-600 hover:text-blue-800 font-medium mt-1">
+                                                            Show less
+                                                        </button>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        @else
+                                            <div class="space-y-1">
+                                                @foreach($changes as $change)
+                                                    <div class="text-xs">
+                                                        <span class="font-medium">{{ ucfirst(str_replace('_', ' ', $change['key'])) }}:</span>
+                                                        <span class="text-green-600">{{ $change['new'] }}</span>
+                                                        @if($change['old'] !== null)
+                                                            <span class="text-gray-400">(was: {{ $change['old'] }})</span>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
                                     @else
                                         <span class="text-gray-400">No changes recorded</span>
                                     @endif

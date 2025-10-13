@@ -20,9 +20,19 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->respond(function ($response, $exception, $request) {
+            // Handle authentication failures
             if ($exception instanceof \Illuminate\Auth\AuthenticationException && $request->expectsHtml()) {
                 session()->flash('status', 'You\'ve been logged out. Please log in.');
             }
+
+            // Handle CSRF token expiration (419 Page Expired error)
+            if ($exception instanceof \Illuminate\Session\TokenMismatchException && $request->expectsHtml()) {
+                // Clear old session and redirect to login with friendly message
+                session()->invalidate();
+                session()->regenerateToken();
+                return redirect()->route('login')->with('status', 'Your session has expired. Please log in again.');
+            }
+
             return $response;
         });
     })->create();

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Client;
-use App\Models\ClientStatusUpdate;
+use App\Models\ClientStatusfactionUpdate;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -46,7 +46,7 @@ class StatusfactionSeeder extends Seeder
         foreach ($statusData as $data) {
             $weekDate = $weekStart->copy()->subWeeks($data['weeks_ago']);
 
-            ClientStatusUpdate::updateOrCreate(
+            ClientStatusfactionUpdate::updateOrCreate(
                 [
                     'client_id' => $client->id,
                     'week_start_date' => $weekDate,

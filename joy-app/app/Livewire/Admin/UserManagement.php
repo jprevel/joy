@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Contracts\UserManagementContract;
 use App\Models\User;
 use App\Services\RoleDetectionService;
 use Livewire\Component;
@@ -17,17 +18,39 @@ class UserManagement extends Component
     public string $sortBy = 'name';
     public string $sortDirection = 'asc';
 
-    public function __construct(
-        private RoleDetectionService $roleDetectionService
+    // CRUD Form properties
+    public array $form = [
+        'name' => '',
+        'email' => '',
+        'password' => '',
+        'role' => '',
+    ];
+
+    public ?int $editingUserId = null;
+    public bool $editingSelf = false;
+    public bool $showCreateForm = false;
+    public bool $showEditForm = false;
+
+    protected RoleDetectionService $roleDetectionService;
+    protected UserManagementContract $userService;
+
+    public function boot(
+        RoleDetectionService $roleDetectionService,
+        UserManagementContract $userService
     ) {
-        parent::__construct();
+        $this->roleDetectionService = $roleDetectionService;
+        $this->userService = $userService;
     }
 
     public function mount()
     {
-        $this->currentUser = $this->roleDetectionService->getCurrentUser();
+        $this->currentUser = auth()->user();
 
-        if (!$this->roleDetectionService->isAdmin($this->currentUser)) {
+        if (!$this->currentUser) {
+            abort(403, 'Authentication required');
+        }
+
+        if (!$this->currentUser->hasRole('admin')) {
             abort(403, 'Admin access required');
         }
     }
@@ -52,9 +75,91 @@ class UserManagement extends Component
         }
     }
 
+    public function createUser()
+    {
+        try {
+            $this->userService->createUser($this->form);
+
+            $this->form = ['name' => '', 'email' => '', 'password' => '', 'role' => ''];
+            $this->showCreateForm = false;
+
+            session()->flash('message', 'User created successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->addError('form', $e->getMessage());
+        }
+    }
+
+    public function editUser(int $userId)
+    {
+        $user = $this->userService->findUser($userId);
+
+        $this->editingUserId = $userId;
+        $this->editingSelf = ($userId === $this->currentUser->id);
+
+        $this->form = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'password' => '',
+            'role' => $user->roles->first()?->name ?? '',
+        ];
+
+        $this->showEditForm = true;
+    }
+
+    public function updateUser()
+    {
+        if (!$this->editingUserId) {
+            return;
+        }
+
+        try {
+            $this->userService->updateUser($this->editingUserId, $this->form);
+
+            $this->form = ['name' => '', 'email' => '', 'password' => '', 'role' => ''];
+            $this->editingUserId = null;
+            $this->editingSelf = false;
+            $this->showEditForm = false;
+
+            session()->flash('message', 'User updated successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->addError('form', $e->getMessage());
+        }
+    }
+
+    public function cancel()
+    {
+        $this->form = ['name' => '', 'email' => '', 'password' => '', 'role' => ''];
+        $this->editingUserId = null;
+        $this->editingSelf = false;
+        $this->showCreateForm = false;
+        $this->showEditForm = false;
+        $this->resetErrorBag();
+    }
+
+    public function deleteUser(int $userId)
+    {
+        try {
+            $this->userService->deleteUser($userId);
+            session()->flash('message', 'User deleted successfully');
+        } catch (\Exception $e) {
+            $this->addError('delete', $e->getMessage());
+        }
+    }
+
+    public function restoreUser(int $userId)
+    {
+        try {
+            $this->userService->restoreUser($userId);
+            session()->flash('message', 'User restored successfully');
+        } catch (\Exception $e) {
+            $this->addError('restore', $e->getMessage());
+        }
+    }
+
     public function render()
     {
-        $query = User::with(['client', 'teams']);
+        // Include soft-deleted users
+        $query = User::withTrashed()->with('roles');
 
         // Apply search filter
         if (!empty($this->search)) {
@@ -66,16 +171,20 @@ class UserManagement extends Component
 
         // Apply role filter
         if (!empty($this->roleFilter)) {
-            $query->where('role', $this->roleFilter);
+            $query->whereHas('roles', function ($q) {
+                $q->where('name', $this->roleFilter);
+            });
         }
 
         // Apply sorting
         $query->orderBy($this->sortBy, $this->sortDirection);
 
         $users = $query->paginate(15);
+        $availableRoles = $this->userService->getAvailableRoles();
 
         return view('livewire.admin.user-management', [
             'users' => $users,
+            'availableRoles' => $availableRoles,
         ])->layout('components.layouts.admin');
     }
 }

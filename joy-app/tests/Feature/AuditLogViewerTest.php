@@ -242,4 +242,213 @@ class AuditLogViewerTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Clear all filters');
     }
+
+    // ========== User Story 3: Improved Audit Access ==========
+
+    /** @test */
+    public function admin_dashboard_shows_single_view_logs_button()
+    {
+        $this->actingAs($this->adminUser);
+
+        $response = $this->get(route('admin.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('View Logs');
+        // Should only appear once in the Audit card
+        $content = $response->getContent();
+        $this->assertEquals(1, substr_count($content, 'View Logs'));
+    }
+
+    /** @test */
+    public function view_logs_button_navigates_to_audit_logs_page()
+    {
+        $this->actingAs($this->adminUser);
+
+        // Create some audit logs to verify the page loads correctly
+        AuditLog::factory()->count(5)->create();
+
+        $response = $this->get(route('admin.audit.recent'));
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.audit.recent');
+        $response->assertSee('Recent Audit Logs');
+    }
+
+    /** @test */
+    public function dashboard_does_not_show_separate_recent_logs_button()
+    {
+        $this->actingAs($this->adminUser);
+
+        $response = $this->get(route('admin.index'));
+
+        $response->assertStatus(200);
+        // Should not have the old button texts in the Audit card
+        $content = $response->getContent();
+        // Check that "Recent Logs" button text doesn't exist
+        $this->assertStringNotContainsString('Recent Logs', $content);
+        // Check that we don't have the route to audit.dashboard
+        $this->assertStringNotContainsString(route('admin.audit.dashboard'), $content);
+    }
+
+    // ========== User Story 4: Collapsible Audit Filters ==========
+
+    /** @test */
+    public function audit_filters_are_collapsed_by_default()
+    {
+        $this->actingAs($this->adminUser);
+
+        \Livewire\Livewire::test(\App\Livewire\Admin\AuditLogs::class)
+            ->assertSet('filtersOpen', false)
+            ->assertSee('Show Filters')
+            ->assertDontSee('Hide Filters');
+    }
+
+    /** @test */
+    public function filter_button_toggles_filter_form_visibility()
+    {
+        $this->actingAs($this->adminUser);
+
+        \Livewire\Livewire::test(\App\Livewire\Admin\AuditLogs::class)
+            ->assertSet('filtersOpen', false)
+            ->call('toggleFilters')
+            ->assertSet('filtersOpen', true)
+            ->call('toggleFilters')
+            ->assertSet('filtersOpen', false);
+    }
+
+    /** @test */
+    public function active_filters_show_indicator_when_collapsed()
+    {
+        $this->actingAs($this->adminUser);
+
+        // Create some audit logs and users
+        AuditLog::factory()->count(5)->create();
+
+        $component = \Livewire\Livewire::test(\App\Livewire\Admin\AuditLogs::class)
+            ->set('search', 'test')
+            ->set('eventFilter', 'user_login')
+            ->set('dateFrom', now()->subDays(7)->format('Y-m-d'))
+            ->set('filtersOpen', false);
+
+        // Should show active filter count
+        // Note: dateFrom, dateTo are set by default in mount(), plus search and eventFilter = 4 total
+        $this->assertEquals(4, $component->get('activeFilterCount'));
+    }
+
+    /** @test */
+    public function filter_form_is_compact_three_column_layout()
+    {
+        $this->actingAs($this->adminUser);
+
+        $component = \Livewire\Livewire::test(\App\Livewire\Admin\AuditLogs::class)
+            ->set('filtersOpen', true);
+
+        $html = $component->html();
+
+        // Check that the view contains grid-cols-3 for compact layout
+        $this->assertStringContainsString('grid-cols-3', $html);
+        // Should not have the old 5-column layout
+        $this->assertStringNotContainsString('grid-cols-5', $html);
+    }
+
+    // ========== User Story 5: Enhanced Audit Log Details ==========
+
+    /** @test */
+    public function audit_logs_display_inline_change_details()
+    {
+        $this->actingAs($this->adminUser);
+
+        // Create audit log with change details
+        $auditLog = AuditLog::factory()->create([
+            'event' => 'user_updated',
+            'user_id' => $this->adminUser->id,
+            'auditable_type' => 'App\\Models\\User',
+            'auditable_id' => 1,
+            'old_values' => ['name' => 'Old Name', 'email' => 'old@example.com'],
+            'new_values' => ['name' => 'New Name', 'email' => 'new@example.com']
+        ]);
+
+        $component = \Livewire\Livewire::test(\App\Livewire\Admin\AuditLogs::class);
+        $html = $component->html();
+
+        // Should show field names and values in "old → new" format
+        $this->assertMatchesRegularExpression('/[Nn]ame/', $html);
+        $this->assertStringContainsString('Old Name', $html);
+        $this->assertStringContainsString('New Name', $html);
+        $this->assertMatchesRegularExpression('/[Ee]mail/', $html);
+        $this->assertStringContainsString('old@example.com', $html);
+        $this->assertStringContainsString('new@example.com', $html);
+    }
+
+    /** @test */
+    public function audit_logs_do_not_show_ip_address_column()
+    {
+        $this->actingAs($this->adminUser);
+
+        AuditLog::factory()->create([
+            'event' => 'test_event',
+            'user_id' => $this->adminUser->id,
+            'ip_address' => '192.168.1.100'
+        ]);
+
+        $component = \Livewire\Livewire::test(\App\Livewire\Admin\AuditLogs::class);
+        $html = $component->html();
+
+        // IP address should NOT appear in the table
+        $this->assertStringNotContainsString('192.168.1.100', $html);
+        // Should not have IP Address column header
+        $this->assertStringNotContainsString('IP Address', $html);
+    }
+
+    /** @test */
+    public function large_change_sets_truncate_with_expand_toggle()
+    {
+        $this->actingAs($this->adminUser);
+
+        // Create audit log with many changes (>5 fields)
+        $oldValues = [];
+        $newValues = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $oldValues["field_{$i}"] = "old_value_{$i}";
+            $newValues["field_{$i}"] = "new_value_{$i}";
+        }
+
+        $auditLog = AuditLog::factory()->create([
+            'event' => 'user_updated',
+            'user_id' => $this->adminUser->id,
+            'auditable_type' => 'App\\Models\\User',
+            'auditable_id' => 1,
+            'old_values' => $oldValues,
+            'new_values' => $newValues
+        ]);
+
+        $component = \Livewire\Livewire::test(\App\Livewire\Admin\AuditLogs::class);
+        $html = $component->html();
+
+        // Should show truncation indicator
+        $this->assertMatchesRegularExpression('/Show (all )?(\d+) (more )?changes?/i', $html);
+    }
+
+    /** @test */
+    public function change_details_are_human_readable()
+    {
+        $this->actingAs($this->adminUser);
+
+        // Create audit log with underscored field names
+        $auditLog = AuditLog::factory()->create([
+            'event' => 'user_updated',
+            'user_id' => $this->adminUser->id,
+            'auditable_type' => 'App\\Models\\User',
+            'auditable_id' => 1,
+            'old_values' => ['first_name' => 'John', 'last_login_at' => '2024-01-01'],
+            'new_values' => ['first_name' => 'Jane', 'last_login_at' => '2024-01-15']
+        ]);
+
+        $component = \Livewire\Livewire::test(\App\Livewire\Admin\AuditLogs::class);
+        $html = $component->html();
+
+        // Field names should be human-readable (spaces instead of underscores, capitalized)
+        $this->assertMatchesRegularExpression('/First [Nn]ame/i', $html);
+        $this->assertMatchesRegularExpression('/Last [Ll]ogin/i', $html);
+    }
 }

@@ -9,9 +9,10 @@ class Comment extends Model
 {
     protected $fillable = [
         'content_item_id',
-        'author_type',
+        'user_id',
         'author_name',
-        'body',
+        'content',
+        'is_internal',
     ];
     
     protected $casts = [
@@ -35,13 +36,26 @@ class Comment extends Model
         return $this->author_name ?? 'Anonymous';
     }
     
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function isFromClient(): bool
     {
-        return $this->author_type === 'client';
+        // Client comments have no user_id and is_internal = false
+        return is_null($this->user_id) && $this->is_internal === false;
     }
-    
+
     public function isFromAgency(): bool
     {
-        return $this->author_type === 'agency';
+        // Agency comments have a user_id or is_internal = true
+        return !is_null($this->user_id) || $this->is_internal === true;
+    }
+
+    // Backwards compatibility: body is an alias for content
+    public function getBodyAttribute(): ?string
+    {
+        return $this->content;
     }
 }

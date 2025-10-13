@@ -43,12 +43,10 @@ class AuditLogCreator
         return $this->log([
             'client_id' => $clientId,
             'user_id' => $userId ?? auth()->id(),
-            'user_type' => $this->getUserType(),
-            'action' => self::ACTION_CREATED,
+            'event' => self::ACTION_CREATED,
             'auditable_type' => get_class($model),
             'auditable_id' => $model->id,
             'new_values' => $this->getModelData($model),
-            'severity' => self::SEVERITY_INFO,
         ]);
     }
 
@@ -60,13 +58,11 @@ class AuditLogCreator
         return $this->log([
             'client_id' => $clientId,
             'user_id' => $userId ?? auth()->id(),
-            'user_type' => $this->getUserType(),
-            'action' => self::ACTION_UPDATED,
+            'event' => self::ACTION_UPDATED,
             'auditable_type' => get_class($model),
             'auditable_id' => $model->id,
             'old_values' => $oldValues,
             'new_values' => $this->getModelData($model),
-            'severity' => self::SEVERITY_INFO,
         ]);
     }
 
@@ -78,42 +74,35 @@ class AuditLogCreator
         return $this->log([
             'client_id' => $clientId,
             'user_id' => $userId ?? auth()->id(),
-            'user_type' => $this->getUserType(),
-            'action' => self::ACTION_DELETED,
+            'event' => self::ACTION_DELETED,
             'auditable_type' => get_class($model),
             'auditable_id' => $model->id,
             'old_values' => $this->getModelData($model),
-            'severity' => self::SEVERITY_WARNING,
         ]);
     }
 
     /**
      * Log a user action
      */
-    public function logUserAction(string $action, ?int $clientId = null, array $metadata = []): AuditLog
+    public function logUserAction(string $event, ?int $clientId = null, array $metadata = []): AuditLog
     {
         return $this->log([
             'client_id' => $clientId,
             'user_id' => auth()->id(),
-            'user_type' => $this->getUserType(),
-            'action' => $action,
-            'request_data' => $metadata,
-            'severity' => self::SEVERITY_INFO,
+            'event' => $event,
+            'new_values' => $metadata,
         ]);
     }
 
     /**
      * Log a magic link access
      */
-    public function logMagicLinkAccess(int $magicLinkId, int $workspaceId, string $action): AuditLog
+    public function logMagicLinkAccess(int $magicLinkId, int $workspaceId, string $event): AuditLog
     {
         return $this->log([
             'client_id' => $workspaceId,
             'user_id' => $magicLinkId,
-            'user_type' => 'magic_link',
-            'action' => $action,
-            'severity' => self::SEVERITY_INFO,
-            'tags' => ['magic_link_access'],
+            'event' => $event,
         ]);
     }
 
@@ -122,11 +111,6 @@ class AuditLogCreator
      */
     private function enrichLogData(array $data): array
     {
-        // Set default expires_at to 90 days from now if not specified
-        if (!isset($data['expires_at'])) {
-            $data['expires_at'] = now()->addDays(90);
-        }
-
         // Add request context if not provided
         if (!isset($data['ip_address'])) {
             $data['ip_address'] = Request::ip();
@@ -134,15 +118,6 @@ class AuditLogCreator
 
         if (!isset($data['user_agent'])) {
             $data['user_agent'] = Request::userAgent();
-        }
-
-        if (!isset($data['session_id'])) {
-            $data['session_id'] = session()->getId();
-        }
-
-        // Set default severity if not provided
-        if (!isset($data['severity'])) {
-            $data['severity'] = self::SEVERITY_INFO;
         }
 
         return $data;

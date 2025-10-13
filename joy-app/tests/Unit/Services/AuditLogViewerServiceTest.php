@@ -17,6 +17,10 @@ class AuditLogViewerServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Disable model observers for this test to avoid audit log side effects
+        User::flushEventListeners();
+
         $this->service = new AuditLogViewerService();
     }
 

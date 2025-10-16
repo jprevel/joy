@@ -202,8 +202,7 @@
 - Well within Laravel/MySQL performance envelope
 
 **Caching Strategy**:
-- No caching needed initially
-- If needed: Cache 5-week graph data per client (TTL: 1 hour)
+- No caching needed
 
 ## Integration Points
 

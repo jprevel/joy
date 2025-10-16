@@ -14,6 +14,9 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
+// Alternative GET logout route (no CSRF required - useful when session expired)
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout.get')->middleware('auth');
+
 // Root redirect to login if not authenticated, otherwise to appropriate panel
 Route::get('/', function () {
     if (auth()->check()) {

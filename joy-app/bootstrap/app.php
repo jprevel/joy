@@ -27,9 +27,20 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // Handle CSRF token expiration (419 Page Expired error)
             if ($exception instanceof \Illuminate\Session\TokenMismatchException && $request->expectsHtml()) {
-                // Clear old session and redirect to login with friendly message
-                session()->invalidate();
-                session()->regenerateToken();
+                // Safely clear old session with try-catch for already-invalidated sessions
+                try {
+                    if (session()->isStarted()) {
+                        session()->invalidate();
+                        session()->regenerateToken();
+                    }
+                } catch (\Exception $e) {
+                    // Session already invalidated or corrupted - ignore and proceed
+                    \Log::info('Session invalidation failed during CSRF exception', [
+                        'exception' => $e->getMessage(),
+                        'url' => $request->url(),
+                    ]);
+                }
+
                 return redirect()->route('login')->with('status', 'Your session has expired. Please log in again.');
             }
 

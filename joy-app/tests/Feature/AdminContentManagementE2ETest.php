@@ -490,4 +490,31 @@ class AdminContentManagementE2ETest extends TestCase
         $content = $response->getContent();
         $this->assertStringContainsString('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3', $content);
     }
+
+    // ========== Session Reliability: Logout Tests ==========
+
+    /** @test */
+    public function get_logout_works_without_csrf_token()
+    {
+        $user = \App\Models\User::factory()->admin()->create();
+        $this->actingAs($user);
+
+        $response = $this->get('/logout');
+
+        $response->assertRedirect(route('login'));
+        $this->assertGuest();
+    }
+
+    /** @test */
+    public function post_logout_works_with_valid_session()
+    {
+        $user = \App\Models\User::factory()->admin()->create();
+        $this->actingAs($user);
+
+        // Test POST logout with valid CSRF token (standard flow)
+        $response = $this->post(route('logout'));
+
+        $response->assertRedirect(route('login'));
+        $this->assertGuest();
+    }
 }

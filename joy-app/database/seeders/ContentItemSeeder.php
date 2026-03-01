@@ -103,14 +103,14 @@ class ContentItemSeeder extends Seeder
         ];
 
         // Select different platforms for variety (not always all 4)
-        $allPlatforms = ['Facebook', 'Instagram', 'LinkedIn', 'Blog'];
+        $allPlatforms = ['facebook', 'instagram', 'linkedin', 'blog'];
         $platformCount = rand(2, 4); // Use 2-4 platforms per campaign
         $selectedPlatforms = array_slice(array_values(array_intersect_key(
             $allPlatforms, 
             array_flip(array_rand($allPlatforms, $platformCount))
         )), 0, $platformCount);
         
-        $statuses = ['Draft', 'In Review', 'Approved', 'Scheduled'];
+        $statuses = ['draft', 'review', 'approved', 'scheduled'];
         
         $campaign = $campaigns[array_rand($campaigns)];
         
